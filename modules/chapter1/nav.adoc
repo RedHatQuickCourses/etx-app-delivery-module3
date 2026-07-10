@@ -1,0 +1,6 @@
+
+* xref:index.adoc[]
+** xref:day2-lab1-supporting-services.adoc[]
+** xref:day2-lab1-app-deployment.adoc[]
+** xref:day2-lab1-promotion.adoc[]
+** xref:day2-lab1-ci-pipeline.adoc[]

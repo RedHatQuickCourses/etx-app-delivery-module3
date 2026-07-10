@@ -1,0 +1,21 @@
+= Lab Environment
+
+Click the https://demo.redhat.com/[RHDP] link above, log in to RHDP, and click `Order` to request a new https://catalog.demo.redhat.com/catalog/babylon-catalog-dev?item=babylon-catalog-dev/openshift-cnv.app-platform-factory-cnv.dev&utm_source=webapp&utm_medium=share-link[Service Enablement: App Platform Software Factory]. On the order page for the catalog item, do the following:
+
+* *Activity*: Select `Practice/Enablement`
+* *Purpose*: Select `Learning about the Product`
+* *Salesforce ID*: If you have an opportunity ID, enter it into this field, otherwise select `Project`, and then enter "Learning about RHCL" in the text field. You will see a warning message that a Salesforce ID is required, but you can safely ignore it.
+* *Features*: Select `Enable Let's Encrypt`
+* *Region*: Select the AWS region closest to your location
+* *User count*: `1`
+* *Control Plane Count*: `1`
+* *OpenShift Version*: `4.16`
+* *Control Plane Instance Type*: `m6a.4xlarge`
+
+* Select the checkbox at the bottom of the page to confirm that lab costs will be charged to your cost center, and click `Order`.
+
+NOTE: The lab environment will take an hour to provision. You can check the status and details of the OpenShift cluster from the `Services` page of RHDP. The classroom is available for 48 hours initially. You can extend the duration of classroom availability by clicking `Help > Get Technical Help` in RHDP, and then requesting an extension by opening a ServiceNow ticket with the RHDP team.
+
+== RHDP Portal Links
+* https://demo.redhat.com/[RedHat Associates]
+* https://partner.demo.redhat.com/[RedHat Partners]
