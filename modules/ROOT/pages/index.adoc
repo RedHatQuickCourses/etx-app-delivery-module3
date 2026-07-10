@@ -15,7 +15,7 @@ This course is the `third` in a series of `six` courses about **Application Plat
 
 == What's in this course?
 
-By the end of this module, you will be able to deploy, configure, and use Red Hat OpenShift Dev Spaces to develop, build, and deploy applications through integrated GitLab and CI/CD workflows.
+This training provides a comprehensive understanding of a modern Software Factory and its role in automating the software delivery lifecycle. Participants will learn how supporting services, Continuous Integration (CI), OpenShift Pipelines (Tekton), Continuous Delivery (CD), and promotion pipelines work together to build, validate, deploy, and promote applications across environments. By the end of the training, learners will understand how to implement standardized, automated, and GitOps-driven software delivery workflows on Red Hat OpenShift, enabling faster, more secure, and reliable application delivery.
 
 Duration: 2.5 hours
 
@@ -38,11 +38,6 @@ Based on the section index, here are concise learning objectives:
 
 By the end of this module, you will be able to:
 
-* Describe the purpose and architecture of Red Hat OpenShift Dev Spaces.
-* Explain the key concepts and core components of Dev Spaces.
-* Understand how Dev Spaces fits into a Software Factory and supports cloud-native application development.
-* Identify the supporting services required to enable an integrated developer platform.
-* Deploy and configure the Red Hat OpenShift Dev Spaces Operator on an OpenShift cluster.
 * Integrate Dev Spaces with GitLab to enable source code management and developer workflows.
 * Create and use Dev Spaces workspaces for cloud-native application development.
 * Understand how Continuous Integration (CI) pipelines are triggered and executed from developer workspaces.
