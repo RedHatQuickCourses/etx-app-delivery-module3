@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 1: Deploy Supporting Services :: Software Factory and CI/CD</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="day2-lab1-app-deployment.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and CI/CD</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Software Factory Overview</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="day2-lab1-supporting-services.html">Lab 1</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Lab 2</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="day2-lab1-promotion.html">Lab 3</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">Lab 4</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="index.html">Software Factory Overview</a></li>
+    <li><a href="day2-lab1-supporting-services.html">Lab 1</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 1: Deploy Supporting Services</h1>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Deploy and configure the platform services required by the application and CI/CD pipeline: PostgreSQL database for application data persistence, AMQ Streams (Kafka) for messaging, OpenShift Pipelines (Tekton) for CI, and the OpenTelemetry Operator for distributed tracing.</p>
+</div>
+<div class="paragraph">
+<p>These services will be shared across your development workflow in Dev Spaces and production deployments.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+HashiCorp Vault is already deployed as part of the infrastructure bootstrap and does not require student installation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_hashicorp_vault_pre_deployed"><a class="anchor" href="#_hashicorp_vault_pre_deployed"></a>HashiCorp Vault (Pre-Deployed)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>HashiCorp Vault provides centralized secrets management for the platform.
+It has been pre-deployed by the infrastructure bootstrap process and is ready to use.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>URL:</strong> {vault_url}[^]</p>
+</li>
+<li>
+<p><strong>Authentication Method:</strong> OIDC</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>platform-admin</code> / <code>openshift</code> (administrator access)</p>
+</li>
+<li>
+<p><code>platform-developer</code> / <code>openshift</code> (developer access)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Purpose:</strong> CI/CD pipeline credentials and application secrets</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The Vault instance is already configured with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>KV v2 secrets engine enabled at <code>secret/</code></p>
+</li>
+<li>
+<p>Kubernetes authentication method for pipeline ServiceAccounts</p>
+</li>
+<li>
+<p>Registry credentials stored at <code>secret/registry</code></p>
+</li>
+<li>
+<p>RBAC policies for pipeline access</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Your Tekton pipelines can authenticate to Vault using their ServiceAccount tokens to retrieve registry credentials at runtime.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Access the Vault UI at {vault_url}[^] and log in with the OIDC method to explore the pre-configured secrets. If prompted for a role, leave it blank or use the default.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_openshift_pipelines_tekton"><a class="anchor" href="#_install_openshift_pipelines_tekton"></a>Install OpenShift Pipelines (Tekton)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines provides the Tekton-based CI engine used to build, test, and push container images.</p>
+</div>
+<div class="sect2">
+<h3 id="_install_via_operatorhub"><a class="anchor" href="#_install_via_operatorhub"></a>Install via OperatorHub</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open {openshift_console_url}[^] with an admin user.</p>
+</li>
+<li>
+<p>In the OpenShift Web Console, go to menu:Ecosystem[Software Catalog]</p>
+</li>
+<li>
+<p>Search for <strong>Red Hat OpenShift Pipelines</strong></p>
+</li>
+<li>
+<p>Click btn:[Install]</p>
+</li>
+<li>
+<p>Accept the defaults:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Update channel:</strong> latest</p>
+</li>
+<li>
+<p><strong>Installation mode:</strong> All namespaces</p>
+</li>
+<li>
+<p><strong>Installed Namespace:</strong> <code>openshift-operators</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click btn:[Install]</p>
+</li>
+<li>
+<p>Wait for the operator to reach the <code>Succeeded</code> phase</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Verify from the CLI:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get csv -n openshift-operators | grep pipelines</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the Pipelines operator listed with phase <code>Succeeded</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_tekton_components"><a class="anchor" href="#_verify_tekton_components"></a>Verify Tekton Components</h3>
+<div class="paragraph">
+<p>Confirm the Tekton controller pods are running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n openshift-pipelines</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see pods for <code>tekton-pipelines-controller</code>, <code>tekton-triggers-controller</code>, and related components.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_amq_streams_apache_kafka"><a class="anchor" href="#_install_amq_streams_apache_kafka"></a>Install AMQ Streams (Apache Kafka)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AMQ Streams provides Apache Kafka on OpenShift. The ETX App Base application uses Kafka for messaging between services.</p>
+</div>
+<div class="sect2">
+<h3 id="_install_via_operatorhub_2"><a class="anchor" href="#_install_via_operatorhub_2"></a>Install via OperatorHub</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open {openshift_console_url}[^] with an admin user.</p>
+</li>
+<li>
+<p>In the OpenShift Web Console, go to menu:Ecosystem[Software Catalog]</p>
+</li>
+<li>
+<p>Search for <strong>Streams for Apache Kafka</strong></p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Do <strong>NOT</strong> install the "Streams for Apache Kafka Proxy" operator. Only install "Streams for Apache Kafka" (AMQ Streams).
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Click btn:[Install]</p>
+</li>
+<li>
+<p>Accept the defaults:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Update channel:</strong> stable</p>
+</li>
+<li>
+<p><strong>Installation mode:</strong> All namespaces</p>
+</li>
+<li>
+<p><strong>Installed Namespace:</strong> <code>openshift-operators</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click btn:[Install]</p>
+</li>
+<li>
+<p>Wait for the operator to reach the <code>Succeeded</code> phase</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Verify from the CLI:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get csv -n openshift-operators | grep amqstreams</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the AMQ Streams operator listed with phase <code>Succeeded</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploy_kafka_cluster"><a class="anchor" href="#_deploy_kafka_cluster"></a>Deploy Kafka Cluster</h3>
+<div class="paragraph">
+<p>Now that the operator is installed, deploy a Kafka cluster in your application namespace.</p>
+</div>
+<div class="paragraph">
+<p>Starting with AMQ Streams 3.x, Kafka clusters use <strong>KafkaNodePools</strong> to manage broker nodes.
+A <code>KafkaNodePool</code> defines a group of Kafka nodes with specific roles (controller, broker, or both) and their storage configuration.
+This deployment uses a single node pool with combined controller and broker roles, running in <strong>KRaft mode</strong> (without ZooKeeper).</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - <<'EOF'
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaNodePool
+metadata:
+  name: kafka
+  namespace: etx-app-dev
+  labels:
+    strimzi.io/cluster: parasol-kafka
+spec:
+  replicas: 1
+  roles:
+    - controller
+    - broker
+  storage:
+    type: ephemeral
+---
+apiVersion: kafka.strimzi.io/v1
+kind: Kafka
+metadata:
+  name: parasol-kafka
+  namespace: etx-app-dev
+  annotations:
+    strimzi.io/node-pools: enabled
+    strimzi.io/kraft: enabled
+spec:
+  kafka:
+    version: 4.2.0
+    metadataVersion: 4.2-IV0
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    config:
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+      default.replication.factor: 1
+      min.insync.replicas: 1
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait for the Kafka cluster to be ready:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc wait kafka/parasol-kafka --for=condition=Ready --timeout=300s -n etx-app-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify the Kafka pods are running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -l strimzi.io/cluster=parasol-kafka -n etx-app-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see:
+- <code>parasol-kafka-kafka-0</code>&#8201;&#8212;&#8201;Kafka broker (running in KRaft mode with controller + broker roles)
+- <code>parasol-kafka-entity-operator-*</code>&#8201;&#8212;&#8201;Topic and User operators</p>
+</div>
+<div class="paragraph">
+<p>Get the Kafka bootstrap server:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get service parasol-kafka-kafka-bootstrap -n etx-app-dev -o jsonpath='{.metadata.name}:{.spec.ports[0].port}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This returns <code>parasol-kafka-kafka-bootstrap:9092</code> which will be used to connect to Kafka from your application.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_kafka_topics"><a class="anchor" href="#_create_kafka_topics"></a>Create Kafka Topics</h3>
+<div class="paragraph">
+<p>Create the topics required by the ETX App Base application:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - <<'EOF'
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaTopic
+metadata:
+  name: intake
+  namespace: etx-app-dev
+  labels:
+    strimzi.io/cluster: parasol-kafka
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 604800000
+    segment.bytes: 1073741824
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify the topic was created:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get kafkatopic -n etx-app-dev</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_deploy_postgresql_database"><a class="anchor" href="#_deploy_postgresql_database"></a>Deploy PostgreSQL Database</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Deploy PostgreSQL using the Red Hat certified container image for application data persistence.</p>
+</div>
+<div class="sect2">
+<h3 id="_create_postgresql_deployment"><a class="anchor" href="#_create_postgresql_deployment"></a>Create PostgreSQL Deployment</h3>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - <<'EOF'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: parasol-db-secret
+  namespace: etx-app-dev
+type: Opaque
+stringData:
+  database-name: parasol
+  database-user: parasol
+  database-password: parasol
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: parasol-db
+  namespace: etx-app-dev
+spec:
+  ports:
+    - name: postgresql
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: parasol-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parasol-db
+  namespace: etx-app-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: parasol-db
+  template:
+    metadata:
+      labels:
+        app: parasol-db
+    spec:
+      containers:
+        - name: postgresql
+          image: registry.redhat.io/rhel9/postgresql-16:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: parasol-db-secret
+                  key: database-user
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: parasol-db-secret
+                  key: database-password
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: parasol-db-secret
+                  key: database-name
+          volumeMounts:
+            - name: postgresql-data
+              mountPath: /var/lib/pgsql/data
+          livenessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+                - --live
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: 500m
+            requests:
+              memory: 256Mi
+              cpu: 100m
+      volumes:
+        - name: postgresql-data
+          emptyDir: {}
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+This Deployment uses <code>emptyDir</code> for storage, which means data is lost when the pod restarts. For production, use a <code>PersistentVolumeClaim</code> backed by persistent storage.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Wait for PostgreSQL to be ready:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc rollout status deployment/parasol-db -n etx-app-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify the PostgreSQL pod is running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -l app=parasol-db -n etx-app-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Test the database connection:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc run postgresql-test --rm -it --restart=Never \
+  --image=registry.redhat.io/rhel9/postgresql-16:latest \
+  --env PGPASSWORD=$(oc get secret -n etx-app-dev parasol-db-secret -o jsonpath='{.data.database-password}' | base64 -d) \
+  -n etx-app-dev -- \
+  psql -h parasol-db \
+  -U $(oc get secret -n etx-app-dev parasol-db-secret -o jsonpath='{.data.database-user}' | base64 -d) \
+  -d $(oc get secret -n etx-app-dev parasol-db-secret -o jsonpath='{.data.database-name}' | base64 -d) \
+  -c '\conninfo'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see connection information confirming PostgreSQL is accessible.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The database credentials are stored in the <code>parasol-db-secret</code> Secret. Your application will use these same credentials to connect.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_the_opentelemetry_operator"><a class="anchor" href="#_install_the_opentelemetry_operator"></a>Install the OpenTelemetry Operator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The OpenTelemetry Operator manages the deployment of OpenTelemetry Collectors for distributed tracing and metrics collection.</p>
+</div>
+<div class="sect2">
+<h3 id="_install_via_operatorhub_3"><a class="anchor" href="#_install_via_operatorhub_3"></a>Install via OperatorHub</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open {openshift_console_url}[^] with an admin user.</p>
+</li>
+<li>
+<p>In the OpenShift Web Console, go to menu:Ecosystem[Software Catalog]</p>
+</li>
+<li>
+<p>Search for <strong>Red Hat build of OpenTelemetry</strong></p>
+</li>
+<li>
+<p>Click btn:[Install]</p>
+</li>
+<li>
+<p>Accept the defaults:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Update channel:</strong> stable</p>
+</li>
+<li>
+<p><strong>Installation mode:</strong> All namespaces</p>
+</li>
+<li>
+<p><strong>Installed Namespace:</strong> <code>openshift-opentelemetry-operator</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click btn:[Install]</p>
+</li>
+<li>
+<p>Wait for the operator to reach the <code>Succeeded</code> phase</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Verify from the CLI:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get csv -n openshift-operators | grep opentelemetry</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see the OpenTelemetry operator listed with phase <code>Succeeded</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deploy_an_opentelemetry_collector"><a class="anchor" href="#_deploy_an_opentelemetry_collector"></a>Deploy an OpenTelemetry Collector</h3>
+<div class="paragraph">
+<p>Create a collector instance in your application namespace.
+This collector will receive traces from instrumented applications and export them to the console for demonstration purposes:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - <<'EOF'
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: otel-collector
+  namespace: etx-app-dev
+spec:
+  mode: deployment
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      batch: {}
+      probabilistic_sampler:
+        sampling_percentage: 100.0
+    exporters:
+      debug:
+        verbosity: detailed
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [probabilistic_sampler, batch]
+          exporters: [debug]
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>verbosity: detailed</code> prints full trace details to stdout (visible in collector pod logs). The <code>logging</code> exporter was removed in Collector v0.111+; use <code>debug</code> instead.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+For production, replace the <code>debug</code> exporter with a real tracing backend like Tempo, Jaeger, or a cloud provider&#8217;s tracing service.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Verify the collector pod is running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -l app.kubernetes.io/name=otel-collector-collector -n etx-app-dev</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_enable_auto_instrumentation"><a class="anchor" href="#_enable_auto_instrumentation"></a>Enable Auto-Instrumentation</h3>
+<div class="paragraph">
+<p>Create an <code>Instrumentation</code> resource to enable automatic trace injection for Java applications:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - <<'EOF'
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: java-instrumentation
+  namespace: etx-app-dev
+spec:
+  exporter:
+    endpoint: http://otel-collector-collector:4317
+  propagators:
+    - tracecontext
+    - baggage
+  sampler:
+    type: always_on
+  java:
+    image: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java:latest
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>sampler.type: always_on</code> configuration ensures all traces are captured, which is appropriate for development and lab environments. In production, you might use <code>parentbased_traceidratio</code> to sample a percentage of traces.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To instrument a deployment, add the following annotation to its pod template:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">metadata:
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "true"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will be used when deploying the application in <a href="day2-lab1-app-deployment.html" class="xref page">Application Deployment</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_summary"><a class="anchor" href="#_summary"></a>Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You now have the following services deployed and ready:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Vault</strong> (pre-deployed)&#8201;&#8212;&#8201;secrets management with Kubernetes authentication for pipeline access</p>
+</li>
+<li>
+<p><strong>OpenShift Pipelines</strong>&#8201;&#8212;&#8201;Tekton CI engine ready to run pipelines</p>
+</li>
+<li>
+<p><strong>AMQ Streams Kafka Cluster</strong>&#8201;&#8212;&#8201;<code>parasol-kafka-kafka-bootstrap:9092</code> with <code>intake</code> topic</p>
+</li>
+<li>
+<p><strong>PostgreSQL Database</strong>&#8201;&#8212;&#8201;<code>parasol-db:5432</code> with database <code>parasol</code></p>
+</li>
+<li>
+<p><strong>OpenTelemetry</strong>&#8201;&#8212;&#8201;collector and auto-instrumentation configured for distributed tracing</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Your application can now connect to these services:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Kafka bootstrap server:</strong> <code>parasol-kafka-kafka-bootstrap:9092</code></p>
+</li>
+<li>
+<p><strong>PostgreSQL host:</strong> <code>parasol-db:5432</code></p>
+</li>
+<li>
+<p><strong>Database credentials:</strong> Available in <code>parasol-db-secret</code> Secret</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Proceed to <a href="#day2-lab1-devspaces.adoc" class="xref unresolved">Dev Spaces &amp; IDE Setup</a> to create your development workspace and connect to these services.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Software Factory Overview</a></span>
+  <span class="next"><a href="day2-lab1-app-deployment.html">Lab 2</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

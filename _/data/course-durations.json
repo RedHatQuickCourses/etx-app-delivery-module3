@@ -1,5 +1,41 @@
 {
-  "totalSeconds": 0,
-  "pageCount": 0,
-  "pages": []
+  "totalSeconds": 1421,
+  "pageCount": 7,
+  "pages": [
+    {
+      "module": "ROOT",
+      "page": "index.adoc",
+      "seconds": 95
+    },
+    {
+      "module": "LABENV",
+      "page": "index.adoc",
+      "seconds": 68
+    },
+    {
+      "module": "chapter1",
+      "page": "index.adoc",
+      "seconds": 50
+    },
+    {
+      "module": "chapter1",
+      "page": "day2-lab1-supporting-services.adoc",
+      "seconds": 205
+    },
+    {
+      "module": "chapter1",
+      "page": "day2-lab1-app-deployment.adoc",
+      "seconds": 403
+    },
+    {
+      "module": "chapter1",
+      "page": "day2-lab1-promotion.adoc",
+      "seconds": 261
+    },
+    {
+      "module": "chapter1",
+      "page": "day2-lab1-ci-pipeline.adoc",
+      "seconds": 339
+    }
+  ]
 }
