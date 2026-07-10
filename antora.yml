@@ -3,4 +3,3 @@ title: Software Factory and CI/CD
 version: 1
 nav:
 - modules/ROOT/nav.adoc
-- modules/LABENV/nav.adoc
