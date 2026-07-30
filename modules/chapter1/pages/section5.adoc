@@ -1,0 +1,271 @@
+= Devfiles and Workspace Base Images
+:navtitle: Devfiles & Base Images
+
+== What is a Devfile?
+
+A https://devfile.io/[devfile^] is a YAML file (`devfile.yaml`) placed at the root of a Git repository that declares the complete workspace environment: which container image to use, what ports to expose, what commands to run, and what volumes to mount.
+
+When a developer creates a workspace from a Git repository, Dev Spaces reads the `devfile` and builds the workspace pod accordingly.
+If no `devfile` is found, Dev Spaces falls back to the Universal Developer Image (UDI) with default settings.
+
+== Devfile Structure
+
+A `devfile` has the following top-level sections:
+
+[source,yaml]
+----
+schemaVersion: 2.2.0
+metadata:
+  name: my-project
+
+attributes: {} # <1>
+components: [] # <2>
+commands: []   # <3>
+events: {}     # <4>
+----
+<1> IDE-specific settings like recommended extensions
+<2> Containers, volumes, and other components
+<3> Build, run, and test commands available from the IDE
+<4> Lifecycle hooks (`preStart`, `postStart`, `preStop`, `postStop`)
+
+== Components
+
+Components define the containers and volumes in your workspace.
+
+=== Container Component
+
+[source,yaml]
+----
+components:
+  - name: tools
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi9-latest
+      memoryLimit: 5Gi
+      cpuLimit: 2500m
+      env:
+        - name: QUARKUS_HTTP_HOST
+          value: "0.0.0.0"
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/home/user/.m2/repository"
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      endpoints:
+        - name: app
+          targetPort: 8080
+          exposure: public
+          protocol: https
+        - name: debug
+          targetPort: 5005
+          exposure: none
+----
+
+=== Volume Component
+
+Volumes persist data across workspace restarts (e.g. Maven cache: `.m2` folder), Node.js modules: `node_modules` folder):
+
+[source,yaml]
+----
+components:
+  - name: m2
+    volume:
+      size: 1G
+----
+
+== Commands
+
+Commands define tasks available in the IDE's command palette. Think of these as shortcuts for executing commands without having to memorize them:
+
+[source,yaml]
+----
+commands:
+  - id: package
+    exec:
+      label: "1. Package the application"
+      component: tools
+      commandLine: "./mvnw package"
+      group:
+        kind: build
+        isDefault: true
+  - id: start-dev
+    exec:
+      label: "2. Start Development mode"
+      component: tools
+      commandLine: "./mvnw compile quarkus:dev"
+      group:
+        kind: run
+        isDefault: true
+----
+
+== Events
+
+Events let you run commands at workspace lifecycle points.
+A common pattern is to run initialization after the workspace starts:
+
+[source,yaml]
+----
+events:
+  postStart:
+    - init-continue
+----
+
+This runs the command with `id: init-continue` after the workspace container starts, which can be used to generate configuration files for IDE extensions.
+
+== IDE Extensions
+
+Specify recommended VS Code extensions by adding an `extensions.json` attribute.
+When the workspace opens, the IDE will suggest these extensions for installation:
+
+[source,yaml]
+----
+attributes:
+  .vscode/extensions.json: |
+    {
+      "recommendations": [
+        "redhat.java",
+        "redhat.vscode-quarkus",
+        "redhat.vscode-yaml",
+        "continue.continue"
+      ]
+    }
+----
+
+Extension IDs come from the Open VSX registry (https://open-vsx.org[^]).
+Find the extension page and convert the URL path from `namespace/extension` to `namespace.extension`.
+
+To force extensions to install automatically (rather than just recommend them), add a `.vscode/extensions.json` file directly to your Git repository with the same format.
+When Dev Spaces clones the repo and opens the workspace, the IDE will pick up the file from the repo and install the listed extensions without prompting.
+
+== Universal Developer Image (UDI)
+
+The UDI (`quay.io/devfile/universal-developer-image:ubi9-latest`) is a batteries-included container image with:
+
+* *Languages/Runtimes*: Java, Node.js, Python, Go, Ruby, C/C++, PHP, .NET
+* *Build Tools*: Maven, Gradle, npm, pip, cargo
+* *Container Tools*: Podman, Buildah, Skopeo
+* *CLI Tools*: oc, kubectl, git, curl, jq, yq
+
+For most use cases, UDI is the right choice.
+Build a custom image only if you need to significantly reduce image size, add proprietary tools, or enforce a specific security posture.
+
+== Parent Devfiles
+
+A `devfile` can inherit from a parent to avoid duplication across multiple repositories.
+This is useful when your organization has a standard base environment:
+
+[source,yaml]
+----
+schemaVersion: 2.2.0
+metadata:
+  name: etx-app-base-app
+parent:
+  uri: https://gitlab.example.com/devfiles/-/raw/main/devfile.yaml
+----
+
+The child `devfile` inherits all components, commands, and events from the parent and can override or extend them.
+This keeps individual project `devfiles` minimal while centralizing your standard configuration.
+
+== Complete Example
+
+Here is a full Quarkus `devfile` with UDI, Maven caching, endpoint definitions, and Continue AI assistant integration:
+
+[source,yaml]
+----
+schemaVersion: 2.2.0
+metadata:
+  name: quarkus-workspace
+components:
+  - name: development-tooling
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi9-latest
+      env:
+        - name: QUARKUS_HTTP_HOST
+          value: "0.0.0.0"
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/home/user/.m2/repository"
+        # External service connection (from Supporting Services lab)
+        - name: POSTGRESQL_HOST # <1>
+          value: "parasol-db.etx-app-dev.svc.cluster.local"
+        - name: POSTGRESQL_DATABASE # <2>
+          value: "parasol"
+        - name: POSTGRESQL_USER # <3>
+          value: "parasol"
+        - name: POSTGRESQL_PASSWORD # <4>
+          value: "parasol"
+        - name: KAFKA_BOOTSTRAP_SERVERS # <5>
+          value: "parasol-kafka-kafka-bootstrap.etx-app-dev.svc.cluster.local:9092"
+      memoryLimit: 5Gi
+      cpuLimit: 2500m
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      endpoints:
+        - name: quarkus-dev
+          targetPort: 8080
+          exposure: public
+          protocol: https
+        - name: debug
+          targetPort: 5005
+          exposure: none
+        - name: tests
+          targetPort: 8081
+          exposure: none
+  - name: m2
+    volume:
+      size: 1G
+commands:
+  - id: package
+    exec:
+      label: "1. Package the application"
+      component: development-tooling
+      commandLine: "./mvnw package"
+      group:
+        kind: build
+        isDefault: true
+  - id: start-dev
+    exec:
+      label: "2. Start Development mode (Hot reload + debug)"
+      component: development-tooling
+      commandLine: "./mvnw compile quarkus:dev"
+      group:
+        kind: run
+        isDefault: true
+  - id: init-continue
+    exec:
+      label: "Initialize Continue config"
+      component: development-tooling
+      workingDir: /home/user
+      commandLine: |
+        mkdir -p /home/user/.continue
+        cat > /home/user/.continue/config.yaml << EOF
+        name: Continue Config
+        version: 0.0.1
+        models:
+          - name: qwen3-14b
+            provider: vllm
+            model: qwen3-14b
+            apiKey: ${LLM_API_KEY}
+            apiBase: ${LLM_BASE_URL}
+            roles:
+              - chat
+        EOF
+      group:
+        kind: build
+events:
+  postStart:
+    - init-continue
+----
+<1> PostgreSQL hostname - fully qualified service name from Supporting Services lab
+<2> PostgreSQL database name (matches the database created in Supporting Services)
+<3> PostgreSQL username (matches the secret in Supporting Services)
+<4> PostgreSQL password (matches the secret in Supporting Services)
+<5> Kafka bootstrap servers - fully qualified service name from Supporting Services lab
+
+NOTE: These environment variables point to external PostgreSQL and Kafka services deployed in xref:day2-lab1-supporting-services.adoc[Deploy Supporting Services]. Dev Services (Testcontainers) are **disabled** to use shared cluster services instead.
+
+This example also includes a `init-continue` command that reads `LLM_API_KEY` and `LLM_BASE_URL`
+from the environment variables injected by the shared secret created in the developer user namespace.
+
+== Next Steps
+
+Proceed to xref:day2-appmod-overview.adoc[Application Modernization Overview].

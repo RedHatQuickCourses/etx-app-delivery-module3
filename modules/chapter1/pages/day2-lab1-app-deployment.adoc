@@ -1,5 +1,5 @@
-= Lab 2: Application Deployment with Argo CD
-:navtitle: Lab 2
+= Lab 1: Application Deployment with Argo CD
+:navtitle: Application Deployment
 
 == Overview
 
@@ -34,7 +34,7 @@ The OIDC client `argocd` already exists in Keycloak realm `etx-lab`. Create a se
 KEYCLOAK_URL="https://etx-sso.apps.$(oc get route -n keycloak -o jsonpath='{.items[0].spec.host}' | sed 's/sso\.apps\.//')"
 
 # Use the shared argocd client secret from etx-gitops
-CLIENT_SECRET="abJIhC36Q7DPscCUNNu27QKSdF9euOpIr16e7VvM"
+CLIENT_SECRET="changeme"
 
 oc create secret generic argocd-oidc-secret -n etx-app-dev \
   --from-literal=clientSecret=${CLIENT_SECRET}
@@ -195,6 +195,8 @@ The ArgoCD operator should automatically create a route. Verify it exists:
 oc get route argocd-server -n etx-app-dev
 ----
 
+image::argo.png[width=500]
+
 If the route doesn't exist, create it manually:
 
 [source,bash,role=execute]
@@ -220,7 +222,10 @@ You can log into Argo CD using either the admin account or Keycloak SSO.
 === Option 1: ETX Keycloak SSO (Recommended)
 
 . Open the Argo CD URL in your browser
-. You'll be automatically redirected to ETX Keycloak login page
+. Select the **ETX Keycloak login** option
++
+image::argocd.png[width=500]
++
 . Log in with your ETX credentials:
   * `platform-admin` / `openshift` (admin access)
   * `platform-developer` / `openshift` (admin access)
@@ -293,7 +298,7 @@ TIP: If you still see the error after following these steps, try a different bro
 Create a GitOps repository in GitLab with the following structure.
 This repository holds the Kubernetes manifests that Argo CD will sync:
 
-. Log into GitLab (get the URL first):
+. Navigate to your openshfit console terminal and log into GitLab (get the URL first):
 +
 [source,bash,role=execute]
 ----
@@ -303,6 +308,13 @@ echo "GitLab URL: $GITLAB_URL"
 ----
 +
 . Create a new project: *etx-app-gitops* in the software-factory group
++
+image:new.png[width=400]
++
+image::create.png[width=400]
++
+image::infos.png[width=600]
++
 . Clone it locally:
 +
 [source,bash,role=execute]
@@ -431,6 +443,12 @@ Commit and push the dev environment:
 
 [source,bash,role=execute]
 ----
+git config --global user.email "platform-developer@example.com"
+git config --global user.name "Platform Developer"
+GITLAB_ROOT_PASSWORD=$(oc get secret -n gitlab gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' | base64 -d)
+echo "Root Password: $GITLAB_ROOT_PASSWORD"
+echo "Root Username: root"
+
 git add environments/dev/
 git commit -m "feat: add dev environment manifests"
 git push origin main
@@ -501,6 +519,17 @@ oc get application etx-app-dev -n etx-app-dev \
 
 The output should be `Synced`.
 
+You can even navigate to argocd server and check the status of application
+
+[source,bash,role=execute]
+----
+# Argo CD console URL
+oc get route argocd-server -n etx-app-dev -o jsonpath='{.spec.host}{"\n"}'
+----
+
+image::sync.png[width=400]
+
+
 Verify the application is running:
 
 [source,bash,role=execute]
@@ -510,6 +539,12 @@ oc get route etx-app-base-app -n etx-app-dev -o jsonpath='{.spec.host}{"\n"}'
 ----
 
 Open the route URL in your browser to confirm the application is accessible.
+
+image::app[width=500]
+
+Click on the application to view more details
+
+image::app_deploy[width=500]
 
 == Verify OpenTelemetry Auto-Instrumentation
 
@@ -566,7 +601,12 @@ spec:
         # Install git
         dnf install -y git && dnf clean all
 
-        git clone $(params.gitops-repo-url) /tmp/gitops
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
+        git clone "$REPO_URL" /tmp/gitops
         cd /tmp/gitops/environments/$(params.environment)
 
         # Update the image tag in the deployment manifest
@@ -582,7 +622,7 @@ EOF
 
 Update the pipeline to include this task at the end.
 
-Add the `update-gitops` task to the pipeline spec. Get the GitLab URL first, then update the pipeline:
+Get the GitLab URL first, then update the pipeline:
 
 [source,bash,role=execute]
 ----
@@ -592,329 +632,39 @@ GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.it
 # Add to your pipeline YAML under spec.tasks
 ----
 
-Example task definition to add:
+Add the `update-gitops` task to the pipeline spec. 
 
 [source,yaml]
 ----
-    - name: update-gitops
-      runAfter: [build-image]
-      taskRef:
-        name: update-gitops-repo
-      params:
-        - name: gitops-repo-url
-          value: ${GITLAB_URL}/software-factory/etx-app-gitops.git
-        - name: image-tag
-          value: $(params.git-revision)
-        - name: environment
-          value: dev
-      workspaces:
-        - name: source
-          workspace: shared-workspace
+oc edit pipeline etx-app-base-app-ci -n etx-app-dev
+----
+
+Task definition to add, please note that it is suppose to be added under **tasks** section:
+
+[source,yaml]
+----
+  tasks:
+  - name: update-gitops
+    params:
+    - name: gitops-repo-url
+      value: SUBSTITUTE-GITLAB-URL-HERE/software-factory/etx-app-gitops.git
+    - name: image-tag
+      value: $(params.git-revision)
+    - name: environment
+      value: dev
+    runAfter:
+    - build-image
+    taskRef:
+      kind: Task
+      name: update-gitops-repo
+    workspaces:
+    - name: source
+      workspace: shared-workspace
 ----
 
 NOTE: Use shell variable expansion `${GITLAB_URL}` when creating the pipeline with a heredoc, or replace with the actual URL when editing the YAML file.
 
 When the pipeline pushes the updated manifest, Argo CD detects the change and automatically syncs the new image to the cluster.
-
-== Multi-Cluster Promotion to Stage
-
-IMPORTANT: The secondary cluster for staging has been pre-configured as part of the bootstrap process. Argo CD already has the necessary credentials to deploy to the staging cluster.
-
-=== Verify Secondary Cluster Configuration
-
-Check that Argo CD can see the secondary cluster.
-
-**Option 1: Using oc commands** (Recommended)
-
-[source,bash,role=execute]
-----
-# List cluster secrets in Argo CD
-oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster
-
-# View cluster details
-oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster -o json | \
-  jq -r '.items[] | .metadata.name + " - " + (.data.name | @base64d)'
-----
-
-You should see secrets for:
-- In-cluster (local/primary cluster)
-- Secondary staging cluster (pre-configured by bootstrap)
-
-**Option 2: Using argocd CLI**
-
-If you have the argocd CLI installed:
-
-[source,bash,role=execute]
-----
-# Login to Argo CD
-argocd login $(oc get route argocd-server -n etx-app-dev -o jsonpath='{.spec.host}') \
-  --insecure --username admin \
-  --password $(oc get secret argocd-cluster -n etx-app-dev -o jsonpath='{.data.admin\.password}' | base64 -d)
-
-# List clusters
-argocd cluster list
-----
-
-You should see two clusters:
-- `https://kubernetes.default.svc` (local/primary cluster)
-- Secondary staging cluster (pre-configured by bootstrap)
-
-NOTE: The bootstrap automation created the necessary ServiceAccount on the staging cluster and added it to Argo CD. For details on this configuration, see https://github.com/rh-etx-app-platform/etx_app_platform_bootstrap/issues/8
-
-=== Create Stage Environment Manifests
-
-Create stage environment manifests in your GitOps repository:
-
-[source,bash,role=execute]
-----
-cd ~/workshop/etx-app-gitops
-mkdir -p environments/stage
-----
-
-Copy the dev manifests as a template:
-
-[source,bash,role=execute]
-----
-cp environments/dev/*.yaml environments/stage/
-----
-
-Update `environments/stage/namespace.yaml`:
-
-[source,bash,role=execute]
-----
-cat > environments/stage/namespace.yaml <<'EOF'
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: etx-app-staging
-EOF
-----
-
-Update `environments/stage/deployment.yaml` to use the `etx-app-staging` namespace and Quay registry.
-
-First, get the Quay URL:
-
-[source,bash,role=execute]
-----
-# Get Quay URL dynamically
-QUAY_URL=$(oc get route -n quay -l app=quay -o jsonpath='{.items[0].spec.host}')
-echo "Using Quay URL: $QUAY_URL"
-----
-
-Then create the deployment manifest:
-
-[source,bash,role=execute]
-----
-cat > environments/stage/deployment.yaml <<EOF
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: etx-app-base-app
-  namespace: etx-app-staging
-  labels:
-    app: etx-app-base-app
-  annotations:
-    instrumentation.opentelemetry.io/inject-java: "true"
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: etx-app-base-app
-  template:
-    metadata:
-      labels:
-        app: etx-app-base-app
-      annotations:
-        instrumentation.opentelemetry.io/inject-java: "true"
-    spec:
-      containers:
-        - name: etx-app-base-app
-          image: ${QUAY_URL}/etx-app/etx-app-base-app:stable
-          ports:
-            - containerPort: 8080
-          resources:
-            requests:
-              cpu: 500m
-              memory: 1Gi
-            limits:
-              cpu: "2"
-              memory: 2Gi
-EOF
-----
-
-Key differences from dev:
-
-* **Namespace**: `etx-app-staging` instead of `etx-app-dev`
-* **Replicas**: Increased to 2 for higher availability
-* **Image**: Uses Quay registry for cross-cluster image distribution instead of internal registry
-
-Update `environments/stage/service.yaml` to use `etx-app-staging` namespace:
-
-[source,bash,role=execute]
-----
-sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' environments/stage/service.yaml
-----
-
-Update `environments/stage/route.yaml` to use `etx-app-staging` namespace:
-
-[source,bash,role=execute]
-----
-sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' environments/stage/route.yaml
-----
-
-Update `environments/stage/namespace.yaml`:
-
-[source,bash,role=execute]
-----
-sed -i 's/name: etx-app-dev/name: etx-app-staging/' environments/stage/namespace.yaml
-----
-
-Verify the changes:
-
-[source,bash,role=execute]
-----
-grep namespace environments/stage/*.yaml
-----
-
-Commit and push:
-
-[source,bash,role=execute]
-----
-git add environments/stage/
-git commit -m "feat: add stage environment manifests"
-git push origin main
-----
-
-=== Create Stage Application
-
-Create an Argo CD Application for the staging environment on the secondary cluster.
-
-First, get the GitLab URL and the secondary cluster server URL:
-
-[source,bash,role=execute]
-----
-# Get GitLab URL
-GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
-echo "Using GitLab URL: $GITLAB_URL"
-
-# Get the staging cluster server URL from Argo CD Secret
-STAGING_CLUSTER=$(oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster -o json | \
-  jq -r '.items[] | select(.metadata.annotations."cluster-name" | contains("cluster2") or contains("staging") or contains("secondary")) | .data.server' | \
-  base64 -d)
-
-# If not found in secrets, try using argocd CLI
-if [ -z "$STAGING_CLUSTER" ]; then
-  # Login to Argo CD
-  argocd login $(oc get route argocd-server -n etx-app-dev -o jsonpath='{.spec.host}') \
-    --insecure --username admin \
-    --password $(oc get secret argocd-cluster -n etx-app-dev -o jsonpath='{.data.admin\.password}' | base64 -d)
-
-  # Get cluster URL
-  STAGING_CLUSTER=$(argocd cluster list -o json | jq -r '.[] | select(.name != "in-cluster") | .server')
-fi
-
-echo "Staging cluster: ${STAGING_CLUSTER}"
-----
-
-Then create the Application:
-
-[source,bash,role=execute]
-----
-oc apply -f - <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: etx-app-stage
-  namespace: etx-app-dev
-spec:
-  project: default
-  source:
-    repoURL: ${GITLAB_URL}/software-factory/etx-app-gitops.git
-    targetRevision: main
-    path: environments/stage
-  destination:
-    server: ${STAGING_CLUSTER}
-    namespace: etx-app-staging
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-EOF
-----
-
-NOTE: The staging cluster destination points to the secondary cluster that was pre-configured by the bootstrap automation.
-
-=== Verify Stage Deployment
-
-Check the stage application status:
-
-[source,bash,role=execute]
-----
-oc get application etx-app-stage -n etx-app-dev \
-  -o jsonpath='{.status.sync.status}{"\n"}'
-----
-
-The output should be `Synced`.
-
-View the application in Argo CD UI:
-
-. Open the Argo CD dashboard
-. You should see two applications:
-  * `etx-app-dev` - Running on primary cluster
-  * `etx-app-stage` - Running on secondary (staging) cluster
-. Click on `etx-app-stage` to view its deployment status
-
-NOTE: Since Argo CD is managing the staging cluster remotely, you can view the application status through the Argo CD UI without needing to login to the secondary cluster directly.
-
-== Promotion Workflow Overview
-
-The promotion workflow from dev to staging follows these steps:
-
-. CI pipeline builds and pushes image to internal registry with commit SHA tag
-. Image is promoted to Quay registry with a `stable` tag (covered in xref:day2-lab1-promotion.adoc[Promotion Pipeline])
-. GitOps repository `environments/stage/deployment.yaml` is updated with new image tag
-. Argo CD detects the change and automatically syncs to the secondary cluster
-
-This GitOps approach ensures:
-
-* **Version control** - All deployment changes are tracked in Git
-* **Auditability** - Full history of what was deployed when
-* **Rollback capability** - Revert to previous commit to rollback
-* **Multi-cluster consistency** - Same manifests can deploy to multiple clusters
-
-== Quick Verification
-
-Verify the complete deployment:
-
-[source,bash,role=execute]
-----
-# Check Argo CD application status
-oc get application etx-app-dev -n etx-app-dev -o jsonpath='{.status.sync.status}: {.status.health.status}{"\n"}'
-
-# Check application pods
-oc get pods -n etx-app-dev -l app=etx-app-base-app
-
-# Check application health endpoint
-curl http://$(oc get route etx-app-base-app -n etx-app-dev -o jsonpath='{.spec.host}')/q/health
-
-# Check OpenTelemetry injection
-oc get pod -n etx-app-dev -l app=etx-app-base-app \
-  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'
-----
-
-Expected output should show: `Synced: Healthy` for Argo CD, `Running` pods, and `opentelemetry-auto-instrumentation` init container.
-
-[TIP]
-====
-**Common Issues:**
-
-* **ImagePullBackOff:** Image not in registry - run CI pipeline first
-* **CrashLoopBackOff:** Check pod logs - often missing Kafka or DB connection
-* **Argo CD Out of Sync:** Click "Sync" in Argo CD UI or check GitOps repo for errors
-* **Health check failing:** Verify all dependencies (DB, Kafka) are running
-====
 
 == Summary
 
@@ -925,14 +675,3 @@ You have completed the Application Deployment exercise. Your application now has
 * Automated sync with self-healing enabled
 * OpenTelemetry auto-instrumentation for distributed tracing
 * Integration between CI pipeline and GitOps repository
-* Multi-cluster deployment capability (dev → stage)
-
-== What's Next
-
-The current setup deploys to dev automatically when the CI pipeline completes. To promote images from dev to staging, you need a promotion pipeline.
-
-Proceed to xref:day2-lab1-promotion.adoc[Promotion Pipeline] to learn how to:
-
-* Copy images from internal registry to Quay
-* Update GitOps repository for staging environment
-* Trigger automatic deployment to the secondary cluster via Argo CD

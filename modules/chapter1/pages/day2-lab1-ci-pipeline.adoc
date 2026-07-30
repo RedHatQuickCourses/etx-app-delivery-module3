@@ -1,5 +1,5 @@
-= Lab 4: Application CI Pipeline
-:navtitle: Lab 4
+= Lab 1: Application CI Pipeline
+:navtitle: CI Pipeline
 
 == Overview
 
@@ -268,7 +268,7 @@ Monitor the PipelineRun:
 oc get pipelinerun -n etx-app-dev
 ----
 
-You should see your PipelineRun with status `Running` or `Succeeded`.
+You should see your PipelineRun with status `Running` and once complete it should be `Succeeded`.
 
 === Monitor Pipeline Execution
 
@@ -529,10 +529,13 @@ echo "Root Password: $GITLAB_ROOT_PASSWORD"
 ----
 
 . Log into GitLab as root administrator:
-  * Open the GitLab URL in your browser
-  * Click *Standard* tab (not ETX Lab SSO)
-  * *Username:* `root`
-  * *Password:* Use the password from the command above
+* Open the GitLab URL in your browser
+* Click *Standard* tab (not ETX Lab SSO)
++
+image::gitlab_signin.png[width=450]  
++
+* *Username:* `root`
+* *Password:* Use the password from the command above
 
 IMPORTANT: The `root` user is the GitLab built-in administrator. The `platform-admin` user from Keycloak does not have admin privileges by default.
 
@@ -562,12 +565,13 @@ Then navigate:
 * Click **Settings** → **Network**
 --
 
-. Expand the *Outbound requests* section
-
+. Scroll down the page and notice the *Outbound requests* section, expand the section.
 . Enable local network webhooks:
   * Check ☑️ *Allow requests to the local network from webhooks and integrations*
   * Optionally check ☑️ *Allow requests to the local network from system hooks*
-
++
+image::outbound.png[width=600]
++
 . Click btn:[Save changes] at the bottom
 
 [TIP]
@@ -606,29 +610,14 @@ WARNING: This setting is cluster-wide and affects all GitLab projects. In produc
 
 NOTE: Configuring webhooks requires **Maintainer** or **Owner** role on the project (different from GitLab Admin). You can use `platform-admin` from Keycloak if it has Maintainer access to the project, or log in as `root`.
 
-**Option A: Use root account** (if you're already logged in from Step 1)
-
-. Navigate to your project:
-  * Click *Projects* → *Explore projects* → search for *etx_app_base_app*
-  * Or navigate directly: `{gitlab_url}/software-factory/etx_app_base_app`
-
-**Option B: Use platform-admin account**
-
-. Log out from `root` and log in via *ETX Lab SSO* as `platform-admin`
-
-. Navigate to your project:
-  * *Projects* → *software-factory* → *etx_app_base_app*
-
-. If you see "Settings → Webhooks", you have Maintainer access and can proceed
-
-. If you don't see "Settings → Webhooks":
-  * Ask your instructor to grant Maintainer role, OR
-  * Use the `root` account (Option A above)
-
-**Continue with either option:**
-
-. Go to menu:Settings[Webhooks]
-
+. Navigate to the project, for this select *Admin area* → *Dashboard* → select *etx_app_base_app*
++  
+image::admin_area.png[width=500]
++  
+. Go to menu:System hooks
++
+image::hook.png[width=300]
++
 . Click btn:[Add new webhook]
 
 . Configure the webhook:
@@ -641,28 +630,22 @@ echo "https://$(oc get route el-gitlab-listener -n etx-app-dev -o jsonpath='{.sp
 +
   * *Trigger*: Check ☑️ *Push events*
   * *SSL verification*: Uncheck for lab environments with self-signed certificates
++
+image::settings.png[width=500]
 
 . Click btn:[Add webhook]
 
 . Test the webhook:
-  * Scroll down to *Project Hooks*
-  * Find your webhook in the list
-  * Click btn:[Test] → *Push events*
-  * You should see "Hook executed successfully: HTTP 200" or similar
+* Find your webhook in the **System hooks** list
+* Click btn:[Test] → *Push events*
+
+image::push.png[width=600]
+
+* You should see "Hook executed successfully: HTTP 202" or similar
++
+image::status.png[width=700]
 
 TIP: If you get "SSL certificate problem" error during testing, make sure "Enable SSL verification" is unchecked in the webhook configuration.
-
-[NOTE]
-====
-**Using platform-developer Account:**
-
-If you want to use your `platform-developer` account instead of `platform-admin`, ask your instructor to grant you Maintainer role:
-
-. In GitLab (as admin), navigate to *software-factory/etx_app_base_app*
-. Go to menu:Settings[Members]
-. Find the user and change role to *Maintainer*
-. The user can now access Settings → Webhooks
-====
 
 ==== Troubleshooting Webhook Issues
 

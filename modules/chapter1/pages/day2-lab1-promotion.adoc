@@ -1,5 +1,5 @@
-= Lab 3: Deploy Pipeline
-:navtitle: Lab 3
+= Lab 1: Promotion Pipeline
+:navtitle: Promotion Pipeline
 
 == Overview
 
@@ -18,12 +18,164 @@ Before starting this exercise, ensure you have completed:
 
 * xref:day2-lab1-ci-pipeline.adoc[Application CI Pipeline]
 * xref:day2-lab1-app-deployment.adoc[Application Deployment]
+* Secondary cluster enrollment (instructions below)
 
 You should have:
 
 * A working CI pipeline that builds and pushes images
 * Argo CD managing both dev and stage environments
-* Access to Quay registry (pre-configured by bootstrap)
+* Access to Quay via Keycloak SSO (`platform-admin` or `platform-developer`  / `openshift`)
+* Runtime cluster provisioned and enrolled
+
+== Secondary Cluster Enrollment
+
+The promotion pipeline requires two clusters:
+
+* **Factory Cluster** (where you are now) - Development environment and ArgoCD
+* **Runtime Cluster** - Staging and production environments
+
+You need to enroll the runtime cluster with ArgoCD on the factory cluster.
+
+=== Automated Enrollment
+
+Download and run the enrollment script:
+
+[source,bash,role=execute]
+----
+curl -o enroll-secondary-cluster.sh \
+  https://raw.githubusercontent.com/rh-etx-app-platform/etx_app_tooling/main/scripts/enroll-secondary-cluster.sh
+
+chmod +x enroll-secondary-cluster.sh
+----
+
+Edit the configuration section with your cluster credentials (from RHDP emails), substitute XXXXX, {openshift_cluster_admin_password} with your lab GUID and lab password :
+
+[source,bash,subs="attributes+"]
+----
+export RUNTIME_API="https://api.cluster-xxxxx.dyn.redhatworkshops.io:6443"
+export RUNTIME_USER="admin"
+export RUNTIME_PASSWORD="{openshift_cluster_admin_password}"
+
+export FACTORY_API="https://api.cluster-xxxxx.dyn.redhatworkshops.io:6443"
+export FACTORY_USER="admin"
+export FACTORY_PASSWORD="{openshift_cluster_admin_password}"
+----
+
+Run the script:
+
+[source,bash,role=execute]
+----
+./enroll-secondary-cluster.sh
+----
+
+You will notice output as below
+
+[source,bash,role=execute]
+----
+[STEP] Step 1: Preparing runtime cluster for ArgoCD management
+[INFO] Logging into runtime cluster: https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+[INFO] Creating ArgoCD manager ServiceAccount...
+serviceaccount/argocd-manager created
+[INFO] Granting cluster-admin permissions to ArgoCD manager...
+clusterrolebinding.rbac.authorization.k8s.io/argocd-manager-binding created
+[INFO] Generating registration token (valid for 8760h)...
+[INFO] Creating staging namespaces on runtime cluster...
+namespace/etx-app-staging created
+namespace/etx-app-prod created
+[STEP] Step 1.5: Deploying supporting services on runtime cluster
+[INFO] Installing AMQ Streams (Kafka) operator...
+Warning: resource subscriptions/amq-streams is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
+subscription.operators.coreos.com/amq-streams configured
+[INFO] Installing OpenShift Pipelines (Tekton) operator...
+Warning: resource subscriptions/openshift-pipelines-operator-rh is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
+subscription.operators.coreos.com/openshift-pipelines-operator-rh configured
+[INFO] Installing Red Hat build of OpenTelemetry operator...
+subscription.operators.coreos.com/opentelemetry-product created
+[INFO] Waiting for operators to be ready (90s)...
+[INFO] Deploying PostgreSQL database in etx-app-staging...
+secret/parasol-db-secret created
+service/parasol-db created
+deployment.apps/parasol-db created
+[INFO] Deploying Kafka cluster in etx-app-staging...
+kafkanodepool.kafka.strimzi.io/kafka created
+kafka.kafka.strimzi.io/parasol-kafka created
+[INFO] Creating Kafka topic 'intake' in etx-app-staging...
+kafkatopic.kafka.strimzi.io/intake created
+[INFO] Deploying OpenTelemetry Collector in etx-app-staging...
+opentelemetrycollector.opentelemetry.io/otel-collector created
+[INFO] Configuring OpenTelemetry auto-instrumentation for Java in etx-app-staging...
+instrumentation.opentelemetry.io/java-instrumentation created
+[INFO] Supporting services deployment initiated (will take 3-4 minutes to be fully ready)
+[STEP] Step 2: Registering runtime cluster in factory ArgoCD
+[INFO] Logging into factory cluster: https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+[INFO] Creating ArgoCD cluster secret...
+secret/cluster-staging created
+[STEP] Step 3: Validating enrollment
+[INFO] Cluster secret verified: cluster-staging
+
+\033[0;32m========================================
+Enrollment Complete
+========================================\033[0m
+
+Factory cluster:  https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+Runtime cluster:  https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+ArgoCD namespace: etx-app-dev
+Cluster name:     staging
+
+Supporting services deployed:
+- PostgreSQL (parasol-db) in etx-app-staging
+- Kafka cluster (parasol-kafka) in etx-app-staging
+- Kafka topic (intake)
+- OpenTelemetry Collector (otel-collector) in etx-app-staging
+- OpenTelemetry auto-instrumentation (java-instrumentation)
+- AMQ Streams operator
+- OpenShift Pipelines operator
+- Red Hat build of OpenTelemetry operator
+
+Next steps:
+1. Verify cluster in ArgoCD UI:
+   - Navigate to Settings > Clusters
+   - Look for 'staging' cluster
+
+2. Verify supporting services are ready:
+   oc get pods -n etx-app-staging
+   oc get kafka -n etx-app-staging
+   oc get kafkatopic -n etx-app-staging
+   oc get opentelemetrycollector -n etx-app-staging
+   oc get instrumentation -n etx-app-staging
+
+3. Create Applications targeting runtime cluster:
+   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   spec:
+     destination:
+       name: staging
+       namespace: etx-app-staging
+
+4. Test deployment to runtime cluster
+
+Documentation: https://github.com/rh-etx-app-platform/etx_app_tooling/blob/main/docs/enrollment.md
+----
+
+=== Verify Enrollment
+
+Check cluster secret exists:
+
+[source,bash,role=execute]
+----
+oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster -o json | \
+  jq -r '.items[] | .metadata.name + " - " + (.data.name | @base64d)'
+----
+
+You should see secrets for:
+
+[source,bash]
+----
+argocd-default-cluster-config - in-cluster
+cluster-staging - staging
+----
+
+You can now proceed with the promotion pipeline.
 
 == Understanding the Promotion Flow
 
@@ -70,6 +222,251 @@ The promotion workflow follows these steps:
 * **Promotion is explicit** - you decide when code is ready for staging
 * **GitOps ensures** staging deployments are version-controlled
 
+== Configure Quay for Image Promotion
+
+The promotion pipeline pushes images to Quay at `etx-app/etx-app-base-app` and reads credentials from Vault at `secret/registry/quay`.
+
+Quay authenticates interactive users through Keycloak SSO, so local `quayadmin` credentials cannot be used for automated pushes.
+You will create the organization and repository the pipeline expects, create a robot account for non-interactive authentication, and store the robot credentials in Vault.
+
+=== Create the Quay Organization and Repository
+
+. Open link:{quay_url}[Quay] or click the *Quay* tab in your Showroom
+. Sign in with Keycloak SSO using `platform-admin` or `platform-developer`  / `openshift`
+. Remove any "-" in the name to avoid syntax error and select **Confirm Username**
++
+image::valid.png[width=400]
++
+. Click btn:[Create New Organization]
++
+image::org.png[width=400]
++
+. Set the organization name to `etx_app` and click btn:[Create Organization]
++
+image::create_org.png[width=400]
++
+. Inside the `etx_app` organization, click btn:[Create New Repository]
++
+image::repo1.png[width=400]
++
+. Configure the repository:
+  * **Repository Name:** `etx-app-base-app`
+  * **Repository Visibility:** Public
+. Click btn:[Create Public Repository]
++
+image::public.png[width=500]
+
+NOTE: The organization and repository names must match the destination used later in the promotion pipeline: `etx_app/etx-app-base-app`.
+
+IMPORTANT: This Quay instance disables anonymous pulls (`FEATURE_ANONYMOUS_ACCESS: false`). Even with a public repository, the staging cluster must authenticate using an image pull secret.
+
+=== Create a Robot Account
+
+Robot accounts provide token-based credentials for CI/CD pipelines without requiring interactive SSO login.
+
+. In the `etx_app` organization, click the *Settings* gear on the left panel
++
+image::setting.png[width=500]
++
+. Under **User and Robot Permissions** click the down arrow next to the **Select a team or user...** box, click btn:[Create Robot Account]
++
+image::robot.png[width=500]
++
+. Name the robot `promoter` and click btn:[Create Robot Account]
++
+image::promoter.png[width=500]
++
+. Grant the robot *Write* permission by change the `Read` dropdown to *Write* and click btn:[Add Permission]
++
+image::write1.png[width=500]
++
+. Click the newly created robot account `etx-app+promoter`
+. When Quay displays the robot credentials, copy both values:
+  * **Username:** `etx-app+promoter`
+  * **Token:** the generated token
++
+image::token.png[width=500]
+
+=== Create Vault Secret with Robot Credentials
+
+Enable a KV secrets engine in Vault and store the robot account credentials so the promotion pipeline can authenticate to Quay.
+
+First, confirm the Quay hostname (this is the `server` value stored in Vault):
+
+[source,bash,role=execute]
+----
+oc get route -n quay -l quay-component=quay-app-route -o jsonpath='{.items[0].spec.host}' && echo
+----
+
+Next, get the Vault root token:
+
+[source,bash,role=execute]
+----
+oc get secret etx-vault-bootstrap -n vault -o jsonpath='{.data.root-token}' | base64 -d && echo
+----
+
+==== Enable the KV Secrets Engine
+
+. Open link:{vault_url}[Vault] or click the *Vault* tab in your Showroom
+. Log in with the *Token* method using the token above
+. From the Dashboard click *secret/* under the *Secret engines*
+. From the `secret/` secrets engine, click btn:[Create secret]
+. Set the path to `registry/quay`
+. Add the following secret data:
+  * **server:** the Quay hostname from the command above (no `https://` prefix)
+  * **username:** `etx-app+promoter`
+  * **password:** the robot token you copied earlier
+. Click btn:[Save]
+
+The promotion pipeline tasks you create next will fetch these credentials at runtime via Kubernetes auth to Vault.
+
+== Multi-Cluster Promotion to Stage
+
+=== Create Stage Environment Manifests
+
+Create stage environment manifests in your GitOps repository:
+
+[source,bash,role=execute]
+----
+cd ~/workshop/etx-app-gitops
+mkdir -p environments/stage
+----
+
+Copy the dev manifests as a template:
+
+[source,bash,role=execute]
+----
+cp environments/dev/*.yaml environments/stage/
+----
+
+Update `environments/stage/deployment.yaml` to use the `etx-app-staging` namespace and Quay registry.
+
+First, get the Quay URL:
+
+[source,bash,role=execute]
+----
+# Get Quay URL dynamically
+QUAY_URL=$(oc get route -n quay -l quay-component=quay-app-route -o jsonpath='{.items[0].spec.host}')
+echo "Using Quay URL: $QUAY_URL"
+----
+
+==== Create Quay Image Pull Secret on Staging
+
+The staging cluster must authenticate to Quay when pulling images.
+Create a docker-registry secret in `etx-app-staging` on the *runtime* cluster using the robot account credentials.
+
+Login to the runtime cluster (credentials from RHDP):
+
+[source,bash,role=execute]
+----
+oc login $RUNTIME_API \
+  -u $RUNTIME_USER -p $RUNTIME_PASSWORD --insecure-skip-tls-verify
+----
+
+Replace `$ROBOT_TOKEN` with the `etx-app+promoter` token:
+
+[source,bash,role=execute]
+----
+oc create secret docker-registry quay-pull-secret \
+  -n etx-app-staging \
+  --docker-server=$QUAY_URL \
+  --docker-username='etx-app+promoter' \
+  --docker-password=$ROBOT_TOKEN
+----
+
+Switch back to the factory cluster before continuing with the GitOps manifests:
+
+[source,bash,role=execute]
+----
+oc login $FACTORY_API -u $FACTORY_USER -p $FACTORY_PASSWORD --insecure-skip-tls-verify
+----
+
+==== Create Application Deployment Manifest
+
+[source,bash,role=execute]
+----
+cat > environments/stage/deployment.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etx-app-base-app
+  namespace: etx-app-staging
+  labels:
+    app: etx-app-base-app
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: etx-app-base-app
+  template:
+    metadata:
+      labels:
+        app: etx-app-base-app
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      imagePullSecrets:
+        - name: quay-pull-secret
+      containers:
+        - name: etx-app-base-app
+          image: ${QUAY_URL}/etx-app/etx-app-base-app:stable
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          env:
+            - name: POSTGRESQL_HOST
+              value: "parasol-db.etx-app-staging.svc.cluster.local"
+            - name: POSTGRESQL_DATABASE
+              value: "parasol"
+            - name: POSTGRESQL_USER
+              value: "parasol"
+            - name: POSTGRESQL_PASSWORD
+              value: "parasol"
+            - name: QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION
+              value: update
+EOF
+----
+
+Key differences from dev:
+
+* **Namespace**: `etx-app-staging` instead of `etx-app-dev`
+* **Replicas**: Increased to 2 for higher availability
+* **Image**: Uses Quay registry for cross-cluster image distribution instead of internal registry
+* **imagePullSecrets**: References `quay-pull-secret` so the staging cluster can authenticate to Quay
+
+Update `environments/stage/service.yaml` and `environments/stage/route.yaml` to use the `etx-app-staging` namespace:
+
+[source,bash,role=execute]
+----
+sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' \
+  environments/stage/service.yaml \
+  environments/stage/route.yaml
+----
+
+Verify the changes:
+
+[source,bash,role=execute]
+----
+grep namespace environments/stage/*.yaml
+----
+
+Commit and push:
+
+[source,bash,role=execute]
+----
+git add environments/stage/
+git commit -m "feat: add stage environment manifests"
+git push origin main
+----
+
 == Create Promotion Pipeline Resources
 
 === Pipeline Workspace
@@ -95,7 +492,7 @@ EOF
 
 === Fetch Quay Credentials from Vault
 
-Create a task to retrieve Quay credentials from Vault:
+Create a task to retrieve the Quay robot credentials you stored in Vault:
 
 [source,bash,role=execute,subs="attributes+"]
 ----
@@ -117,8 +514,8 @@ spec:
         #!/bin/sh
         set -e
 
-        # Install curl and jq
-        microdnf install -y curl jq && microdnf clean all
+        # Install jq
+        microdnf install -y jq && microdnf clean all
 
         # Authenticate to Vault using ServiceAccount token
         VAULT_ADDR="{vault_url}"
@@ -177,10 +574,15 @@ spec:
         echo "Source: $(params.source-image)"
         echo "Destination: $(params.dest-image)"
 
+        # Authenticate to the OpenShift internal registry with the
+        # pipeline ServiceAccount token (destination uses Quay robot creds)
+        SRC_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
         # Copy image using skopeo
         skopeo copy \
           --src-tls-verify=false \
           --dest-tls-verify=false \
+          --src-creds="pipeline:${SRC_TOKEN}" \
           --dest-creds="$(params.dest-username):$(params.dest-password)" \
           "docker://$(params.source-image)" \
           "docker://$(params.dest-image)"
@@ -226,22 +628,30 @@ spec:
         # Install git
         dnf install -y git && dnf clean all
 
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
         # Clone GitOps repo
-        git clone $(params.gitops-repo-url) /workspace/gitops
+        git clone "$REPO_URL" /workspace/gitops
         cd /workspace/gitops
 
         # Update the image in staging deployment
         sed -i "s|image:.*etx-app-base-app:.*|image: $(params.image-url)|" \
           environments/stage/deployment.yaml
 
-        # Commit and push
+        # Commit and push only when the image reference changed
         git config user.email "$(params.git-email)"
         git config user.name "$(params.git-username)"
         git add environments/stage/deployment.yaml
-        git commit -m "Promote to staging: $(params.image-url)"
-        git push origin main
-
-        echo "GitOps repository updated successfully!"
+        if git diff --cached --quiet; then
+          echo "No changes to commit - staging already references $(params.image-url)"
+        else
+          git commit -m "Promote to staging: $(params.image-url)"
+          git push origin main
+          echo "GitOps repository updated successfully!"
+        fi
 EOF
 ----
 
@@ -303,13 +713,6 @@ spec:
         - name: source
           workspace: shared-workspace
 EOF
-----
-
-Apply the pipeline:
-
-[source,bash,role=execute]
-----
-oc apply -f etx-app-promotion-pipeline.yaml
 ----
 
 == Test the Promotion Pipeline
@@ -380,6 +783,121 @@ Watch the pipeline logs. You should see:
 1. Vault credentials retrieved
 2. Image copied from internal registry to Quay
 3. GitOps repository updated
+
+=== Create Stage Application
+
+Create an Argo CD Application for the staging environment on the secondary cluster.
+
+First, get the GitLab URL:
+
+[source,bash,role=execute]
+----
+# Get GitLab URL
+GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+echo "Using GitLab URL: $GITLAB_URL"
+----
+
+Then create the Application:
+
+[source,bash,role=execute]
+----
+oc apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: etx-app-stage
+  namespace: etx-app-dev
+  labels:
+    app.kubernetes.io/part-of: etx_app_base_app
+spec:
+  project: default
+  source:
+    repoURL: ${GITLAB_URL}/software-factory/etx-app-gitops.git
+    targetRevision: main
+    path: environments/stage
+  destination:
+    name: staging
+    namespace: etx-app-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+EOF
+----
+
+NOTE: The staging cluster destination points to the secondary cluster that was pre-configured by the bootstrap automation.
+
+=== Verify Stage Deployment
+
+Check the stage application status:
+
+[source,bash,role=execute]
+----
+oc get application etx-app-stage -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}{"\n"}'
+----
+
+The output should be `Synced`.
+
+View the application in Argo CD UI:
+
+. Open the Argo CD dashboard
+. You should see two applications:
+  * `etx-app-dev` - Running on primary cluster
+  * `etx-app-stage` - Running on secondary (staging) cluster
+. Click on `etx-app-stage` to view its deployment status
+
+NOTE: Since Argo CD is managing the staging cluster remotely, you can view the application status through the Argo CD UI without needing to login to the secondary cluster directly.
+
+== Promotion Workflow Overview
+
+The promotion workflow from dev to staging follows these steps:
+
+. CI pipeline builds and pushes image to internal registry with commit SHA tag
+. Image is promoted to Quay registry with a `stable` tag (covered in xref:day2-lab1-promotion.adoc[Promotion Pipeline])
+. GitOps repository `environments/stage/deployment.yaml` is updated with new image tag
+. Argo CD detects the change and automatically syncs to the secondary cluster
+
+This GitOps approach ensures:
+
+* **Version control** - All deployment changes are tracked in Git
+* **Auditability** - Full history of what was deployed when
+* **Rollback capability** - Revert to previous commit to rollback
+* **Multi-cluster consistency** - Same manifests can deploy to multiple clusters
+
+== Quick Verification
+
+Verify the complete deployment:
+
+[source,bash,role=execute]
+----
+# Check Argo CD application status
+oc get application etx-app-dev -n etx-app-dev -o jsonpath='{.status.sync.status}: {.status.health.status}{"\n"}'
+
+# Check application pods
+oc get pods -n etx-app-dev -l app=etx-app-base-app
+
+# Check application health endpoint
+curl https://$(oc get route etx-app-base-app -n etx-app-dev -o jsonpath='{.spec.host}')/q/health
+
+# Check OpenTelemetry injection
+oc get pod -n etx-app-dev -l app=etx-app-base-app \
+  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'
+----
+
+Expected output should show: `Synced: Healthy` for Argo CD, `Running` pods, and `opentelemetry-auto-instrumentation` init container.
+
+[TIP]
+====
+**Common Issues:**
+
+* **ImagePullBackOff:** Image not in registry - run CI pipeline first
+* **CrashLoopBackOff:** Check pod logs - often missing Kafka or DB connection
+* **Argo CD Out of Sync:** Click "Sync" in Argo CD UI or check GitOps repo for errors
+* **Health check failing:** Verify all dependencies (DB, Kafka) are running
+====
 
 === Verify the Promotion
 
@@ -541,7 +1059,3 @@ You have completed the Promotion Pipeline exercise. You now have:
 * Dev uses internal registry (fast, local)
 * Staging uses Quay (cross-cluster accessible)
 * Argo CD manages both from single control plane
-
-== Next Steps
-
-Proceed to xref:day2-lab2-mta.adoc[Lab 2: Application Modernization (MTA)] to learn how to modernize legacy Java applications.

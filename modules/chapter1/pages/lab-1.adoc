@@ -1,0 +1,54 @@
+= Lab 1: 
+
+== Accessing GitLab with Keycloak
+
+. Open {gitlab_url}[^]
+. Click btn:[ETX Lab SSO]
+. You will be redirected to Keycloak
+. Log in with one of the provided users (e.g., `platform-developer` / `openshift`)
+. You will be redirected back to GitLab and logged in
+
+The first time you log in, GitLab will create a user profile linked to your Keycloak identity.
+
+== Clone Your Repository
+
+Once logged into GitLab, clone the ETX App Base application.
+
+TIP: Use the **OpenShift Web Terminal** for these commands. Access it by clicking the command prompt icon (>_) in the top-right corner of the OpenShift Console.
+
+First, get the GitLab URL dynamically:
+
+[source,bash,role=execute]
+----
+# Get GitLab URL
+GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+echo "GitLab URL: $GITLAB_URL"
+----
+
+Then clone the repository:
+
+[source,bash,role=execute]
+----
+mkdir -p ~/workshop
+cd ~/workshop
+git clone ${GITLAB_URL}/software-factory/etx_app_base_app.git
+cd etx_app_base_app
+----
+
+
+NOTE: The repository name is `etx_app_base_app` and Kubernetes resources will be named `etx-app-base-app-*` for consistency.
+
+IMPORTANT: The repository does NOT include a `devfile.yaml`. You will create this file manually in the next lab step (xref:day2-lab1-devspaces.adoc[Dev Spaces Setup]).
+
+== Verify Cluster Access
+
+Confirm you're logged into the primary cluster:
+
+[source,bash,role=execute,subs="attributes+"]
+----
+oc whoami --show-server
+# Should show: {openshift_api_url}
+
+oc project etx-app-dev
+# Should switch to: etx-app-dev namespace
+----
