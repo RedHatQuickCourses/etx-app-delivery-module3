@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab: Environment Overview :: Software Factory and CI/CD</title>
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="lab-env-overview.html">Environment Overview</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab: Environment Overview</h1>
+<div class="sect1">
+<h2 id="_pre_deployed_infrastructure"><a class="anchor" href="#_pre_deployed_infrastructure"></a>Pre-Deployed Infrastructure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following services are already installed and configured:</p>
+</div>
+<div class="sect2">
+<h3 id="_red_hat_build_of_keycloak_rhbk"><a class="anchor" href="#_red_hat_build_of_keycloak_rhbk"></a>Red Hat Build of Keycloak (RHBK)</h3>
+<div class="paragraph">
+<p>Centralized SSO/OIDC provider for GitLab, Quay, and other services.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>URL:</strong> {keycloak_url}[^]</p>
+</li>
+<li>
+<p><strong>Realm:</strong> <code>etx-lab</code></p>
+</li>
+<li>
+<p><strong>Available Users:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>platform-admin</code> / <code>openshift</code> (administrator access)</p>
+</li>
+<li>
+<p><code>platform-user</code> / <code>openshift</code> (standard user)</p>
+</li>
+<li>
+<p><code>platform-developer</code> / <code>openshift</code> (developer user)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Use these credentials to log into GitLab and Quay via the OIDC/OAuth buttons.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gitlab_ce"><a class="anchor" href="#_gitlab_ce"></a>GitLab CE</h3>
+<div class="paragraph">
+<p>Source control and Git repository hosting.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>URL:</strong> {gitlab_url}[^]</p>
+</li>
+<li>
+<p><strong>Authentication:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Keycloak OIDC (click "ETX Lab SSO") - Use Keycloak users for regular development</p>
+</li>
+<li>
+<p>Standard login - Use <code>root</code> user for GitLab administration</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Root Admin:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Username: <code>root</code></p>
+</li>
+<li>
+<p>Password: Retrieve with <code>oc get secret -n gitlab gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' | base64 -d</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Seeded Repositories:</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>software-factory/etx_app_base_app</code> - Your application workspace (read/write)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>root</code> user has GitLab administrator privileges. Keycloak users (<code>platform-admin</code>, <code>platform-developer</code>) authenticate via SSO but do not have GitLab admin rights by default.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_quay_container_registry"><a class="anchor" href="#_quay_container_registry"></a>Quay Container Registry</h3>
+<div class="paragraph">
+<p>Enterprise container registry for storing and distributing images.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>URL:</strong> {quay_url}[^]</p>
+</li>
+<li>
+<p><strong>Authentication:</strong> Keycloak OIDC or local account</p>
+</li>
+<li>
+<p><strong>Purpose:</strong> External image registry for production-grade workflows</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For this lab, you&#8217;ll primarily use the OpenShift internal registry. Quay is available for multi-cluster promotion scenarios.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_openshift_gitops_argo_cd"><a class="anchor" href="#_openshift_gitops_argo_cd"></a>OpenShift GitOps (Argo CD)</h3>
+<div class="paragraph">
+<p>Two GitOps control planes are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>OpenShift GitOps bootstrap plane</strong> (<code>openshift-gitops</code> namespace)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Manages platform infrastructure (GitLab, Keycloak, Quay, Vault)</p>
+</li>
+<li>
+<p>Read-only for students</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Dedicated ETX GitOps admin plane</strong> (<code>etx-gitops</code> namespace)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Control plane for the ETX workshop installation</p>
+</li>
+<li>
+<p>Repository: <code>etx-gitops</code> - Contains infrastructure and application manifests</p>
+</li>
+<li>
+<p>Can be used for user applications eventually</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+In Lab 1 Step 5, you will deploy your <strong>own</strong> Red Hat OpenShift GitOps instance to complete the lab.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_multi_cluster_setup"><a class="anchor" href="#_multi_cluster_setup"></a>Multi-Cluster Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Two OpenShift clusters are available for application promotion:</p>
+</div>
+<div class="sect2">
+<h3 id="_primary_cluster_development"><a class="anchor" href="#_primary_cluster_development"></a>Primary Cluster (Development)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>API:</strong> {openshift_api_url}[^]</p>
+</li>
+<li>
+<p><strong>Console:</strong> {openshift_console_url}[^]</p>
+</li>
+<li>
+<p><strong>Apps Domain:</strong> <code>*.{openshift_cluster_ingress_domain}</code></p>
+</li>
+<li>
+<p><strong>Admin User:</strong> <code>{user}</code></p>
+</li>
+<li>
+<p><strong>Admin Password:</strong> <code>{password}</code></p>
+</li>
+<li>
+<p><strong>Your Namespace:</strong> <code>etx-app-dev</code> (pre-created)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_secondary_cluster_stagingproduction"><a class="anchor" href="#_secondary_cluster_stagingproduction"></a>Secondary Cluster (Staging/Production)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>API:</strong> <a href="https://api.cluster-{guid2}.{workshop_base_domain}:6443" class="bare" target="_blank" rel="noopener">https://api.cluster-{guid2}.{workshop_base_domain}:6443</a></p>
+</li>
+<li>
+<p><strong>Console:</strong> <a href="https://console-openshift-console.apps.cluster-{guid2}.{workshop_base_domain}" class="bare" target="_blank" rel="noopener">https://console-openshift-console.apps.cluster-{guid2}.{workshop_base_domain}</a></p>
+</li>
+<li>
+<p><strong>Apps Domain:</strong> <code>*.apps.cluster-{guid2}.{workshop_base_domain}</code></p>
+</li>
+<li>
+<p><strong>Admin User:</strong> <code>{user}</code></p>
+</li>
+<li>
+<p><strong>Admin Password:</strong> <code>{password}</code></p>
+</li>
+<li>
+<p><strong>Namespaces:</strong> <code>etx-app-staging</code>, <code>etx-app-prod</code> (pre-created)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You will configure multi-cluster promotion in the final section of this lab.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_you_will_deploy"><a class="anchor" href="#_what_you_will_deploy"></a>What You Will Deploy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As part of this hands-on lab, you will install and configure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>PostgreSQL Database</strong> - Application data persistence using Red Hat certified image</p>
+</li>
+<li>
+<p><strong>AMQ Streams (Kafka)</strong> - Messaging infrastructure for application services</p>
+</li>
+<li>
+<p><strong>OpenShift Pipelines (Tekton)</strong> - Cloud-native CI/CD engine</p>
+</li>
+<li>
+<p><strong>OpenTelemetry Operator</strong> - Distributed tracing and observability</p>
+</li>
+<li>
+<p><strong>Red Hat OpenShift Dev Spaces</strong> - Cloud IDE with VS Code in the browser</p>
+</li>
+<li>
+<p><strong>Argo CD (student instance)</strong> - GitOps continuous deployment</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+HashiCorp Vault is pre-deployed as part of the infrastructure bootstrap and does not require student installation. Supporting services (PostgreSQL and Kafka) are deployed first so Dev Spaces workspaces can connect to them.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_workflow"><a class="anchor" href="#_lab_workflow"></a>Lab Workflow</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">Lab 1 Step 1: Environment Overview (this page)
+      ↓
+Lab 1 Step 2: Deploy supporting services (PostgreSQL, Kafka, Tekton, OpenTelemetry)
+      ↓
+Lab 1 Step 3: Deploy and configure Dev Spaces
+      ↓
+Lab 1 Step 4: Create CI pipeline with Tekton
+      ↓
+Lab 1 Step 5: Deploy Argo CD for application delivery
+      ↓
+Lab 1 Step 6: Configure multi-cluster promotion</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Supporting services (PostgreSQL and Kafka) must be deployed BEFORE setting up Dev Spaces, as your application workspace will connect to these external services instead of using local containers.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

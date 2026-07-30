@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Version Control &amp; Collaborative Development :: Software Factory and CI/CD</title>
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="section3.html">Version Control</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Version Control &amp; Collaborative Development</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lesson, you&#8217;ll learn why version control is a foundational capability of a modern Application Platform and how it enables collaborative software development, CI/CD, and GitOps.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you&#8217;re already comfortable using Git and branching strategies, feel free to skim this lesson and continue to the hands-on lab. The concepts introduced here provide useful context for the Software Factory you&#8217;ll build throughout this course.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_connecting_the_dots"><a class="anchor" href="#_connecting_the_dots"></a>Connecting the Dots</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once developers write code, they need a reliable way to share changes, review code, maintain version history, and trigger automated software delivery workflows.</p>
+</div>
+<div class="paragraph">
+<p>This is where <strong>Git</strong> becomes an essential part of the Software Factory.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*S4VJPf8Mrg3Gn5cR7JK62w.png" alt="GitHub Flow" width="400">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Throughout this learning path, Git serves as the source of truth for your application code. Every code change committed to Git can automatically trigger builds, tests, deployments, and GitOps workflows.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_why_version_control_matters"><a class="anchor" href="#_why_version_control_matters"></a>Why Version Control Matters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Modern applications are rarely developed by a single developer.</p>
+</div>
+<div class="paragraph">
+<p>Multiple developers often work on the same application simultaneously, making it essential to track changes, collaborate safely, and maintain a complete history of the application.</p>
+</div>
+<div class="paragraph">
+<p>Version control systems such as <strong>Git</strong> make this possible by recording every change made to the source code.</p>
+</div>
+<div class="paragraph">
+<p>Instead of storing only the latest version of an application, Git maintains a complete history that allows teams to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Collaborate without overwriting each other&#8217;s work</p>
+</li>
+<li>
+<p>Track who made changes and when</p>
+</li>
+<li>
+<p>Review code before it is merged</p>
+</li>
+<li>
+<p>Restore previous versions when necessary</p>
+</li>
+<li>
+<p>Develop features independently</p>
+</li>
+<li>
+<p>Trigger automated software delivery pipelines</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaway</div>
+<div class="paragraph">
+<p>Git is much more than a code repository. It provides the collaboration and version history that modern Application Platforms rely on to automate software delivery.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_understanding_branches"><a class="anchor" href="#_understanding_branches"></a>Understanding Branches</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A <strong>branch</strong> represents an isolated line of development.</p>
+</div>
+<div class="paragraph">
+<p>Rather than making changes directly to the main codebase, developers create a separate branch where they can safely implement new features, fix defects, or experiment with ideas.</p>
+</div>
+<div class="paragraph">
+<p>Once the work has been reviewed and validated, the branch is merged back into the main branch.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://nvie.com/img/git-model@2x.png" alt="GitFlow" width="400">
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Throughout the hands-on labs, you&#8217;ll create feature branches, commit changes, and merge them into the main branch to trigger automated Software Factory workflows.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_common_branching_strategies"><a class="anchor" href="#_common_branching_strategies"></a>Common Branching Strategies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Different organizations adopt different branching models depending on their release process, team size, and deployment frequency.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Branching Strategy</th>
+<th class="tableblock halign-left valign-top">Characteristics</th>
+<th class="tableblock halign-left valign-top">Common Use Cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://trunkbaseddevelopment.com/" target="_blank" rel="noopener">Trunk-Based Development</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Developers create short-lived branches and merge changes into the main branch frequently.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Continuous Integration and Continuous Delivery</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GitHub Flow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature branches combined with Pull or Merge Requests before merging into the main branch.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cloud-native applications and open source projects</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GitFlow</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiple long-lived branches for development, releases, and hotfixes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Traditional enterprise applications with scheduled releases</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_branching_strategy_used_in_this_course"><a class="anchor" href="#_branching_strategy_used_in_this_course"></a>Branching Strategy Used in This Course</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Throughout this learning path, you&#8217;ll use a simplified <a href="https://trunkbaseddevelopment.com/" target="_blank" rel="noopener">Trunk-Based Development</a> workflow.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://trunkbaseddevelopment.com/trunk1b.png" alt="Trunk-Based Development" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>This approach keeps the focus on learning Application Platform concepts rather than Git administration.</p>
+</div>
+<div class="paragraph">
+<p>The workflow you&#8217;ll follow is:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a feature branch</p>
+</li>
+<li>
+<p>Make code changes</p>
+</li>
+<li>
+<p>Commit your changes</p>
+</li>
+<li>
+<p>Push the branch to Git</p>
+</li>
+<li>
+<p>Merge the branch into the main branch</p>
+</li>
+<li>
+<p>Automatically trigger the Software Factory</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You&#8217;ll practice this workflow during the upcoming hands-on lab, where each Git commit becomes the starting point for automated build and deployment pipelines.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">Key Takeaway</div>
+<div class="paragraph">
+<p>In a modern Software Factory, <strong>Git is often the event that starts the entire software delivery process</strong>. A single commit can automatically trigger builds, testing, security validation, deployments, and GitOps synchronization.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reflection"><a class="anchor" href="#_reflection"></a>Reflection</h2>
+<div class="sectionbody">
+<details>
+<summary class="title">Think about your own organization (Click to expand)</summary>
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Which version control system does your organization use?</p>
+</li>
+<li>
+<p>Which branching strategy is followed by your team?</p>
+</li>
+<li>
+<p>Are code changes automatically validated through CI/CD?</p>
+</li>
+<li>
+<p>How frequently are changes merged into the main branch?</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_check_your_understanding"><a class="anchor" href="#_check_your_understanding"></a>Check Your Understanding</h2>
+<div class="sectionbody">
+<details>
+<summary class="title">Quiz Time! (Click to expand)</summary>
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Why do developers create feature branches?</p>
+<div class="olist upperalpha">
+<ol class="upperalpha" type="A">
+<li>
+<p>To replace the main branch<br></p>
+</li>
+<li>
+<p>To isolate changes before merging them into the shared codebase<br></p>
+</li>
+<li>
+<p>To improve Kubernetes performance<br></p>
+</li>
+<li>
+<p>To avoid using version control</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Answer</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>B</strong> — Feature branches allow developers to work independently without affecting the shared codebase until their changes are reviewed and merged.</p>
+</div>
+<hr>
+<div class="ulist">
+<ul>
+<li>
+<p>Which branching strategy is primarily used throughout this learning path?</p>
+<div class="olist upperalpha">
+<ol class="upperalpha" type="A">
+<li>
+<p>GitFlow<br></p>
+</li>
+<li>
+<p>GitHub Flow<br></p>
+</li>
+<li>
+<p>Trunk-Based Development<br></p>
+</li>
+<li>
+<p>No branching</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Answer</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>C</strong> — This course follows a simplified Trunk-Based Development approach with short-lived feature branches and frequent integration.</p>
+</div>
+<hr>
+<div class="ulist">
+<ul>
+<li>
+<p>Which Application Platform capabilities commonly begin with a Git commit?</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Capability</th>
+<th class="tableblock halign-left valign-top">Starts from Git?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CI/CD Pipeline</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GitOps Deployment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Security Scanning</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application Build</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Monitoring Existing Applications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

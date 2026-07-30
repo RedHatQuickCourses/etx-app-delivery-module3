@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab 2: Application Deployment with Argo CD :: Software Factory and CI/CD</title>
-    <link rel="prev" href="day2-lab1-supporting-services.html">
+    <title>Lab 1: Application Deployment with Argo CD :: Software Factory and CI/CD</title>
+    <link rel="prev" href="day2-lab1-ci-pipeline.html">
     <link rel="next" href="day2-lab1-promotion.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -44,7 +44,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../index.html">Software Factory and CI/CD</a>
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
   </li>
 </ul>
   </li>
@@ -58,22 +58,16 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Software Factory Overview</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-supporting-services.html">Lab 1</a>
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="day2-lab1-app-deployment.html">Lab 2</a>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-promotion.html">Lab 3</a>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-ci-pipeline.html">Lab 4</a>
-  </li>
-</ul>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
   </li>
 </ul>
   </li>
@@ -106,8 +100,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
-    <li><a href="index.html">Software Factory Overview</a></li>
-    <li><a href="day2-lab1-app-deployment.html">Lab 2</a></li>
+    <li><a href="day2-lab1-app-deployment.html">Application Deployment</a></li>
   </ul>
 </nav>
 </div>
@@ -116,7 +109,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab 2: Application Deployment with Argo CD</h1>
+<h1 class="page">Lab 1: Application Deployment with Argo CD</h1>
 <div class="sect1">
 <h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
@@ -172,7 +165,7 @@ Verify it&#8217;s available:</p>
 KEYCLOAK_URL="https://etx-sso.apps.$(oc get route -n keycloak -o jsonpath='{.items[0].spec.host}' | sed 's/sso\.apps\.//')"
 
 # Use the shared argocd client secret from etx-gitops
-CLIENT_SECRET="abJIhC36Q7DPscCUNNu27QKSdF9euOpIr16e7VvM"
+CLIENT_SECRET="changeme"
 
 oc create secret generic argocd-oidc-secret -n etx-app-dev \
   --from-literal=clientSecret=${CLIENT_SECRET}
@@ -377,6 +370,11 @@ The ArgoCD CR includes <code>extraConfig</code> with OIDC configuration for ETX 
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route argocd-server -n etx-app-dev</code></pre>
 </div>
 </div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/argo.png" alt="argo" width="500">
+</div>
+</div>
 <div class="paragraph">
 <p>If the route doesn&#8217;t exist, create it manually:</p>
 </div>
@@ -413,7 +411,12 @@ The ArgoCD CR includes <code>extraConfig</code> with OIDC configuration for ETX 
 <p>Open the Argo CD URL in your browser</p>
 </li>
 <li>
-<p>You&#8217;ll be automatically redirected to ETX Keycloak login page</p>
+<p>Select the <strong>ETX Keycloak login</strong> option</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/argocd.png" alt="argocd" width="500">
+</div>
+</div>
 </li>
 <li>
 <p>Log in with your ETX credentials:</p>
@@ -556,7 +559,7 @@ This repository holds the Kubernetes manifests that Argo CD will sync:</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Log into GitLab (get the URL first):</p>
+<p>Navigate to your openshfit console terminal and log into GitLab (get the URL first):</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get GitLab URL
@@ -567,6 +570,19 @@ echo "GitLab URL: $GITLAB_URL"</code></pre>
 </li>
 <li>
 <p>Create a new project: <strong>etx-app-gitops</strong> in the software-factory group</p>
+<div class="paragraph">
+<p><span class="image"><img src="_images/new.png" alt="new" width="400"></span></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/create.png" alt="create" width="400">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/infos.png" alt="infos" width="600">
+</div>
+</div>
 </li>
 <li>
 <p>Clone it locally:</p>
@@ -661,7 +677,7 @@ EOF</code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Enables OpenTelemetry auto-instrumentation. The Instrumentation CR created in the <a href="day2-lab1-supporting-services.html" class="xref page">Supporting Services</a> section will inject the Java agent automatically.</td>
+<td>Enables OpenTelemetry auto-instrumentation. The Instrumentation CR created in the <a href="#day2-lab1-supporting-services.adoc" class="xref unresolved">Supporting Services</a> section will inject the Java agent automatically.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -716,7 +732,13 @@ EOF</code></pre>
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git add environments/dev/
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git config --global user.email "platform-developer@example.com"
+git config --global user.name "Platform Developer"
+GITLAB_ROOT_PASSWORD=$(oc get secret -n gitlab gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' | base64 -d)
+echo "Root Password: $GITLAB_ROOT_PASSWORD"
+echo "Root Username: root"
+
+git add environments/dev/
 git commit -m "feat: add dev environment manifests"
 git push origin main</code></pre>
 </div>
@@ -810,6 +832,20 @@ oc get application etx-app-dev -n etx-app-dev \
 <p>The output should be <code>Synced</code>.</p>
 </div>
 <div class="paragraph">
+<p>You can even navigate to argocd server and check the status of application</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Argo CD console URL
+oc get route argocd-server -n etx-app-dev -o jsonpath='{.spec.host}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/sync.png" alt="sync" width="400">
+</div>
+</div>
+<div class="paragraph">
 <p>Verify the application is running:</p>
 </div>
 <div class="listingblock execute">
@@ -820,6 +856,19 @@ oc get route etx-app-base-app -n etx-app-dev -o jsonpath='{.spec.host}{"\n"}'</c
 </div>
 <div class="paragraph">
 <p>Open the route URL in your browser to confirm the application is accessible.</p>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="app" alt="app" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on the application to view more details</p>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="app_deploy" alt="app deploy" width="500">
+</div>
 </div>
 </div>
 </div>
@@ -887,7 +936,12 @@ spec:
         # Install git
         dnf install -y git &amp;&amp; dnf clean all
 
-        git clone $(params.gitops-repo-url) /tmp/gitops
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
+        git clone "$REPO_URL" /tmp/gitops
         cd /tmp/gitops/environments/$(params.environment)
 
         # Update the image tag in the deployment manifest
@@ -905,7 +959,7 @@ EOF</code></pre>
 <p>Update the pipeline to include this task at the end.</p>
 </div>
 <div class="paragraph">
-<p>Add the <code>update-gitops</code> task to the pipeline spec. Get the GitLab URL first, then update the pipeline:</p>
+<p>Get the GitLab URL first, then update the pipeline:</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
@@ -916,24 +970,35 @@ GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.it
 </div>
 </div>
 <div class="paragraph">
-<p>Example task definition to add:</p>
+<p>Add the <code>update-gitops</code> task to the pipeline spec.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    - name: update-gitops
-      runAfter: [build-image]
-      taskRef:
-        name: update-gitops-repo
-      params:
-        - name: gitops-repo-url
-          value: ${GITLAB_URL}/software-factory/etx-app-gitops.git
-        - name: image-tag
-          value: $(params.git-revision)
-        - name: environment
-          value: dev
-      workspaces:
-        - name: source
-          workspace: shared-workspace</code></pre>
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oc edit pipeline etx-app-base-app-ci -n etx-app-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Task definition to add, please note that it is suppose to be added under <strong>tasks</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  tasks:
+  - name: update-gitops
+    params:
+    - name: gitops-repo-url
+      value: SUBSTITUTE-GITLAB-URL-HERE/software-factory/etx-app-gitops.git
+    - name: image-tag
+      value: $(params.git-revision)
+    - name: environment
+      value: dev
+    runAfter:
+    - build-image
+    taskRef:
+      kind: Task
+      name: update-gitops-repo
+    workspaces:
+    - name: source
+      workspace: shared-workspace</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -950,455 +1015,6 @@ Use shell variable expansion <code>${GITLAB_URL}</code> when creating the pipeli
 </div>
 <div class="paragraph">
 <p>When the pipeline pushes the updated manifest, Argo CD detects the change and automatically syncs the new image to the cluster.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_multi_cluster_promotion_to_stage"><a class="anchor" href="#_multi_cluster_promotion_to_stage"></a>Multi-Cluster Promotion to Stage</h2>
-<div class="sectionbody">
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The secondary cluster for staging has been pre-configured as part of the bootstrap process. Argo CD already has the necessary credentials to deploy to the staging cluster.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_verify_secondary_cluster_configuration"><a class="anchor" href="#_verify_secondary_cluster_configuration"></a>Verify Secondary Cluster Configuration</h3>
-<div class="paragraph">
-<p>Check that Argo CD can see the secondary cluster.</p>
-</div>
-<div class="paragraph">
-<p><strong>Option 1: Using oc commands</strong> (Recommended)</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># List cluster secrets in Argo CD
-oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster
-
-# View cluster details
-oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster -o json | \
-  jq -r '.items[] | .metadata.name + " - " + (.data.name | @base64d)'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You should see secrets for:
-- In-cluster (local/primary cluster)
-- Secondary staging cluster (pre-configured by bootstrap)</p>
-</div>
-<div class="paragraph">
-<p><strong>Option 2: Using argocd CLI</strong></p>
-</div>
-<div class="paragraph">
-<p>If you have the argocd CLI installed:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Login to Argo CD
-argocd login $(oc get route argocd-server -n etx-app-dev -o jsonpath='{.spec.host}') \
-  --insecure --username admin \
-  --password $(oc get secret argocd-cluster -n etx-app-dev -o jsonpath='{.data.admin\.password}' | base64 -d)
-
-# List clusters
-argocd cluster list</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You should see two clusters:
-- <code><a href="https://kubernetes.default.svc" class="bare">https://kubernetes.default.svc</a></code> (local/primary cluster)
-- Secondary staging cluster (pre-configured by bootstrap)</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The bootstrap automation created the necessary ServiceAccount on the staging cluster and added it to Argo CD. For details on this configuration, see <a href="https://github.com/rh-etx-app-platform/etx_app_platform_bootstrap/issues/8" class="bare">https://github.com/rh-etx-app-platform/etx_app_platform_bootstrap/issues/8</a>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_create_stage_environment_manifests"><a class="anchor" href="#_create_stage_environment_manifests"></a>Create Stage Environment Manifests</h3>
-<div class="paragraph">
-<p>Create stage environment manifests in your GitOps repository:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ~/workshop/etx-app-gitops
-mkdir -p environments/stage</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Copy the dev manifests as a template:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cp environments/dev/*.yaml environments/stage/</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Update <code>environments/stage/namespace.yaml</code>:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &gt; environments/stage/namespace.yaml &lt;&lt;'EOF'
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: etx-app-staging
-EOF</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Update <code>environments/stage/deployment.yaml</code> to use the <code>etx-app-staging</code> namespace and Quay registry.</p>
-</div>
-<div class="paragraph">
-<p>First, get the Quay URL:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get Quay URL dynamically
-QUAY_URL=$(oc get route -n quay -l app=quay -o jsonpath='{.items[0].spec.host}')
-echo "Using Quay URL: $QUAY_URL"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then create the deployment manifest:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &gt; environments/stage/deployment.yaml &lt;&lt;EOF
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: etx-app-base-app
-  namespace: etx-app-staging
-  labels:
-    app: etx-app-base-app
-  annotations:
-    instrumentation.opentelemetry.io/inject-java: "true"
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: etx-app-base-app
-  template:
-    metadata:
-      labels:
-        app: etx-app-base-app
-      annotations:
-        instrumentation.opentelemetry.io/inject-java: "true"
-    spec:
-      containers:
-        - name: etx-app-base-app
-          image: ${QUAY_URL}/etx-app/etx-app-base-app:stable
-          ports:
-            - containerPort: 8080
-          resources:
-            requests:
-              cpu: 500m
-              memory: 1Gi
-            limits:
-              cpu: "2"
-              memory: 2Gi
-EOF</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Key differences from dev:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Namespace</strong>: <code>etx-app-staging</code> instead of <code>etx-app-dev</code></p>
-</li>
-<li>
-<p><strong>Replicas</strong>: Increased to 2 for higher availability</p>
-</li>
-<li>
-<p><strong>Image</strong>: Uses Quay registry for cross-cluster image distribution instead of internal registry</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Update <code>environments/stage/service.yaml</code> to use <code>etx-app-staging</code> namespace:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' environments/stage/service.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Update <code>environments/stage/route.yaml</code> to use <code>etx-app-staging</code> namespace:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' environments/stage/route.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Update <code>environments/stage/namespace.yaml</code>:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sed -i 's/name: etx-app-dev/name: etx-app-staging/' environments/stage/namespace.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Verify the changes:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">grep namespace environments/stage/*.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Commit and push:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git add environments/stage/
-git commit -m "feat: add stage environment manifests"
-git push origin main</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_create_stage_application"><a class="anchor" href="#_create_stage_application"></a>Create Stage Application</h3>
-<div class="paragraph">
-<p>Create an Argo CD Application for the staging environment on the secondary cluster.</p>
-</div>
-<div class="paragraph">
-<p>First, get the GitLab URL and the secondary cluster server URL:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get GitLab URL
-GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
-echo "Using GitLab URL: $GITLAB_URL"
-
-# Get the staging cluster server URL from Argo CD Secret
-STAGING_CLUSTER=$(oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster -o json | \
-  jq -r '.items[] | select(.metadata.annotations."cluster-name" | contains("cluster2") or contains("staging") or contains("secondary")) | .data.server' | \
-  base64 -d)
-
-# If not found in secrets, try using argocd CLI
-if [ -z "$STAGING_CLUSTER" ]; then
-  # Login to Argo CD
-  argocd login $(oc get route argocd-server -n etx-app-dev -o jsonpath='{.spec.host}') \
-    --insecure --username admin \
-    --password $(oc get secret argocd-cluster -n etx-app-dev -o jsonpath='{.data.admin\.password}' | base64 -d)
-
-  # Get cluster URL
-  STAGING_CLUSTER=$(argocd cluster list -o json | jq -r '.[] | select(.name != "in-cluster") | .server')
-fi
-
-echo "Staging cluster: ${STAGING_CLUSTER}"</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then create the Application:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: etx-app-stage
-  namespace: etx-app-dev
-spec:
-  project: default
-  source:
-    repoURL: ${GITLAB_URL}/software-factory/etx-app-gitops.git
-    targetRevision: main
-    path: environments/stage
-  destination:
-    server: ${STAGING_CLUSTER}
-    namespace: etx-app-staging
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-EOF</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The staging cluster destination points to the secondary cluster that was pre-configured by the bootstrap automation.
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_verify_stage_deployment"><a class="anchor" href="#_verify_stage_deployment"></a>Verify Stage Deployment</h3>
-<div class="paragraph">
-<p>Check the stage application status:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get application etx-app-stage -n etx-app-dev \
-  -o jsonpath='{.status.sync.status}{"\n"}'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output should be <code>Synced</code>.</p>
-</div>
-<div class="paragraph">
-<p>View the application in Argo CD UI:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Open the Argo CD dashboard</p>
-</li>
-<li>
-<p>You should see two applications:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><code>etx-app-dev</code> - Running on primary cluster</p>
-</li>
-<li>
-<p><code>etx-app-stage</code> - Running on secondary (staging) cluster</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Click on <code>etx-app-stage</code> to view its deployment status</p>
-</li>
-</ol>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Since Argo CD is managing the staging cluster remotely, you can view the application status through the Argo CD UI without needing to login to the secondary cluster directly.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_promotion_workflow_overview"><a class="anchor" href="#_promotion_workflow_overview"></a>Promotion Workflow Overview</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The promotion workflow from dev to staging follows these steps:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>CI pipeline builds and pushes image to internal registry with commit SHA tag</p>
-</li>
-<li>
-<p>Image is promoted to Quay registry with a <code>stable</code> tag (covered in <a href="day2-lab1-promotion.html" class="xref page">Promotion Pipeline</a>)</p>
-</li>
-<li>
-<p>GitOps repository <code>environments/stage/deployment.yaml</code> is updated with new image tag</p>
-</li>
-<li>
-<p>Argo CD detects the change and automatically syncs to the secondary cluster</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>This GitOps approach ensures:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Version control</strong> - All deployment changes are tracked in Git</p>
-</li>
-<li>
-<p><strong>Auditability</strong> - Full history of what was deployed when</p>
-</li>
-<li>
-<p><strong>Rollback capability</strong> - Revert to previous commit to rollback</p>
-</li>
-<li>
-<p><strong>Multi-cluster consistency</strong> - Same manifests can deploy to multiple clusters</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_quick_verification"><a class="anchor" href="#_quick_verification"></a>Quick Verification</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Verify the complete deployment:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Check Argo CD application status
-oc get application etx-app-dev -n etx-app-dev -o jsonpath='{.status.sync.status}: {.status.health.status}{"\n"}'
-
-# Check application pods
-oc get pods -n etx-app-dev -l app=etx-app-base-app
-
-# Check application health endpoint
-curl http://$(oc get route etx-app-base-app -n etx-app-dev -o jsonpath='{.spec.host}')/q/health
-
-# Check OpenTelemetry injection
-oc get pod -n etx-app-dev -l app=etx-app-base-app \
-  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Expected output should show: <code>Synced: Healthy</code> for Argo CD, <code>Running</code> pods, and <code>opentelemetry-auto-instrumentation</code> init container.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><strong>Common Issues:</strong></p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>ImagePullBackOff:</strong> Image not in registry - run CI pipeline first</p>
-</li>
-<li>
-<p><strong>CrashLoopBackOff:</strong> Check pod logs - often missing Kafka or DB connection</p>
-</li>
-<li>
-<p><strong>Argo CD Out of Sync:</strong> Click "Sync" in Argo CD UI or check GitOps repo for errors</p>
-</li>
-<li>
-<p><strong>Health check failing:</strong> Verify all dependencies (DB, Kafka) are running</p>
-</li>
-</ul>
-</div>
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
@@ -1425,40 +1041,13 @@ oc get pod -n etx-app-dev -l app=etx-app-base-app \
 <li>
 <p>Integration between CI pipeline and GitOps repository</p>
 </li>
-<li>
-<p>Multi-cluster deployment capability (dev → stage)</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_whats_next"><a class="anchor" href="#_whats_next"></a>What&#8217;s Next</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The current setup deploys to dev automatically when the CI pipeline completes. To promote images from dev to staging, you need a promotion pipeline.</p>
-</div>
-<div class="paragraph">
-<p>Proceed to <a href="day2-lab1-promotion.html" class="xref page">Promotion Pipeline</a> to learn how to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Copy images from internal registry to Quay</p>
-</li>
-<li>
-<p>Update GitOps repository for staging environment</p>
-</li>
-<li>
-<p>Trigger automatic deployment to the secondary cluster via Argo CD</p>
-</li>
 </ul>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="day2-lab1-supporting-services.html">Lab 1</a></span>
-  <span class="next"><a href="day2-lab1-promotion.html">Lab 3</a></span>
+  <span class="prev"><a href="day2-lab1-ci-pipeline.html">CI Pipeline</a></span>
+  <span class="next"><a href="day2-lab1-promotion.html">Promotion Pipeline</a></span>
 </nav>
 </article>
   </div>

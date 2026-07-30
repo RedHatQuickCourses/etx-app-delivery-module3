@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab Environment :: Software Factory and CI/CD</title>
+    <title>Lab 3: Cluster Setup :: Software Factory and CI/CD</title>
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -49,23 +49,23 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/index.html">Software Factory and CI/CD</a>
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/day2-lab1-ci-pipeline.html">CI Pipeline</a>
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/day2-lab1-app-deployment.html">Application Deployment</a>
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/day2-lab1-promotion.html">Promotion Pipeline</a>
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
   </li>
 </ul>
   </li>
@@ -98,7 +98,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
-    <li><a href="index-lab-demo.html">Lab Environment</a></li>
+    <li><a href="lab-3.html">Lab 3: Cluster Setup</a></li>
   </ul>
 </nav>
 </div>
@@ -107,77 +107,83 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab Environment</h1>
+<h1 class="page">Lab 3: Cluster Setup</h1>
 <div class="sect1">
-<h2 id="_instructions_to_launch_your_lab_on_the_red_hat_demo_platform_rhdp"><a class="anchor" href="#_instructions_to_launch_your_lab_on_the_red_hat_demo_platform_rhdp"></a>Instructions to Launch Your Lab on the Red Hat Demo Platform (RHDP)</h2>
+<h2 id="_install_the_dev_spaces_operator"><a class="anchor" href="#_install_the_dev_spaces_operator"></a>Install the Dev Spaces Operator</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_install_via_operatorhub"><a class="anchor" href="#_install_via_operatorhub"></a>Install via OperatorHub</h3>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Log in</strong> to the <a href="#RHDP-Portal-Links">RHDP portal</a></p>
+<p>In the OpenShift Web Console, go to menu:Ecosystem[Software Catalog]</p>
 </li>
 <li>
-<p><strong>Search</strong> for the catalog entry: <strong>FIXME Lab Catalog Name</strong>.</p>
+<p>Search for <strong>Red Hat OpenShift Dev Spaces</strong></p>
 </li>
 <li>
-<p><strong>Click</strong> on the catalog entry in the search results.</p>
+<p>Click btn:[Install]</p>
 </li>
 <li>
-<p>On the catalog page, <strong>click</strong> the <strong>Order</strong> button.</p>
+<p>Keep the operator installation namespace as <code>openshift-operators</code></p>
 </li>
 <li>
-<p><strong>Fill out</strong> the required details in the order form.</p>
+<p>Accept the defaults for the rest (All namespaces, Automatic approval) and click btn:[Install]</p>
 </li>
 <li>
-<p><strong>Review the warning</strong> at the bottom of the form and <strong>check the box</strong> labeled:<br>
-<strong>“I confirm that I understand the above warnings.”</strong></p>
-</li>
-<li>
-<p><strong>Click</strong> the <strong>Order</strong> button to place your lab order.</p>
+<p>Wait for the operator to reach the <code>Succeeded</code> phase</p>
 </li>
 </ol>
 </div>
-<div class="sect2">
-<h3 id="_important_notes"><a class="anchor" href="#_important_notes"></a>Important Notes:</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>This lab may take approximately <strong>FIXME minutes</strong> to become ready.</p>
-</li>
-<li>
-<p>You will receive an <strong>email with access details</strong> once your lab environment is ready.</p>
-</li>
-<li>
-<p>You can also <strong>retrieve lab access</strong> directly from the RHDP portal.</p>
-</li>
-</ul>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="devspaces-operator-installed.png" alt="Dev Spaces Operator installed">
 </div>
 </div>
-<div class="sect2">
-<h3 id="_how_to_access_your_lab_via_the_rhdp_portal"><a class="anchor" href="#_how_to_access_your_lab_via_the_rhdp_portal"></a>How to Access Your Lab via the RHDP Portal:</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>On the RHDP portal, <strong>click</strong> on the <strong>Services</strong> option in the left-hand menu.</p>
-</li>
-<li>
-<p><strong>Select your lab</strong> from the listings on the right-hand side of the page to view access details.</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Verify from the CLI:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get csv -n openshift-operators | grep devspaces</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="RHDP-Portal-Links"><a class="anchor" href="#RHDP-Portal-Links"></a>RHDP Portal Links</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>RedHat associates: <a href="https://demo.redhat.com/" target="_blank" rel="noopener">https://demo.redhat.com/</a></p>
-</li>
-<li>
-<p>RedHat partners: <a href="https://partner.demo.redhat.com/" target="_blank" rel="noopener">https://partner.demo.redhat.com/</a></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>A similar output should be displayed:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>devspacesoperator.v3.27.1           Red Hat OpenShift Dev Spaces   3.27.1    devspacesoperator.v3.27.0           Succeeded</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The DevWorkspace Operator is installed automatically as a dependency.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The operator runs from <code>openshift-operators</code>. The <code>openshift-devspaces</code> namespace will be created in the next step for the <code>CheCluster</code> instance and Dev Spaces server components.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock unresolved">
+<div class="content">
+<img src="devspaces-operator-list.png" alt="Dev Spaces Operators Installed">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Proceed to <a href="#day2-devspaces-install.adoc" class="xref unresolved">Configure Dev Spaces</a>.</p>
 </div>
 </div>
 </div>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab Environment :: Software Factory and CI/CD</title>
+    <title>Lab 1: :: Software Factory and CI/CD</title>
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -49,23 +49,23 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
   </li>
 </ul>
   </li>
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/index.html">Software Factory and CI/CD</a>
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/day2-lab1-ci-pipeline.html">CI Pipeline</a>
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/day2-lab1-app-deployment.html">Application Deployment</a>
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
   </li>
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../chapter1/day2-lab1-promotion.html">Promotion Pipeline</a>
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
   </li>
 </ul>
   </li>
@@ -98,7 +98,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
-    <li><a href="index-lab-demo.html">Lab Environment</a></li>
+    <li><a href="lab-1.html">Lab 1:</a></li>
   </ul>
 </nav>
 </div>
@@ -107,76 +107,112 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab Environment</h1>
+<h1 class="page">Lab 1:</h1>
 <div class="sect1">
-<h2 id="_instructions_to_launch_your_lab_on_the_red_hat_demo_platform_rhdp"><a class="anchor" href="#_instructions_to_launch_your_lab_on_the_red_hat_demo_platform_rhdp"></a>Instructions to Launch Your Lab on the Red Hat Demo Platform (RHDP)</h2>
+<h2 id="_accessing_gitlab_with_keycloak"><a class="anchor" href="#_accessing_gitlab_with_keycloak"></a>Accessing GitLab with Keycloak</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Log in</strong> to the <a href="#RHDP-Portal-Links">RHDP portal</a></p>
+<p>Open {gitlab_url}[^]</p>
 </li>
 <li>
-<p><strong>Search</strong> for the catalog entry: <strong>FIXME Lab Catalog Name</strong>.</p>
+<p>Click btn:[ETX Lab SSO]</p>
 </li>
 <li>
-<p><strong>Click</strong> on the catalog entry in the search results.</p>
+<p>You will be redirected to Keycloak</p>
 </li>
 <li>
-<p>On the catalog page, <strong>click</strong> the <strong>Order</strong> button.</p>
+<p>Log in with one of the provided users (e.g., <code>platform-developer</code> / <code>openshift</code>)</p>
 </li>
 <li>
-<p><strong>Fill out</strong> the required details in the order form.</p>
-</li>
-<li>
-<p><strong>Review the warning</strong> at the bottom of the form and <strong>check the box</strong> labeled:<br>
-<strong>“I confirm that I understand the above warnings.”</strong></p>
-</li>
-<li>
-<p><strong>Click</strong> the <strong>Order</strong> button to place your lab order.</p>
+<p>You will be redirected back to GitLab and logged in</p>
 </li>
 </ol>
 </div>
-<div class="sect2">
-<h3 id="_important_notes"><a class="anchor" href="#_important_notes"></a>Important Notes:</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>This lab may take approximately <strong>FIXME minutes</strong> to become ready.</p>
-</li>
-<li>
-<p>You will receive an <strong>email with access details</strong> once your lab environment is ready.</p>
-</li>
-<li>
-<p>You can also <strong>retrieve lab access</strong> directly from the RHDP portal.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The first time you log in, GitLab will create a user profile linked to your Keycloak identity.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_how_to_access_your_lab_via_the_rhdp_portal"><a class="anchor" href="#_how_to_access_your_lab_via_the_rhdp_portal"></a>How to Access Your Lab via the RHDP Portal:</h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>On the RHDP portal, <strong>click</strong> on the <strong>Services</strong> option in the left-hand menu.</p>
-</li>
-<li>
-<p><strong>Select your lab</strong> from the listings on the right-hand side of the page to view access details.</p>
-</li>
-</ol>
+</div>
+<div class="sect1">
+<h2 id="_clone_your_repository"><a class="anchor" href="#_clone_your_repository"></a>Clone Your Repository</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once logged into GitLab, clone the ETX App Base application.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Use the <strong>OpenShift Web Terminal</strong> for these commands. Access it by clicking the command prompt icon (&gt;_) in the top-right corner of the OpenShift Console.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>First, get the GitLab URL dynamically:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get GitLab URL
+GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+echo "GitLab URL: $GITLAB_URL"</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="RHDP-Portal-Links"><a class="anchor" href="#RHDP-Portal-Links"></a>RHDP Portal Links</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>RedHat associates: <a href="https://demo.redhat.com/" target="_blank" rel="noopener">https://demo.redhat.com/</a></p>
-</li>
-<li>
-<p>RedHat partners: <a href="https://partner.demo.redhat.com/" target="_blank" rel="noopener">https://partner.demo.redhat.com/</a></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>Then clone the repository:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir -p ~/workshop
+cd ~/workshop
+git clone ${GITLAB_URL}/software-factory/etx_app_base_app.git
+cd etx_app_base_app</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The repository name is <code>etx_app_base_app</code> and Kubernetes resources will be named <code>etx-app-base-app-*</code> for consistency.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The repository does NOT include a <code>devfile.yaml</code>. You will create this file manually in the next lab step (<a href="#day2-lab1-devspaces.adoc" class="xref unresolved">Dev Spaces Setup</a>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_cluster_access"><a class="anchor" href="#_verify_cluster_access"></a>Verify Cluster Access</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Confirm you&#8217;re logged into the primary cluster:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc whoami --show-server
+# Should show: {openshift_api_url}
+
+oc project etx-app-dev
+# Should switch to: etx-app-dev namespace</code></pre>
 </div>
 </div>
 </div>

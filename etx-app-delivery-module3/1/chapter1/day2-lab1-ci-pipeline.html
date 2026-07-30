@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab 4: Application CI Pipeline :: Software Factory and CI/CD</title>
-    <link rel="prev" href="day2-lab1-promotion.html">
+    <title>Lab 1: Application CI Pipeline :: Software Factory and CI/CD</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="day2-lab1-app-deployment.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -43,7 +44,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../index.html">Software Factory and CI/CD</a>
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
   </li>
 </ul>
   </li>
@@ -57,22 +58,16 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Software Factory Overview</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-supporting-services.html">Lab 1</a>
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-app-deployment.html">Lab 2</a>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-promotion.html">Lab 3</a>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="day2-lab1-ci-pipeline.html">Lab 4</a>
-  </li>
-</ul>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
   </li>
 </ul>
   </li>
@@ -105,8 +100,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
-    <li><a href="index.html">Software Factory Overview</a></li>
-    <li><a href="day2-lab1-ci-pipeline.html">Lab 4</a></li>
+    <li><a href="day2-lab1-ci-pipeline.html">CI Pipeline</a></li>
   </ul>
 </nav>
 </div>
@@ -115,7 +109,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab 4: Application CI Pipeline</h1>
+<h1 class="page">Lab 1: Application CI Pipeline</h1>
 <div class="sect1">
 <h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
@@ -197,7 +191,7 @@ If the ServiceAccount already exists (created during namespace setup), you may s
 <h2 id="_retrieve_registry_credentials_from_vault"><a class="anchor" href="#_retrieve_registry_credentials_from_vault"></a>Retrieve Registry Credentials from Vault</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Create a Tekton Task that authenticates to Vault using the Kubernetes auth method configured in the <a href="day2-lab1-supporting-services.html" class="xref page">Supporting Services</a> section and writes registry credentials to the workspace.</p>
+<p>Create a Tekton Task that authenticates to Vault using the Kubernetes auth method configured in the <a href="#day2-lab1-supporting-services.adoc" class="xref unresolved">Supporting Services</a> section and writes registry credentials to the workspace.</p>
 </div>
 <div class="paragraph">
 <p>First, get the Vault URL from the cluster:</p>
@@ -432,7 +426,7 @@ oc get pipelinerun -n etx-app-dev</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You should see your PipelineRun with status <code>Running</code> or <code>Succeeded</code>.</p>
+<p>You should see your PipelineRun with status <code>Running</code> and once complete it should be <code>Succeeded</code>.</p>
 </div>
 <div class="sect2">
 <h3 id="_monitor_pipeline_execution"><a class="anchor" href="#_monitor_pipeline_execution"></a>Monitor Pipeline Execution</h3>
@@ -784,6 +778,11 @@ echo "Root Password: $GITLAB_ROOT_PASSWORD"</code></pre>
 </li>
 <li>
 <p>Click <strong>Standard</strong> tab (not ETX Lab SSO)</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/gitlab_signin.png" alt="gitlab signin" width="450">
+</div>
+</div>
 </li>
 <li>
 <p><strong>Username:</strong> <code>root</code></p>
@@ -861,7 +860,7 @@ The <code>root</code> user is the GitLab built-in administrator. The <code>platf
 </div>
 </li>
 <li>
-<p>Expand the <strong>Outbound requests</strong> section</p>
+<p>Scroll down the page and notice the <strong>Outbound requests</strong> section, expand the section.</p>
 </li>
 <li>
 <p>Enable local network webhooks:</p>
@@ -872,6 +871,11 @@ The <code>root</code> user is the GitLab built-in administrator. The <code>platf
 </li>
 <li>
 <p>Optionally check ☑️ <strong>Allow requests to the local network from system hooks</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/outbound.png" alt="outbound" width="600">
+</div>
+</div>
 </li>
 </ul>
 </div>
@@ -980,69 +984,23 @@ Configuring webhooks requires <strong>Maintainer</strong> or <strong>Owner</stro
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p><strong>Option A: Use root account</strong> (if you&#8217;re already logged in from Step 1)</p>
-</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Navigate to your project:</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Click <strong>Projects</strong> → <strong>Explore projects</strong> → search for <strong>etx_app_base_app</strong></p>
-</li>
-<li>
-<p>Or navigate directly: <code>{gitlab_url}/software-factory/etx_app_base_app</code></p>
-</li>
-</ul>
+<p>Navigate to the project, for this select <strong>Admin area</strong> → <strong>Dashboard</strong> → select <strong>etx_app_base_app</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/admin_area.png" alt="admin area" width="500">
 </div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p><strong>Option B: Use platform-admin account</strong></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Log out from <code>root</code> and log in via <strong>ETX Lab SSO</strong> as <code>platform-admin</code></p>
-</li>
-<li>
-<p>Navigate to your project:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Projects</strong> → <strong>software-factory</strong> → <strong>etx_app_base_app</strong></p>
-</li>
-</ul>
 </div>
 </li>
 <li>
-<p>If you see "Settings → Webhooks", you have Maintainer access and can proceed</p>
-</li>
-<li>
-<p>If you don&#8217;t see "Settings → Webhooks":</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Ask your instructor to grant Maintainer role, OR</p>
-</li>
-<li>
-<p>Use the <code>root</code> account (Option A above)</p>
-</li>
-</ul>
+<p>Go to menu:System hooks</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/hook.png" alt="hook" width="300">
 </div>
-</li>
-</ol>
 </div>
-<div class="paragraph">
-<p><strong>Continue with either option:</strong></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Go to menu:Settings[Webhooks]</p>
 </li>
 <li>
 <p>Click btn:[Add new webhook]</p>
@@ -1064,6 +1022,11 @@ Configuring webhooks requires <strong>Maintainer</strong> or <strong>Owner</stro
 </li>
 <li>
 <p><strong>SSL verification</strong>: Uncheck for lab environments with self-signed certificates</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/settings.png" alt="settings" width="500">
+</div>
+</div>
 </li>
 </ul>
 </div>
@@ -1076,21 +1039,32 @@ Configuring webhooks requires <strong>Maintainer</strong> or <strong>Owner</stro
 <div class="ulist">
 <ul>
 <li>
-<p>Scroll down to <strong>Project Hooks</strong></p>
-</li>
-<li>
-<p>Find your webhook in the list</p>
+<p>Find your webhook in the <strong>System hooks</strong> list</p>
 </li>
 <li>
 <p>Click btn:[Test] → <strong>Push events</strong></p>
-</li>
-<li>
-<p>You should see "Hook executed successfully: HTTP 200" or similar</p>
 </li>
 </ul>
 </div>
 </li>
 </ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/push.png" alt="push" width="600">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You should see "Hook executed successfully: HTTP 202" or similar</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/status.png" alt="status" width="700">
+</div>
+</div>
+</li>
+</ul>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1100,39 +1074,6 @@ Configuring webhooks requires <strong>Maintainer</strong> or <strong>Owner</stro
 </td>
 <td class="content">
 If you get "SSL certificate problem" error during testing, make sure "Enable SSL verification" is unchecked in the webhook configuration.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p><strong>Using platform-developer Account:</strong></p>
-</div>
-<div class="paragraph">
-<p>If you want to use your <code>platform-developer</code> account instead of <code>platform-admin</code>, ask your instructor to grant you Maintainer role:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>In GitLab (as admin), navigate to <strong>software-factory/etx_app_base_app</strong></p>
-</li>
-<li>
-<p>Go to menu:Settings[Members]</p>
-</li>
-<li>
-<p>Find the user and change role to <strong>Maintainer</strong></p>
-</li>
-<li>
-<p>The user can now access Settings → Webhooks</p>
-</li>
-</ol>
-</div>
 </td>
 </tr>
 </table>
@@ -1361,7 +1302,8 @@ oc get pipelinerun -n etx-app-dev --sort-by=.metadata.creationTimestamp | tail -
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="day2-lab1-promotion.html">Lab 3</a></span>
+  <span class="prev"><a href="index.html">Software Factory and CI/CD</a></span>
+  <span class="next"><a href="day2-lab1-app-deployment.html">Application Deployment</a></span>
 </nav>
 </article>
   </div>

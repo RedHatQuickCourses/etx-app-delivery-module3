@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab 3: Deploy Pipeline :: Software Factory and CI/CD</title>
+    <title>Lab 1: Promotion Pipeline :: Software Factory and CI/CD</title>
     <link rel="prev" href="day2-lab1-app-deployment.html">
-    <link rel="next" href="day2-lab1-ci-pipeline.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -44,7 +43,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../index.html">Software Factory and CI/CD</a>
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
   </li>
 </ul>
   </li>
@@ -58,22 +57,16 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Software Factory Overview</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-supporting-services.html">Lab 1</a>
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-app-deployment.html">Lab 2</a>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
   </li>
-  <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="day2-lab1-promotion.html">Lab 3</a>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="day2-lab1-ci-pipeline.html">Lab 4</a>
-  </li>
-</ul>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
   </li>
 </ul>
   </li>
@@ -106,8 +99,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
-    <li><a href="index.html">Software Factory Overview</a></li>
-    <li><a href="day2-lab1-promotion.html">Lab 3</a></li>
+    <li><a href="day2-lab1-promotion.html">Promotion Pipeline</a></li>
   </ul>
 </nav>
 </div>
@@ -116,7 +108,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab 3: Deploy Pipeline</h1>
+<h1 class="page">Lab 1: Promotion Pipeline</h1>
 <div class="sect1">
 <h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
 <div class="sectionbody">
@@ -156,6 +148,9 @@ Now you&#8217;ll create a promotion pipeline that moves tested images from dev t
 <li>
 <p><a href="day2-lab1-app-deployment.html" class="xref page">Application Deployment</a></p>
 </li>
+<li>
+<p>Secondary cluster enrollment (instructions below)</p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -170,9 +165,183 @@ Now you&#8217;ll create a promotion pipeline that moves tested images from dev t
 <p>Argo CD managing both dev and stage environments</p>
 </li>
 <li>
-<p>Access to Quay registry (pre-configured by bootstrap)</p>
+<p>Access to Quay via Keycloak SSO (<code>platform-admin</code> or <code>platform-developer</code>  / <code>openshift</code>)</p>
+</li>
+<li>
+<p>Runtime cluster provisioned and enrolled</p>
 </li>
 </ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_secondary_cluster_enrollment"><a class="anchor" href="#_secondary_cluster_enrollment"></a>Secondary Cluster Enrollment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The promotion pipeline requires two clusters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Factory Cluster</strong> (where you are now) - Development environment and ArgoCD</p>
+</li>
+<li>
+<p><strong>Runtime Cluster</strong> - Staging and production environments</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You need to enroll the runtime cluster with ArgoCD on the factory cluster.</p>
+</div>
+<div class="sect2">
+<h3 id="_automated_enrollment"><a class="anchor" href="#_automated_enrollment"></a>Automated Enrollment</h3>
+<div class="paragraph">
+<p>Download and run the enrollment script:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -o enroll-secondary-cluster.sh \
+  https://raw.githubusercontent.com/rh-etx-app-platform/etx_app_tooling/main/scripts/enroll-secondary-cluster.sh
+
+chmod +x enroll-secondary-cluster.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Edit the configuration section with your cluster credentials (from RHDP emails), substitute XXXXX, {openshift_cluster_admin_password} with your lab GUID and lab password :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export RUNTIME_API="https://api.cluster-xxxxx.dyn.redhatworkshops.io:6443"
+export RUNTIME_USER="admin"
+export RUNTIME_PASSWORD="{openshift_cluster_admin_password}"
+
+export FACTORY_API="https://api.cluster-xxxxx.dyn.redhatworkshops.io:6443"
+export FACTORY_USER="admin"
+export FACTORY_PASSWORD="{openshift_cluster_admin_password}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the script:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./enroll-secondary-cluster.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will notice output as below</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[STEP] Step 1: Preparing runtime cluster for ArgoCD management
+[INFO] Logging into runtime cluster: https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+[INFO] Creating ArgoCD manager ServiceAccount...
+serviceaccount/argocd-manager created
+[INFO] Granting cluster-admin permissions to ArgoCD manager...
+clusterrolebinding.rbac.authorization.k8s.io/argocd-manager-binding created
+[INFO] Generating registration token (valid for 8760h)...
+[INFO] Creating staging namespaces on runtime cluster...
+namespace/etx-app-staging created
+namespace/etx-app-prod created
+[STEP] Step 1.5: Deploying supporting services on runtime cluster
+[INFO] Installing AMQ Streams (Kafka) operator...
+Warning: resource subscriptions/amq-streams is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
+subscription.operators.coreos.com/amq-streams configured
+[INFO] Installing OpenShift Pipelines (Tekton) operator...
+Warning: resource subscriptions/openshift-pipelines-operator-rh is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
+subscription.operators.coreos.com/openshift-pipelines-operator-rh configured
+[INFO] Installing Red Hat build of OpenTelemetry operator...
+subscription.operators.coreos.com/opentelemetry-product created
+[INFO] Waiting for operators to be ready (90s)...
+[INFO] Deploying PostgreSQL database in etx-app-staging...
+secret/parasol-db-secret created
+service/parasol-db created
+deployment.apps/parasol-db created
+[INFO] Deploying Kafka cluster in etx-app-staging...
+kafkanodepool.kafka.strimzi.io/kafka created
+kafka.kafka.strimzi.io/parasol-kafka created
+[INFO] Creating Kafka topic 'intake' in etx-app-staging...
+kafkatopic.kafka.strimzi.io/intake created
+[INFO] Deploying OpenTelemetry Collector in etx-app-staging...
+opentelemetrycollector.opentelemetry.io/otel-collector created
+[INFO] Configuring OpenTelemetry auto-instrumentation for Java in etx-app-staging...
+instrumentation.opentelemetry.io/java-instrumentation created
+[INFO] Supporting services deployment initiated (will take 3-4 minutes to be fully ready)
+[STEP] Step 2: Registering runtime cluster in factory ArgoCD
+[INFO] Logging into factory cluster: https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+[INFO] Creating ArgoCD cluster secret...
+secret/cluster-staging created
+[STEP] Step 3: Validating enrollment
+[INFO] Cluster secret verified: cluster-staging
+
+\033[0;32m========================================
+Enrollment Complete
+========================================\033[0m
+
+Factory cluster:  https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+Runtime cluster:  https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+ArgoCD namespace: etx-app-dev
+Cluster name:     staging
+
+Supporting services deployed:
+- PostgreSQL (parasol-db) in etx-app-staging
+- Kafka cluster (parasol-kafka) in etx-app-staging
+- Kafka topic (intake)
+- OpenTelemetry Collector (otel-collector) in etx-app-staging
+- OpenTelemetry auto-instrumentation (java-instrumentation)
+- AMQ Streams operator
+- OpenShift Pipelines operator
+- Red Hat build of OpenTelemetry operator
+
+Next steps:
+1. Verify cluster in ArgoCD UI:
+   - Navigate to Settings &gt; Clusters
+   - Look for 'staging' cluster
+
+2. Verify supporting services are ready:
+   oc get pods -n etx-app-staging
+   oc get kafka -n etx-app-staging
+   oc get kafkatopic -n etx-app-staging
+   oc get opentelemetrycollector -n etx-app-staging
+   oc get instrumentation -n etx-app-staging
+
+3. Create Applications targeting runtime cluster:
+   apiVersion: argoproj.io/v1alpha1
+   kind: Application
+   spec:
+     destination:
+       name: staging
+       namespace: etx-app-staging
+
+4. Test deployment to runtime cluster
+
+Documentation: https://github.com/rh-etx-app-platform/etx_app_tooling/blob/main/docs/enrollment.md</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_enrollment"><a class="anchor" href="#_verify_enrollment"></a>Verify Enrollment</h3>
+<div class="paragraph">
+<p>Check cluster secret exists:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret -n etx-app-dev -l argocd.argoproj.io/secret-type=cluster -o json | \
+  jq -r '.items[] | .metadata.name + " - " + (.data.name | @base64d)'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see secrets for:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">argocd-default-cluster-config - in-cluster
+cluster-staging - staging</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can now proceed with the promotion pipeline.</p>
+</div>
 </div>
 </div>
 </div>
@@ -256,6 +425,413 @@ Now you&#8217;ll create a promotion pipeline that moves tested images from dev t
 </div>
 </div>
 <div class="sect1">
+<h2 id="_configure_quay_for_image_promotion"><a class="anchor" href="#_configure_quay_for_image_promotion"></a>Configure Quay for Image Promotion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The promotion pipeline pushes images to Quay at <code>etx-app/etx-app-base-app</code> and reads credentials from Vault at <code>secret/registry/quay</code>.</p>
+</div>
+<div class="paragraph">
+<p>Quay authenticates interactive users through Keycloak SSO, so local <code>quayadmin</code> credentials cannot be used for automated pushes.
+You will create the organization and repository the pipeline expects, create a robot account for non-interactive authentication, and store the robot credentials in Vault.</p>
+</div>
+<div class="sect2">
+<h3 id="_create_the_quay_organization_and_repository"><a class="anchor" href="#_create_the_quay_organization_and_repository"></a>Create the Quay Organization and Repository</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <a href="{quay_url}">Quay</a> or click the <strong>Quay</strong> tab in your Showroom</p>
+</li>
+<li>
+<p>Sign in with Keycloak SSO using <code>platform-admin</code> or <code>platform-developer</code>  / <code>openshift</code></p>
+</li>
+<li>
+<p>Remove any "-" in the name to avoid syntax error and select <strong>Confirm Username</strong></p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/valid.png" alt="valid" width="400">
+</div>
+</div>
+</li>
+<li>
+<p>Click btn:[Create New Organization]</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/org.png" alt="org" width="400">
+</div>
+</div>
+</li>
+<li>
+<p>Set the organization name to <code>etx_app</code> and click btn:[Create Organization]</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/create_org.png" alt="create org" width="400">
+</div>
+</div>
+</li>
+<li>
+<p>Inside the <code>etx_app</code> organization, click btn:[Create New Repository]</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/repo1.png" alt="repo1" width="400">
+</div>
+</div>
+</li>
+<li>
+<p>Configure the repository:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Repository Name:</strong> <code>etx-app-base-app</code></p>
+</li>
+<li>
+<p><strong>Repository Visibility:</strong> Public</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click btn:[Create Public Repository]</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/public.png" alt="public" width="500">
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The organization and repository names must match the destination used later in the promotion pipeline: <code>etx_app/etx-app-base-app</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+This Quay instance disables anonymous pulls (<code>FEATURE_ANONYMOUS_ACCESS: false</code>). Even with a public repository, the staging cluster must authenticate using an image pull secret.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_a_robot_account"><a class="anchor" href="#_create_a_robot_account"></a>Create a Robot Account</h3>
+<div class="paragraph">
+<p>Robot accounts provide token-based credentials for CI/CD pipelines without requiring interactive SSO login.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the <code>etx_app</code> organization, click the <strong>Settings</strong> gear on the left panel</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/setting.png" alt="setting" width="500">
+</div>
+</div>
+</li>
+<li>
+<p>Under <strong>User and Robot Permissions</strong> click the down arrow next to the <strong>Select a team or user&#8230;&#8203;</strong> box, click btn:[Create Robot Account]</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/robot.png" alt="robot" width="500">
+</div>
+</div>
+</li>
+<li>
+<p>Name the robot <code>promoter</code> and click btn:[Create Robot Account]</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/promoter.png" alt="promoter" width="500">
+</div>
+</div>
+</li>
+<li>
+<p>Grant the robot <strong>Write</strong> permission by change the <code>Read</code> dropdown to <strong>Write</strong> and click btn:[Add Permission]</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/write1.png" alt="write1" width="500">
+</div>
+</div>
+</li>
+<li>
+<p>Click the newly created robot account <code>etx-app+promoter</code></p>
+</li>
+<li>
+<p>When Quay displays the robot credentials, copy both values:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Username:</strong> <code>etx-app+promoter</code></p>
+</li>
+<li>
+<p><strong>Token:</strong> the generated token</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/token.png" alt="token" width="500">
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_vault_secret_with_robot_credentials"><a class="anchor" href="#_create_vault_secret_with_robot_credentials"></a>Create Vault Secret with Robot Credentials</h3>
+<div class="paragraph">
+<p>Enable a KV secrets engine in Vault and store the robot account credentials so the promotion pipeline can authenticate to Quay.</p>
+</div>
+<div class="paragraph">
+<p>First, confirm the Quay hostname (this is the <code>server</code> value stored in Vault):</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route -n quay -l quay-component=quay-app-route -o jsonpath='{.items[0].spec.host}' &amp;&amp; echo</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, get the Vault root token:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret etx-vault-bootstrap -n vault -o jsonpath='{.data.root-token}' | base64 -d &amp;&amp; echo</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enable_the_kv_secrets_engine"><a class="anchor" href="#_enable_the_kv_secrets_engine"></a>Enable the KV Secrets Engine</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <a href="{vault_url}">Vault</a> or click the <strong>Vault</strong> tab in your Showroom</p>
+</li>
+<li>
+<p>Log in with the <strong>Token</strong> method using the token above</p>
+</li>
+<li>
+<p>From the Dashboard click <strong>secret/</strong> under the <strong>Secret engines</strong></p>
+</li>
+<li>
+<p>From the <code>secret/</code> secrets engine, click btn:[Create secret]</p>
+</li>
+<li>
+<p>Set the path to <code>registry/quay</code></p>
+</li>
+<li>
+<p>Add the following secret data:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>server:</strong> the Quay hostname from the command above (no <code>https://</code> prefix)</p>
+</li>
+<li>
+<p><strong>username:</strong> <code>etx-app+promoter</code></p>
+</li>
+<li>
+<p><strong>password:</strong> the robot token you copied earlier</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click btn:[Save]</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The promotion pipeline tasks you create next will fetch these credentials at runtime via Kubernetes auth to Vault.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_multi_cluster_promotion_to_stage"><a class="anchor" href="#_multi_cluster_promotion_to_stage"></a>Multi-Cluster Promotion to Stage</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_create_stage_environment_manifests"><a class="anchor" href="#_create_stage_environment_manifests"></a>Create Stage Environment Manifests</h3>
+<div class="paragraph">
+<p>Create stage environment manifests in your GitOps repository:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ~/workshop/etx-app-gitops
+mkdir -p environments/stage</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Copy the dev manifests as a template:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cp environments/dev/*.yaml environments/stage/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Update <code>environments/stage/deployment.yaml</code> to use the <code>etx-app-staging</code> namespace and Quay registry.</p>
+</div>
+<div class="paragraph">
+<p>First, get the Quay URL:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get Quay URL dynamically
+QUAY_URL=$(oc get route -n quay -l quay-component=quay-app-route -o jsonpath='{.items[0].spec.host}')
+echo "Using Quay URL: $QUAY_URL"</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_quay_image_pull_secret_on_staging"><a class="anchor" href="#_create_quay_image_pull_secret_on_staging"></a>Create Quay Image Pull Secret on Staging</h4>
+<div class="paragraph">
+<p>The staging cluster must authenticate to Quay when pulling images.
+Create a docker-registry secret in <code>etx-app-staging</code> on the <strong>runtime</strong> cluster using the robot account credentials.</p>
+</div>
+<div class="paragraph">
+<p>Login to the runtime cluster (credentials from RHDP):</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc login $RUNTIME_API \
+  -u $RUNTIME_USER -p $RUNTIME_PASSWORD --insecure-skip-tls-verify</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace <code>$ROBOT_TOKEN</code> with the <code>etx-app+promoter</code> token:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create secret docker-registry quay-pull-secret \
+  -n etx-app-staging \
+  --docker-server=$QUAY_URL \
+  --docker-username='etx-app+promoter' \
+  --docker-password=$ROBOT_TOKEN</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Switch back to the factory cluster before continuing with the GitOps manifests:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc login $FACTORY_API -u $FACTORY_USER -p $FACTORY_PASSWORD --insecure-skip-tls-verify</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_application_deployment_manifest"><a class="anchor" href="#_create_application_deployment_manifest"></a>Create Application Deployment Manifest</h4>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &gt; environments/stage/deployment.yaml &lt;&lt;EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etx-app-base-app
+  namespace: etx-app-staging
+  labels:
+    app: etx-app-base-app
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: etx-app-base-app
+  template:
+    metadata:
+      labels:
+        app: etx-app-base-app
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      imagePullSecrets:
+        - name: quay-pull-secret
+      containers:
+        - name: etx-app-base-app
+          image: ${QUAY_URL}/etx-app/etx-app-base-app:stable
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          env:
+            - name: POSTGRESQL_HOST
+              value: "parasol-db.etx-app-staging.svc.cluster.local"
+            - name: POSTGRESQL_DATABASE
+              value: "parasol"
+            - name: POSTGRESQL_USER
+              value: "parasol"
+            - name: POSTGRESQL_PASSWORD
+              value: "parasol"
+            - name: QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION
+              value: update
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Key differences from dev:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Namespace</strong>: <code>etx-app-staging</code> instead of <code>etx-app-dev</code></p>
+</li>
+<li>
+<p><strong>Replicas</strong>: Increased to 2 for higher availability</p>
+</li>
+<li>
+<p><strong>Image</strong>: Uses Quay registry for cross-cluster image distribution instead of internal registry</p>
+</li>
+<li>
+<p><strong>imagePullSecrets</strong>: References <code>quay-pull-secret</code> so the staging cluster can authenticate to Quay</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Update <code>environments/stage/service.yaml</code> and <code>environments/stage/route.yaml</code> to use the <code>etx-app-staging</code> namespace:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' \
+  environments/stage/service.yaml \
+  environments/stage/route.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify the changes:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">grep namespace environments/stage/*.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Commit and push:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git add environments/stage/
+git commit -m "feat: add stage environment manifests"
+git push origin main</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_create_promotion_pipeline_resources"><a class="anchor" href="#_create_promotion_pipeline_resources"></a>Create Promotion Pipeline Resources</h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -284,7 +860,7 @@ EOF</code></pre>
 <div class="sect2">
 <h3 id="_fetch_quay_credentials_from_vault"><a class="anchor" href="#_fetch_quay_credentials_from_vault"></a>Fetch Quay Credentials from Vault</h3>
 <div class="paragraph">
-<p>Create a task to retrieve Quay credentials from Vault:</p>
+<p>Create a task to retrieve the Quay robot credentials you stored in Vault:</p>
 </div>
 <div class="listingblock execute">
 <div class="content">
@@ -306,8 +882,8 @@ spec:
         #!/bin/sh
         set -e
 
-        # Install curl and jq
-        microdnf install -y curl jq &amp;&amp; microdnf clean all
+        # Install jq
+        microdnf install -y jq &amp;&amp; microdnf clean all
 
         # Authenticate to Vault using ServiceAccount token
         VAULT_ADDR="{vault_url}"
@@ -368,10 +944,15 @@ spec:
         echo "Source: $(params.source-image)"
         echo "Destination: $(params.dest-image)"
 
+        # Authenticate to the OpenShift internal registry with the
+        # pipeline ServiceAccount token (destination uses Quay robot creds)
+        SRC_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
         # Copy image using skopeo
         skopeo copy \
           --src-tls-verify=false \
           --dest-tls-verify=false \
+          --src-creds="pipeline:${SRC_TOKEN}" \
           --dest-creds="$(params.dest-username):$(params.dest-password)" \
           "docker://$(params.source-image)" \
           "docker://$(params.dest-image)"
@@ -419,22 +1000,30 @@ spec:
         # Install git
         dnf install -y git &amp;&amp; dnf clean all
 
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
         # Clone GitOps repo
-        git clone $(params.gitops-repo-url) /workspace/gitops
+        git clone "$REPO_URL" /workspace/gitops
         cd /workspace/gitops
 
         # Update the image in staging deployment
         sed -i "s|image:.*etx-app-base-app:.*|image: $(params.image-url)|" \
           environments/stage/deployment.yaml
 
-        # Commit and push
+        # Commit and push only when the image reference changed
         git config user.email "$(params.git-email)"
         git config user.name "$(params.git-username)"
         git add environments/stage/deployment.yaml
-        git commit -m "Promote to staging: $(params.image-url)"
-        git push origin main
-
-        echo "GitOps repository updated successfully!"
+        if git diff --cached --quiet; then
+          echo "No changes to commit - staging already references $(params.image-url)"
+        else
+          git commit -m "Promote to staging: $(params.image-url)"
+          git push origin main
+          echo "GitOps repository updated successfully!"
+        fi
 EOF</code></pre>
 </div>
 </div>
@@ -501,14 +1090,6 @@ spec:
         - name: source
           workspace: shared-workspace
 EOF</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Apply the pipeline:</p>
-</div>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f etx-app-promotion-pipeline.yaml</code></pre>
 </div>
 </div>
 </div>
@@ -600,6 +1181,218 @@ EOF</code></pre>
 </li>
 </ol>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_create_stage_application"><a class="anchor" href="#_create_stage_application"></a>Create Stage Application</h3>
+<div class="paragraph">
+<p>Create an Argo CD Application for the staging environment on the secondary cluster.</p>
+</div>
+<div class="paragraph">
+<p>First, get the GitLab URL:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get GitLab URL
+GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+echo "Using GitLab URL: $GITLAB_URL"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then create the Application:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: etx-app-stage
+  namespace: etx-app-dev
+  labels:
+    app.kubernetes.io/part-of: etx_app_base_app
+spec:
+  project: default
+  source:
+    repoURL: ${GITLAB_URL}/software-factory/etx-app-gitops.git
+    targetRevision: main
+    path: environments/stage
+  destination:
+    name: staging
+    namespace: etx-app-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The staging cluster destination points to the secondary cluster that was pre-configured by the bootstrap automation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_stage_deployment"><a class="anchor" href="#_verify_stage_deployment"></a>Verify Stage Deployment</h3>
+<div class="paragraph">
+<p>Check the stage application status:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get application etx-app-stage -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output should be <code>Synced</code>.</p>
+</div>
+<div class="paragraph">
+<p>View the application in Argo CD UI:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the Argo CD dashboard</p>
+</li>
+<li>
+<p>You should see two applications:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>etx-app-dev</code> - Running on primary cluster</p>
+</li>
+<li>
+<p><code>etx-app-stage</code> - Running on secondary (staging) cluster</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click on <code>etx-app-stage</code> to view its deployment status</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Since Argo CD is managing the staging cluster remotely, you can view the application status through the Argo CD UI without needing to login to the secondary cluster directly.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_promotion_workflow_overview"><a class="anchor" href="#_promotion_workflow_overview"></a>Promotion Workflow Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The promotion workflow from dev to staging follows these steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>CI pipeline builds and pushes image to internal registry with commit SHA tag</p>
+</li>
+<li>
+<p>Image is promoted to Quay registry with a <code>stable</code> tag (covered in <a href="#">Promotion Pipeline</a>)</p>
+</li>
+<li>
+<p>GitOps repository <code>environments/stage/deployment.yaml</code> is updated with new image tag</p>
+</li>
+<li>
+<p>Argo CD detects the change and automatically syncs to the secondary cluster</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This GitOps approach ensures:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Version control</strong> - All deployment changes are tracked in Git</p>
+</li>
+<li>
+<p><strong>Auditability</strong> - Full history of what was deployed when</p>
+</li>
+<li>
+<p><strong>Rollback capability</strong> - Revert to previous commit to rollback</p>
+</li>
+<li>
+<p><strong>Multi-cluster consistency</strong> - Same manifests can deploy to multiple clusters</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quick_verification"><a class="anchor" href="#_quick_verification"></a>Quick Verification</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Verify the complete deployment:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Check Argo CD application status
+oc get application etx-app-dev -n etx-app-dev -o jsonpath='{.status.sync.status}: {.status.health.status}{"\n"}'
+
+# Check application pods
+oc get pods -n etx-app-dev -l app=etx-app-base-app
+
+# Check application health endpoint
+curl https://$(oc get route etx-app-base-app -n etx-app-dev -o jsonpath='{.spec.host}')/q/health
+
+# Check OpenTelemetry injection
+oc get pod -n etx-app-dev -l app=etx-app-base-app \
+  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expected output should show: <code>Synced: Healthy</code> for Argo CD, <code>Running</code> pods, and <code>opentelemetry-auto-instrumentation</code> init container.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Common Issues:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ImagePullBackOff:</strong> Image not in registry - run CI pipeline first</p>
+</li>
+<li>
+<p><strong>CrashLoopBackOff:</strong> Check pod logs - often missing Kafka or DB connection</p>
+</li>
+<li>
+<p><strong>Argo CD Out of Sync:</strong> Click "Sync" in Argo CD UI or check GitOps repo for errors</p>
+</li>
+<li>
+<p><strong>Health check failing:</strong> Verify all dependencies (DB, Kafka) are running</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_verify_the_promotion"><a class="anchor" href="#_verify_the_promotion"></a>Verify the Promotion</h3>
@@ -880,17 +1673,8 @@ EOF</code></pre>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Proceed to <a href="#day2-lab2-mta.adoc" class="xref unresolved">Lab 2: Application Modernization (MTA)</a> to learn how to modernize legacy Java applications.</p>
-</div>
-</div>
-</div>
 <nav class="pagination">
-  <span class="prev"><a href="day2-lab1-app-deployment.html">Lab 2</a></span>
-  <span class="next"><a href="day2-lab1-ci-pipeline.html">Lab 4</a></span>
+  <span class="prev"><a href="day2-lab1-app-deployment.html">Application Deployment</a></span>
 </nav>
 </article>
   </div>
