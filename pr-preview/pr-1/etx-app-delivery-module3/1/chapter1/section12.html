@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 1: Dev Spaces and IDE Setup :: Software Factory and CI/CD</title>
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Software Factory and CI/CD</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-ci-pipeline.html">CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-app-deployment.html">Application Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="day2-lab1-promotion.html">Promotion Pipeline</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="section12.html">Dev Spaces &amp; IDE Setup</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 1: Dev Spaces and IDE Setup</h1>
+<div class="sect1">
+<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lab you will create a Dev Spaces workspace for the ETX App Base application, configure it with a custom devfile, verify Git and AI assistant integration, and run Quarkus in development mode connected to external PostgreSQL and Kafka services deployed in the cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_access_dev_spaces_dashboard"><a class="anchor" href="#_access_dev_spaces_dashboard"></a>Access Dev Spaces Dashboard</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Get the Dev Spaces dashboard URL:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get checluster devspaces -n openshift-devspaces \
+  -o jsonpath='{.status.cheURL}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Open this URL in your browser and log in with your OpenShift credentials.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Dev Spaces on OpenShift uses OpenShift OAuth for authentication by design. Unlike other ETX workshop services (GitLab, Quay, Vault) that authenticate against the ETX Keycloak instance, Dev Spaces authenticates users through OpenShift&#8217;s built-in OAuth system.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_1_create_initial_workspace"><a class="anchor" href="#_step_1_create_initial_workspace"></a>Step 1: Create Initial Workspace</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>etx_app_base_app</code> repository does not include a devfile yet. You will create a temporary workspace to add the devfile to the repository.</p>
+</div>
+<div class="paragraph">
+<p>From the Dev Spaces dashboard:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click btn:[Create Workspace]</p>
+</li>
+<li>
+<p>Select <strong>Import from Git</strong></p>
+</li>
+<li>
+<p>Paste the repository URL:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">{gitlab_url}/software-factory/etx_app_base_app.git</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Click btn:[Create &amp; Open]</p>
+</li>
+<li>
+<p>If prompted to authorize with GitLab, follow the OAuth flow and approve access</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Dev Spaces will create a workspace using the Universal Developer Image (UDI) since there is no devfile in the repository yet.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_2_configure_git"><a class="anchor" href="#_step_2_configure_git"></a>Step 2: Configure Git</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once the workspace opens, configure Git identity.</p>
+</div>
+<div class="paragraph">
+<p>Open a terminal from the main menu (hamburger icon in the top-left corner: menu:Terminal[New Terminal]).</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Configure Git identity
+git config --global user.email "platform-developer@example.com"
+git config --global user.name "Platform Developer"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_3_create_the_devfile"><a class="anchor" href="#_step_3_create_the_devfile"></a>Step 3: Create the Devfile</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now create a <code>devfile.yaml</code> file that will configure your development environment.</p>
+</div>
+<div class="paragraph">
+<p>Create the devfile:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat &gt; devfile.yaml &lt;&lt;'EOF'
+schemaVersion: 2.2.0
+metadata:
+  name: etx-app-base-app
+components:
+  - name: development-tooling
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi9-latest
+      env:
+        - name: QUARKUS_HTTP_HOST
+          value: "0.0.0.0"
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/home/user/.m2/repository"
+        # External service connections
+        - name: POSTGRESQL_HOST
+          value: "parasol-db.etx-app-dev.svc.cluster.local"
+        - name: POSTGRESQL_DATABASE
+          value: "parasol"
+        - name: POSTGRESQL_USER
+          value: "parasol"
+        - name: POSTGRESQL_PASSWORD
+          value: "parasol"
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "parasol-kafka-kafka-bootstrap.etx-app-dev.svc.cluster.local:9092"
+      memoryLimit: 5Gi
+      cpuLimit: 2500m
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      endpoints:
+        - name: quarkus-dev
+          targetPort: 8080
+          exposure: public
+          protocol: https
+        - name: debug
+          targetPort: 5005
+          exposure: none
+  - name: m2
+    volume:
+      size: 1G
+commands:
+  - id: package
+    exec:
+      label: "1. Package the application"
+      component: development-tooling
+      commandLine: "./mvnw package"
+      group:
+        kind: build
+        isDefault: true
+  - id: start-dev
+    exec:
+      label: "2. Start Development mode (Hot reload + debug)"
+      component: development-tooling
+      commandLine: "./mvnw compile quarkus:dev"
+      group:
+        kind: run
+        isDefault: true
+  - id: init-continue
+    exec:
+      label: "Initialize Continue config"
+      component: development-tooling
+      workingDir: /home/user
+      commandLine: |
+        mkdir -p /home/user/.continue
+        cat &gt; /home/user/.continue/config.yaml &lt;&lt; EOF
+        name: Continue Config
+        version: 0.0.1
+        models:
+          - name: qwen3-14b
+            provider: vllm
+            model: qwen3-14b
+            apiKey: ${LLM_API_KEY}
+            apiBase: ${LLM_BASE_URL}
+            roles:
+              - chat
+        EOF
+      group:
+        kind: build
+events:
+  postStart:
+    - init-continue
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify the devfile was created:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">ls -la devfile.yaml
+cat devfile.yaml | head -20</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_4_commit_and_push_the_devfile"><a class="anchor" href="#_step_4_commit_and_push_the_devfile"></a>Step 4: Commit and Push the Devfile</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create a feature branch, commit the devfile, and push to GitLab:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Create and switch to feature branch
+git checkout -b feature/add-devfile
+
+# Add and commit the devfile
+git add devfile.yaml
+git commit -m "feat: add devfile for Dev Spaces configuration"
+
+# Push to GitLab
+git push origin feature/add-devfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This follows <a href="#day1-branching-strategies.adoc" class="xref unresolved">GitFlow best practices</a> by isolating changes in a feature branch.</p>
+</div>
+<div class="paragraph">
+<p>When you run <code>git push</code>, Dev Spaces will prompt you to authorize with GitLab:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A notification appears asking you to authenticate</p>
+</li>
+<li>
+<p>Click <strong>Proceed</strong> to open GitLab authorization</p>
+</li>
+<li>
+<p>Grant Dev Spaces access to your repositories</p>
+</li>
+<li>
+<p>Return to the IDE - the push will complete automatically</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_step_5_recreate_workspace_from_devfile"><a class="anchor" href="#_step_5_recreate_workspace_from_devfile"></a>Step 5: Recreate Workspace from Devfile</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now delete the temporary workspace and create a new one that will use your devfile.</p>
+</div>
+<div class="sect2">
+<h3 id="_delete_the_temporary_workspace"><a class="anchor" href="#_delete_the_temporary_workspace"></a>Delete the Temporary Workspace</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Return to the Dev Spaces dashboard browser tab</p>
+</li>
+<li>
+<p>Find your workspace in the list</p>
+</li>
+<li>
+<p>Click the three dots (⋮) menu → <strong>Delete Workspace</strong></p>
+</li>
+<li>
+<p>Confirm deletion and wait until the workspace disappears</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_workspace_from_devfile"><a class="anchor" href="#_create_workspace_from_devfile"></a>Create Workspace from Devfile</h3>
+<div class="paragraph">
+<p>You can create a workspace using either a direct URL (faster) or the UI (manual).</p>
+</div>
+<div id="_tabs_1" class="openblock tabs is-loading">
+<div class="content">
+<div class="ulist tablist">
+<ul>
+<li id="_tabs_1_direct_url_recommended" class="tab">
+<p>Direct URL (Recommended)</p>
+</li>
+<li id="_tabs_1_manual_ui" class="tab">
+<p>Manual UI</p>
+</li>
+</ul>
+</div>
+<div id="_tabs_1_direct_url_recommended--panel" class="tabpanel" aria-labelledby="_tabs_1_direct_url_recommended">
+<div class="paragraph">
+<p>Use a direct URL to create a workspace from a specific branch.</p>
+</div>
+<div class="paragraph">
+<p>Get the required URLs:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get Dev Spaces URL
+DEVSPACES_URL="https://$(oc get checluster devspaces -n openshift-devspaces -o jsonpath='{.status.cheURL}' | sed 's|https://||')"
+
+# Get GitLab URL
+GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+
+# Construct the direct workspace URL
+echo "${DEVSPACES_URL}#${GITLAB_URL}/software-factory/etx_app_base_app/-/tree/feature/add-devfile"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Open the generated URL in your browser. Dev Spaces will:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Automatically import the repository from the feature/add-devfile branch</p>
+</li>
+<li>
+<p>Detect and use the devfile.yaml</p>
+</li>
+<li>
+<p>Configure the workspace with all environment variables and settings</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This skips the manual "Create Workspace → Import from Git" flow.</p>
+</div>
+</div>
+<div id="_tabs_1_manual_ui--panel" class="tabpanel" aria-labelledby="_tabs_1_manual_ui">
+<div class="paragraph">
+<p>Create a workspace through the Dev Spaces dashboard.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click btn:[Create Workspace]</p>
+</li>
+<li>
+<p>Select <strong>Import from Git</strong></p>
+</li>
+<li>
+<p>Paste the repository URL (use the actual GitLab URL from your cluster):</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">{gitlab_url}/software-factory/etx_app_base_app/-/tree/feature/add-devfile</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Click btn:[Create &amp; Open]</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Dev Spaces will detect the devfile in the repository and use it to configure your workspace with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>PostgreSQL and Kafka connection variables</p>
+</li>
+<li>
+<p>Maven cache persistence</p>
+</li>
+<li>
+<p>Quarkus development endpoints</p>
+</li>
+<li>
+<p>Continue AI assistant initialization</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Wait for the workspace to fully start. This may take 2-3 minutes as the container image is pulled and configured.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The direct URL method is faster and can be bookmarked for quick access. You can also specify different branches by changing <code>/tree/feature/add-devfile</code> to <code>/tree/&lt;branch-name&gt;</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_workspace_configuration"><a class="anchor" href="#_verify_workspace_configuration"></a>Verify Workspace Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once the workspace opens, verify it was configured correctly with your devfile.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Dev Spaces automatically clones the repository when you create a workspace from a Git URL. The repository will be available in <code>/projects/etx_app_base_app</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_verify_repository_clone"><a class="anchor" href="#_verify_repository_clone"></a>Verify Repository Clone</h3>
+<div class="paragraph">
+<p>Open a terminal and verify the repository was cloned correctly.</p>
+</div>
+<div class="paragraph">
+<p>Or, you can also verify from a workspace terminal, opening from the burger menu on the top right of the IDE,
+then selecting menu:Terminal[New Terminal]:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The terminal opens in <code>/projects/etx_app_base_app</code> by default. If you&#8217;ve navigated elsewhere, use <code>cd /projects/etx_app_base_app</code> to return.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Verify current branch and recent commits
+git branch --show-current
+git log --oneline -3
+ls -la devfile.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see <code>feature/add-devfile</code> as the current branch and the <code>devfile.yaml</code> file in the repository root.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_check_environment_variables"><a class="anchor" href="#_check_environment_variables"></a>Check Environment Variables</h3>
+<div class="paragraph">
+<p>Verify the environment variables from your devfile are present:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "POSTGRESQL_HOST: $POSTGRESQL_HOST"
+echo "POSTGRESQL_DATABASE: $POSTGRESQL_DATABASE"
+echo "POSTGRESQL_USER: $POSTGRESQL_USER"
+echo "KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">POSTGRESQL_HOST: parasol-db.etx-app-dev.svc.cluster.local
+POSTGRESQL_DATABASE: parasol
+POSTGRESQL_USER: parasol
+KAFKA_BOOTSTRAP_SERVERS: parasol-kafka-kafka-bootstrap.etx-app-dev.svc.cluster.local:9092</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If these variables are <strong>empty</strong>, the workspace was not created with your devfile. This can happen if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The devfile was not pushed to the feature/add-devfile branch in Step 4</p>
+</li>
+<li>
+<p>The workspace was created before the devfile was pushed</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Go back to Step 5 and recreate the workspace after ensuring the devfile is in the repository.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_service_connectivity"><a class="anchor" href="#_test_service_connectivity"></a>Test Service Connectivity</h3>
+<div class="paragraph">
+<p>Verify network connectivity to PostgreSQL:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">timeout 3 bash -c "echo &gt; /dev/tcp/$POSTGRESQL_HOST/5432" &amp;&amp; echo "PostgreSQL connection successful" || echo "PostgreSQL connection failed"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expected: <code>PostgreSQL connection successful</code></p>
+</div>
+<div class="paragraph">
+<p>If you get connection errors, verify you completed <a href="#day2-lab1-supporting-services.adoc" class="xref unresolved">Deploy Supporting Services</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configure_continue_ai_assistant_optional"><a class="anchor" href="#_configure_continue_ai_assistant_optional"></a>Configure Continue AI Assistant (Optional)</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Setting up Continue is optional. Skip this section if you encounter issues or prefer to continue without AI assistance.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_verify_llm_credentials"><a class="anchor" href="#_verify_llm_credentials"></a>Verify LLM Credentials</h3>
+<div class="paragraph">
+<p>Check if LLM credentials are available:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "LLM_API_KEY: $LLM_API_KEY"
+echo "LLM_BASE_URL: $LLM_BASE_URL"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If empty, you need to configure the Continue credentials secret. See <a href="#day2-devspaces-integrations.adoc#_example_ai_code_assistant_continue_credentials" class="xref unresolved">Continue Credentials Setup</a>, then restart your workspace.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_initialize_continue_configuration"><a class="anchor" href="#_initialize_continue_configuration"></a>Initialize Continue Configuration</h3>
+<div class="paragraph">
+<p>The devfile&#8217;s <code>postStart</code> event should have created the Continue config file. Verify:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cat ~/.continue/config.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the file doesn&#8217;t exist, create it manually:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">mkdir -p /home/user/.continue
+cat &gt; /home/user/.continue/config.yaml &lt;&lt; EOF
+name: Continue Config
+version: 0.0.1
+models:
+  - name: qwen3-14b
+    provider: vllm
+    model: qwen3-14b
+    apiKey: ${LLM_API_KEY}
+    apiBase: ${LLM_BASE_URL}
+    roles:
+      - chat
+EOF
+
+cat ~/.continue/config.yaml</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_continue_extension"><a class="anchor" href="#_install_continue_extension"></a>Install Continue Extension</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open Extensions view (Ctrl+Shift+X)</p>
+</li>
+<li>
+<p>Search for "Continue"</p>
+</li>
+<li>
+<p>Click <strong>Install</strong> on "Continue - Codestral, Claude, and more"</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you see "error while fetching extensions", wait a moment and retry, or skip Continue setup.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_continue"><a class="anchor" href="#_test_continue"></a>Test Continue</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the Continue panel (sidebar icon)</p>
+</li>
+<li>
+<p>Send a message: <code>Hello, what model are you?</code></p>
+</li>
+<li>
+<p>You should receive a response from <strong>qwen3-14b</strong></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Expected response:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">I am Qwen, a large language model developed by Alibaba Cloud.
+How can I assist you today?</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This confirms Continue is connected to the LLM endpoint and ready to use.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Continue is optional. If you encounter issues, proceed without it.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_run_quarkus_in_development_mode"><a class="anchor" href="#_run_quarkus_in_development_mode"></a>Run Quarkus in Development Mode</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When you open a terminal in the workspace, you are automatically positioned in the project directory.</p>
+</div>
+<div class="paragraph">
+<p>Verify your current location and start Quarkus development mode:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Verify you're in the project directory
+pwd
+
+# Start Quarkus in development mode
+./mvnw compile quarkus:dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Expected output from <code>pwd</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">/projects/etx_app_base_app</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Quarkus connects to the external PostgreSQL and Kafka services using the environment variables from your devfile.</p>
+</div>
+<div class="paragraph">
+<p>Wait for the application to start. You should see output similar to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Listening for transport dt_socket at address: 5005
+__  ____  __  _____   ___  __ ____  ______
+ --/ __ \/ / / / _ | / _ \/ //_/ / / / __/
+ -/ /_/ / /_/ / __ |/ , _/ ,&lt; / /_/ /\ \
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/
+
+INFO  [io.sma.rea.mes.kafka] SRMSG18229: Configured topics for channel 'emails-in': [intake]
+INFO  [io.sma.rea.mes.kafka] SRMSG18258: Kafka producer kafka-producer-emails-out, connected to Kafka brokers 'parasol-kafka-kafka-bootstrap.etx-app-dev.svc.cluster.local:9092'
+INFO  [io.sma.rea.mes.kafka] SRMSG18257: Kafka consumer kafka-consumer-emails-in, connected to Kafka brokers 'parasol-kafka-kafka-bootstrap.etx-app-dev.svc.cluster.local:9092'
+INFO  [io.quarkus] parasol-reimagined 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.17.5) started in 7.298s. Listening on: http://0.0.0.0:8080
+INFO  [io.quarkus] Profile dev activated. Live Coding activated.
+
+--
+Tests paused
+Press [e] to edit command line args, [r] to resume testing, [h] for more options&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Key indicators of successful startup:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Debug port listening</strong>: <code>Listening for transport dt_socket at address: 5005</code></p>
+</li>
+<li>
+<p><strong>Kafka connected</strong>: Messages showing connection to <code>parasol-kafka-kafka-bootstrap.etx-app-dev.svc.cluster.local:9092</code></p>
+</li>
+<li>
+<p><strong>Application started</strong>: <code>Listening on: <a href="http://0.0.0.0:8080" class="bare">http://0.0.0.0:8080</a></code></p>
+</li>
+<li>
+<p><strong>Live Coding activated</strong>: Hot reload is enabled</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_access_the_application"><a class="anchor" href="#_access_the_application"></a>Access the Application</h3>
+<div class="paragraph">
+<p>When Quarkus starts, a <strong>popup notification</strong> appears in the bottom-right corner with a button to open the application endpoint.</p>
+</div>
+<div class="paragraph">
+<p>Click <strong>Open in New Tab</strong> or <strong>Open in Preview</strong> to access the running application.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you miss the popup, press <code>Ctrl+C</code> to stop Quarkus, then run <code>./mvnw compile quarkus:dev</code> again to restart and see the notification.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The endpoint URL follows this structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">https://&lt;username&gt;-&lt;project-name&gt;-quarkus-dev.apps.&lt;cluster-domain&gt;/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">https://admin-etx-app-base-app-quarkus-dev.apps.cluster-grsml.dynamic2.redhatworkshops.io/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also find the URL in the <strong>Endpoints</strong> panel (usually in the bottom-left sidebar).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_external_services_configuration"><a class="anchor" href="#_external_services_configuration"></a>External Services Configuration</h3>
+<div class="paragraph">
+<p>Your application connects to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>PostgreSQL</strong>: <code>parasol-db.etx-app-dev.svc.cluster.local:5432</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Database: <code>parasol</code></p>
+</li>
+<li>
+<p>Credentials: <code>parasol/parasol</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Kafka</strong>: <code>parasol-kafka-kafka-bootstrap.etx-app-dev.svc.cluster.local:9092</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Topic: <code>intake</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These are shared services across all development workspaces, deployed in <a href="#day2-lab1-supporting-services.adoc" class="xref unresolved">Deploy Supporting Services</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_workspace_lifecycle"><a class="anchor" href="#_workspace_lifecycle"></a>Workspace Lifecycle</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Useful operations from the Dev Spaces dashboard:</p>
+</div>
+<div class="paragraph">
+<p><strong>Stop workspace</strong> (preserves files on PVC):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click three dots (⋮) → <strong>Stop Workspace</strong></p>
+</li>
+<li>
+<p>Pod is deleted, PVC is retained</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Start workspace</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click three dots (⋮) → <strong>Start in background</strong></p>
+</li>
+<li>
+<p>Your files, Maven cache, and Git state persist</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Delete workspace</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click three dots (⋮) → <strong>Delete Workspace</strong></p>
+</li>
+<li>
+<p>Removes pod and PVC</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps"><a class="anchor" href="#_next_steps"></a>Next Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Proceed to <a href="day2-lab1-ci-pipeline.html" class="xref page">CI Pipeline</a>.</p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>
