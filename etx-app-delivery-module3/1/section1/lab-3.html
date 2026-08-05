@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 3: Test the CI Pipeline :: Software Factory and CI/CD</title>
+    <link rel="prev" href="lab-2.html">
+    <link rel="next" href="lab-4.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-5.html">Lab 5: Validate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section3/index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="index.html">CI with OpenShift Pipelines</a></li>
+    <li><a href="lab-3.html">Lab 3: Test CI Pipeline</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 3: Test the CI Pipeline</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lab, you&#8217;ll manually execute the CI pipeline to verify that it successfully clones the application source code, builds the application, retrieves registry credentials from Vault, and pushes the container image to the internal OpenShift registry.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll also learn how to monitor pipeline execution and troubleshoot common issues before configuring automated pipeline triggers.</p>
+</div>
+<div class="paragraph">
+<p>By the end of this lab, you will have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Created a PipelineRun to execute the CI pipeline manually</p>
+</li>
+<li>
+<p>Monitored the execution of PipelineRuns and TaskRuns</p>
+</li>
+<li>
+<p>Verified that the application image was successfully built and pushed</p>
+</li>
+<li>
+<p>Learned how to troubleshoot common pipeline failures</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_run_the_ci_pipeline"><a class="anchor" href="#_run_the_ci_pipeline"></a>Run the CI Pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before configuring Git webhooks, verify that the pipeline executes successfully by creating a manual PipelineRun.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the <strong>OpenShift Console URL</strong> listed on the <strong>RHDP Lab Environment</strong> page.</p>
+</li>
+<li>
+<p>Sign in using any one of the credentials listed in the <a href="#lab-env-overview.adoc#lab-credentials" class="xref unresolved">Lab Credentials</a> section.</p>
+</li>
+<li>
+<p>After signing in, open the <strong>Developer</strong> perspective.</p>
+</li>
+<li>
+<p>Click the <strong>&gt;_</strong> (<strong>Web Terminal</strong>) icon in the upper-right corner to launch a terminal session.</p>
+</li>
+<li>
+<p>Retrieve the GitLab route by running:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get GitLab URL dynamically
+GITLAB_URL="https://$(oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "Using GitLab URL: ${GITLAB_URL}"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a PipelineRun:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc create -f - &lt;&lt;EOF
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: etx-app-base-app-ci-
+  namespace: etx-app-dev
+spec:
+  pipelineRef:
+    name: etx-app-base-app-ci
+  params:
+    - name: git-url
+      value: ${GITLAB_URL}/software-factory/etx_app_base_app
+    - name: git-revision
+      value: main
+    - name: image-name
+      value: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: pipeline-workspace-pvc
+  taskRunTemplate:
+    serviceAccountName: pipeline
+EOF</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The PipelineRun starts the CI pipeline using the source code in GitLab and executes each configured task.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_monitor_pipeline_execution"><a class="anchor" href="#_monitor_pipeline_execution"></a>Monitor Pipeline Execution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once the PipelineRun starts, monitor its progress to ensure each task completes successfully.</p>
+</div>
+<div class="sect2">
+<h3 id="_watch_the_pipelinerun_status"><a class="anchor" href="#_watch_the_pipelinerun_status"></a>Watch the PipelineRun Status</h3>
+<div class="paragraph">
+<p>The simplest way to monitor execution is to watch the PipelineRun status in real time.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pipelinerun -n etx-app-dev -w</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the pipeline finishes successfully, its status changes to <code>Succeeded</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_view_taskrun_details"><a class="anchor" href="#_view_taskrun_details"></a>View TaskRun Details</h3>
+<div class="paragraph">
+<p>To inspect the individual tasks executed by the pipeline:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">LATEST_PR=$(oc get pipelinerun \
+  -n etx-app-dev \
+  --sort-by=.metadata.creationTimestamp \
+  -o jsonpath='{.items[-1].metadata.name}')
+
+echo "PipelineRun: ${LATEST_PR}"
+
+oc get taskrun \
+  -n etx-app-dev \
+  -l tekton.dev/pipelineRun=${LATEST_PR}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To view the logs for a specific TaskRun:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc logs \
+  -n etx-app-dev \
+  -l tekton.dev/taskRun=&lt;taskrun-name&gt; \
+  -f</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Replace <code>&lt;taskrun-name&gt;</code> with one of the TaskRun names returned by the previous command.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verify_the_container_image"><a class="anchor" href="#_verify_the_container_image"></a>Verify the Container Image</h3>
+<div class="paragraph">
+<p>After the pipeline completes, verify that the container image was pushed successfully.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get imagestream etx-app-base-app -n etx-app-dev
+
+oc get imagestreamtag etx-app-base-app:main -n etx-app-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If both resources exist, the image was successfully built and pushed to the internal OpenShift image registry.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshoot_common_issues"><a class="anchor" href="#_troubleshoot_common_issues"></a>Troubleshoot Common Issues</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the pipeline does not complete successfully, the following checks can help identify common problems.</p>
+</div>
+<div class="sect2">
+<h3 id="_vault_authentication_errors"><a class="anchor" href="#_vault_authentication_errors"></a>Vault Authentication Errors</h3>
+<div class="paragraph">
+<p>If the <code>fetch-creds</code> task fails with an error similar to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>parse error: Invalid numeric literal</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify that Vault is running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n vault</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also confirm that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Kubernetes authentication method is configured in Vault.</p>
+</li>
+<li>
+<p>The <code>pipeline</code> ServiceAccount exists in the <code>etx-app-dev</code> project.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get serviceaccount pipeline -n etx-app-dev</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_git_clone_errors"><a class="anchor" href="#_git_clone_errors"></a>Git Clone Errors</h3>
+<div class="paragraph">
+<p>If the <code>git-clone</code> task cannot resolve the GitLab host, verify the GitLab route:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If necessary, recreate the PipelineRun using the correct GitLab URL.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_image_push_verification"><a class="anchor" href="#_image_push_verification"></a>Image Push Verification</h3>
+<div class="paragraph">
+<p>If the pipeline reports success but the image cannot be found, verify the ImageStream:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get imagestream etx-app-base-app -n etx-app-dev
+
+oc get imagestreamtag etx-app-base-app:main -n etx-app-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A successful pipeline should create both resources in the <code>etx-app-dev</code> project.</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lab-2.html">Lab 2: Create the CI Pipeline</a></span>
+  <span class="next"><a href="lab-4.html">Lab 4: Automate CI Pipeline</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 {
-  "totalSeconds": 1192,
-  "pageCount": 6,
+  "totalSeconds": 2124,
+  "pageCount": 29,
   "pages": [
     {
       "module": "ROOT",
@@ -13,24 +13,139 @@
       "seconds": 68
     },
     {
-      "module": "chapter1",
+      "module": "section1",
       "page": "index.adoc",
-      "seconds": 1
+      "seconds": 19
     },
     {
-      "module": "chapter1",
-      "page": "day2-lab1-ci-pipeline.adoc",
-      "seconds": 333
+      "module": "section1",
+      "page": "lab-1.adoc",
+      "seconds": 54
     },
     {
-      "module": "chapter1",
-      "page": "day2-lab1-app-deployment.adoc",
-      "seconds": 250
+      "module": "section1",
+      "page": "lab-2.adoc",
+      "seconds": 121
     },
     {
-      "module": "chapter1",
-      "page": "day2-lab1-promotion.adoc",
-      "seconds": 450
+      "module": "section1",
+      "page": "lab-3.adoc",
+      "seconds": 86
+    },
+    {
+      "module": "section1",
+      "page": "lab-4.adoc",
+      "seconds": 91
+    },
+    {
+      "module": "section1",
+      "page": "lab-5.adoc",
+      "seconds": 103
+    },
+    {
+      "module": "section1",
+      "page": "lab-summary.adoc",
+      "seconds": 38
+    },
+    {
+      "module": "section2",
+      "page": "index.adoc",
+      "seconds": 31
+    },
+    {
+      "module": "section2",
+      "page": "lab-6.adoc",
+      "seconds": 45
+    },
+    {
+      "module": "section2",
+      "page": "lab-7.adoc",
+      "seconds": 103
+    },
+    {
+      "module": "section2",
+      "page": "lab-8.adoc",
+      "seconds": 82
+    },
+    {
+      "module": "section2",
+      "page": "lab-9.adoc",
+      "seconds": 53
+    },
+    {
+      "module": "section2",
+      "page": "lab-10.adoc",
+      "seconds": 58
+    },
+    {
+      "module": "section2",
+      "page": "lab-11.adoc",
+      "seconds": 93
+    },
+    {
+      "module": "section2",
+      "page": "lab-summary.adoc",
+      "seconds": 18
+    },
+    {
+      "module": "section3",
+      "page": "index.adoc",
+      "seconds": 32
+    },
+    {
+      "module": "section3",
+      "page": "lab-prereq.adoc",
+      "seconds": 154
+    },
+    {
+      "module": "section3",
+      "page": "lab-12.adoc",
+      "seconds": 88
+    },
+    {
+      "module": "section3",
+      "page": "lab-13.adoc",
+      "seconds": 86
+    },
+    {
+      "module": "section3",
+      "page": "lab-14.adoc",
+      "seconds": 83
+    },
+    {
+      "module": "section3",
+      "page": "lab-15.adoc",
+      "seconds": 89
+    },
+    {
+      "module": "section3",
+      "page": "lab-16.adoc",
+      "seconds": 82
+    },
+    {
+      "module": "section3",
+      "page": "lab-17.adoc",
+      "seconds": 63
+    },
+    {
+      "module": "section3",
+      "page": "lab-18.adoc",
+      "seconds": 92
+    },
+    {
+      "module": "section3",
+      "page": "lab-19.adoc",
+      "seconds": 86
+    },
+    {
+      "module": "section3",
+      "page": "lab-20.adoc",
+      "seconds": 46
+    },
+    {
+      "module": "section3",
+      "page": "lab-summary.adoc",
+      "seconds": 70
     }
   ]
 }

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 4: Automate the CI Pipeline :: Software Factory and CI/CD</title>
+    <link rel="prev" href="lab-3.html">
+    <link rel="next" href="lab-5.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-5.html">Lab 5: Validate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section3/index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="index.html">CI with OpenShift Pipelines</a></li>
+    <li><a href="lab-4.html">Lab 4: Automate CI Pipeline</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 4: Automate the CI Pipeline</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lab, you&#8217;ll configure Tekton Triggers and GitLab webhooks to automatically start the CI pipeline whenever changes are pushed to the application repository.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll create the Tekton Trigger resources, expose an EventListener, configure GitLab to send push events, and verify that commits automatically trigger new PipelineRuns.</p>
+</div>
+<div class="paragraph">
+<p>By the end of this lab, you will have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Created a TriggerBinding to map GitLab webhook payloads to pipeline parameters</p>
+</li>
+<li>
+<p>Created a TriggerTemplate that generates PipelineRuns</p>
+</li>
+<li>
+<p>Deployed an EventListener to receive GitLab webhook events</p>
+</li>
+<li>
+<p>Exposed the EventListener using an OpenShift Route</p>
+</li>
+<li>
+<p>Configured a GitLab webhook to trigger the pipeline automatically</p>
+</li>
+<li>
+<p>Verified end-to-end CI pipeline automation</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_the_tekton_trigger_resources"><a class="anchor" href="#_create_the_tekton_trigger_resources"></a>Create the Tekton Trigger Resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Tekton Triggers connect external events, such as GitLab push notifications, to Tekton Pipelines.</p>
+</div>
+<div class="paragraph">
+<p>In this exercise, you&#8217;ll create the TriggerBinding, TriggerTemplate, and EventListener resources required to automatically start a new PipelineRun whenever code is pushed to GitLab.</p>
+</div>
+<div class="sect2">
+<h3 id="_create_the_triggerbinding"><a class="anchor" href="#_create_the_triggerbinding"></a>Create the TriggerBinding</h3>
+<div class="paragraph">
+<p>The TriggerBinding extracts values from the GitLab webhook payload and maps them to parameters used by the pipeline.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>In the Web Terminal, run:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"><existing TriggerBinding YAML></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The binding maps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Git repository URL</p>
+</li>
+<li>
+<p>The commit SHA used as the pipeline revision</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_the_triggertemplate"><a class="anchor" href="#_create_the_triggertemplate"></a>Create the TriggerTemplate</h3>
+<div class="paragraph">
+<p>The TriggerTemplate defines the PipelineRun that Tekton creates when a webhook event is received.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run the following command:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"><existing TriggerTemplate YAML></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The template creates a new PipelineRun using the shared workspace and pipeline ServiceAccount created in the previous labs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_the_eventlistener"><a class="anchor" href="#_create_the_eventlistener"></a>Create the EventListener</h3>
+<div class="paragraph">
+<p>The EventListener exposes an HTTP endpoint that receives webhook requests from GitLab.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"><existing EventListener YAML></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The EventListener connects the GitLab webhook to the TriggerBinding and TriggerTemplate.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_expose_the_eventlistener"><a class="anchor" href="#_expose_the_eventlistener"></a>Expose the EventListener</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>GitLab must be able to securely reach the EventListener.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an HTTPS route:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">&lt;existing route command&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Retrieve the EventListener URL:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">&lt;existing echo command&gt;</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Copy this URL. You&#8217;ll use it when configuring the GitLab webhook.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+GitLab requires HTTPS endpoints for webhooks. The OpenShift Route provides TLS termination for the EventListener.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configure_the_gitlab_webhook"><a class="anchor" href="#_configure_the_gitlab_webhook"></a>Configure the GitLab Webhook</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To allow GitLab to automatically trigger the pipeline, configure a webhook for the application repository.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Creating GitLab webhooks requires <strong>Maintainer</strong> or <strong>Owner</strong> access to the project. Administrative configuration also requires the GitLab <code>root</code> account.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_enable_local_network_webhooks"><a class="anchor" href="#_enable_local_network_webhooks"></a>Enable Local Network Webhooks</h3>
+<div class="paragraph">
+<p>By default, GitLab blocks webhook requests to internal cluster addresses.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Retrieve the GitLab administrator information:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">&lt;existing command&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Sign in to GitLab using the built-in <code>root</code> administrator account.</p>
+</li>
+<li>
+<p>Navigate to:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><span class="menuseq"><b class="menu">Admin Area</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Settings</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Network</b></span></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Expand <strong>Outbound requests</strong>.</p>
+</li>
+<li>
+<p>Enable:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>☑ Allow requests to the local network from webhooks and integrations</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Save the changes.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This setting allows GitLab to communicate with services running inside the OpenShift cluster, including the Tekton EventListener.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_the_repository_webhook"><a class="anchor" href="#_create_the_repository_webhook"></a>Create the Repository Webhook</h3>
+<div class="paragraph">
+<p>After enabling local network requests, configure the repository webhook.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the <code>etx_app_base_app</code> repository.</p>
+</li>
+<li>
+<p>Navigate to:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><span class="menuseq"><b class="menu">Settings</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Webhooks</b></span></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <b class="button">Add new webhook</b>.</p>
+</li>
+<li>
+<p>Configure the webhook:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>URL: Paste the EventListener Route URL</p>
+</li>
+<li>
+<p>Trigger: Push events</p>
+</li>
+<li>
+<p>SSL Verification: Disable for this lab environment</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <b class="button">Add webhook</b>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_the_webhook"><a class="anchor" href="#_test_the_webhook"></a>Test the Webhook</h3>
+<div class="paragraph">
+<p>Verify that GitLab can communicate with the EventListener.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Select the webhook.</p>
+</li>
+<li>
+<p>Click <b class="button">Test</b> → <strong>Push events</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A successful test returns an HTTP <code>202 Accepted</code> response.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_automatic_pipeline_execution"><a class="anchor" href="#_verify_automatic_pipeline_execution"></a>Verify Automatic Pipeline Execution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After the webhook is configured successfully, verify that GitLab automatically starts the CI pipeline.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Commit and push a small change to the <code>main</code> branch.</p>
+</li>
+<li>
+<p>Monitor PipelineRuns:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pipelinerun -n etx-app-dev -w</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A new PipelineRun should be created automatically without manual intervention.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshoot_common_issues"><a class="anchor" href="#_troubleshoot_common_issues"></a>Troubleshoot Common Issues</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the webhook does not trigger the pipeline, verify the following.</p>
+</div>
+<div class="sect2">
+<h3 id="_invalid_url"><a class="anchor" href="#_invalid_url"></a>Invalid URL</h3>
+<div class="paragraph">
+<p>If GitLab reports <strong>Invalid url given</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Ensure local network webhooks are enabled.</p>
+</li>
+<li>
+<p>Verify the EventListener Route uses HTTPS.</p>
+</li>
+<li>
+<p>Confirm the Route is reachable.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ssl_certificate_errors"><a class="anchor" href="#_ssl_certificate_errors"></a>SSL Certificate Errors</h3>
+<div class="paragraph">
+<p>If webhook delivery fails due to certificate validation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Disable SSL verification for the webhook.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This is acceptable for the lab environment because the cluster uses self-signed certificates.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_eventlistener_not_receiving_requests"><a class="anchor" href="#_eventlistener_not_receiving_requests"></a>EventListener Not Receiving Requests</h3>
+<div class="paragraph">
+<p>Verify that the EventListener pod is running:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n etx-app-dev | grep el-gitlab-listener
+
+oc logs -n etx-app-dev -l eventlistener=gitlab-listener</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The logs should show incoming webhook requests from GitLab.</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lab-3.html">Lab 3: Test CI Pipeline</a></span>
+  <span class="next"><a href="lab-5.html">Lab 5: Validate CI Pipeline</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

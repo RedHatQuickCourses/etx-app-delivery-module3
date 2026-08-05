@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 18: Verify the GitOps Promotion Workflow :: Software Factory and CI/CD</title>
+    <link rel="prev" href="lab-17.html">
+    <link rel="next" href="lab-19.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section1/index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-14.html">Lab 14: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-20.html">Lab 20: Rollback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="index.html">Application Promotion and GitOps Deployment Workflow</a></li>
+    <li><a href="lab-18.html">Lab 18: Verify Promotion</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 18: Verify the GitOps Promotion Workflow</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lab, you&#8217;ll validate the complete GitOps promotion workflow by verifying that the application is healthy in the development environment and that the promotion pipeline successfully synchronized the staging environment through Argo CD.</p>
+</div>
+<div class="paragraph">
+<p>By the end of this lab, you will have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Reviewed the end-to-end GitOps promotion workflow</p>
+</li>
+<li>
+<p>Verified that the development application is healthy</p>
+</li>
+<li>
+<p>Confirmed that the GitOps repository references the promoted image</p>
+</li>
+<li>
+<p>Verified that Argo CD synchronized the staging application successfully</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_understand_the_promotion_workflow"><a class="anchor" href="#_understand_the_promotion_workflow"></a>Understand the Promotion Workflow</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this exercise, you&#8217;ll review how a container image moves from the development environment to the staging environment using Tekton, Quay, Git, and Argo CD.</p>
+</div>
+<div class="paragraph">
+<p>The promotion workflow consists of the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The CI pipeline builds the application and pushes a container image to the OpenShift internal registry using the commit SHA as the image tag.</p>
+</li>
+<li>
+<p>The promotion pipeline copies the validated image to the Quay registry and assigns it the <code>stable</code> tag.</p>
+</li>
+<li>
+<p>The promotion pipeline updates the <code>environments/stage/deployment.yaml</code> manifest in the GitOps repository with the promoted image.</p>
+</li>
+<li>
+<p>Argo CD detects the Git commit and automatically synchronizes the updated manifests to the staging cluster.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This GitOps workflow provides several advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Version control</strong> – All deployment changes are stored and tracked in Git.</p>
+</li>
+<li>
+<p><strong>Auditability</strong> – Every deployment is associated with a Git commit, providing a complete deployment history.</p>
+</li>
+<li>
+<p><strong>Rollback capability</strong> – Reverting a Git commit restores a previous application version.</p>
+</li>
+<li>
+<p><strong>Multi-cluster consistency</strong> – The same Git repository can be used to deploy applications across multiple clusters.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_the_development_deployment"><a class="anchor" href="#_verify_the_development_deployment"></a>Verify the Development Deployment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Confirm that the development environment is healthy and that the application is running correctly.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verify the deployment status:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Check Argo CD application status
+oc get application etx-app-dev -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}: {.status.health.status}{"\n"}'
+
+# Check application pods
+oc get pods -n etx-app-dev -l app=etx-app-base-app
+
+# Verify the application health endpoint
+curl https://$(oc get route etx-app-base-app -n etx-app-dev \
+  -o jsonpath='{.spec.host}')/q/health
+
+# Verify OpenTelemetry auto-instrumentation
+oc get pod -n etx-app-dev -l app=etx-app-base-app \
+  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should observe:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Argo CD reports <code>Synced: Healthy</code></p>
+</li>
+<li>
+<p>Application pods are in the <code>Running</code> state</p>
+</li>
+<li>
+<p>The health endpoint returns a successful response</p>
+</li>
+<li>
+<p>The <code>opentelemetry-auto-instrumentation</code> init container is present</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Common Issues</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ImagePullBackOff</strong> — Verify that the CI pipeline successfully built and pushed the application image.</p>
+</li>
+<li>
+<p><strong>CrashLoopBackOff</strong> — Review the application logs and confirm that required services such as PostgreSQL and Kafka are available.</p>
+</li>
+<li>
+<p><strong>Argo CD Out of Sync</strong> — Synchronize the application manually from the Argo CD dashboard or verify the GitOps repository changes.</p>
+</li>
+<li>
+<p><strong>Health endpoint unavailable</strong> — Ensure that all supporting services are running and the application has started successfully.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_the_staging_promotion"><a class="anchor" href="#_verify_the_staging_promotion"></a>Verify the Staging Promotion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Confirm that the promotion pipeline updated the GitOps repository and that Argo CD synchronized the staging environment.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verify that the staging deployment manifest references the promoted image:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ~/workshop/etx-app-gitops
+
+git pull origin main
+
+grep image: environments/stage/deployment.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The deployment manifest should reference the Quay image using the <code>stable</code> tag.</p>
+</div>
+</li>
+<li>
+<p>Verify the staging application status:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get application etx-app-stage -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output should be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Synced</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open the Argo CD dashboard.</p>
+</li>
+<li>
+<p>Select the <code>etx-app-stage</code> application and verify that:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The application status is <strong>Synced</strong> and <strong>Healthy</strong></p>
+</li>
+<li>
+<p>The deployment references the promoted image stored in Quay</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>At this point, you have validated the complete GitOps promotion workflow. A successful promotion updates the GitOps repository, and Argo CD automatically deploys the new application version to the staging cluster.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lab-17.html">Lab 17: Stage Deployment</a></span>
+  <span class="next"><a href="lab-19.html">Lab 19: Promotion Automation</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

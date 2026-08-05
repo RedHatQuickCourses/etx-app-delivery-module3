@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 2: Create the CI Pipeline :: Software Factory and CI/CD</title>
+    <link rel="prev" href="lab-1.html">
+    <link rel="next" href="lab-3.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-5.html">Lab 5: Validate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section3/index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="index.html">CI with OpenShift Pipelines</a></li>
+    <li><a href="lab-2.html">Lab 2: Create the CI Pipeline</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 2: Create the CI Pipeline</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this lab, you&#8217;ll create a Tekton CI pipeline that builds the application, retrieves container registry credentials from HashiCorp Vault, and produces a container image ready for deployment.</p>
+</div>
+<div class="paragraph">
+<p>By the end of this lab, you will have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Created a custom Tekton Task to retrieve registry credentials from Vault</p>
+</li>
+<li>
+<p>Built a reusable Tekton Pipeline for application builds</p>
+</li>
+<li>
+<p>Configured the pipeline to clone source code, build the application, and build a container image</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_task_to_retrieve_registry_credentials"><a class="anchor" href="#_create_a_task_to_retrieve_registry_credentials"></a>Create a Task to Retrieve Registry Credentials</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The CI pipeline requires credentials to authenticate with the container registry before it can push application images.</p>
+</div>
+<div class="paragraph">
+<p>In this section, you&#8217;ll create a custom Tekton Task that authenticates to HashiCorp Vault using the Kubernetes authentication method configured in the previous supporting services lab, retrieves the registry credentials, and makes them available to subsequent pipeline tasks.</p>
+</div>
+<div class="paragraph">
+<p>First, retrieve the Vault route from the OpenShift cluster.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">VAULT_URL="https://$(oc get route \
+  -n vault \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "${VAULT_URL}"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, create the Tekton Task.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: vault-fetch-registry-creds
+  namespace: etx-app-dev
+spec:
+  workspaces:
+    - name: source
+  results:
+    - name: registry-server
+    - name: registry-username
+    - name: registry-password
+  steps:
+    - name: fetch
+      image: registry.access.redhat.com/ubi9/ubi-minimal:latest
+      script: |
+        #!/bin/sh
+        set -e
+
+        microdnf install -y jq &amp;&amp; microdnf clean all
+
+        VAULT_ADDR="${VAULT_URL}"
+        SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+        VAULT_TOKEN=$(curl -s --request POST \
+          "${VAULT_ADDR}/v1/auth/kubernetes/login" \
+          --data "{\"role\":\"pipeline\",\"jwt\":\"${SA_TOKEN}\"}" \
+          | jq -r '.auth.client_token')
+
+        CREDS=$(curl -s \
+          --header "X-Vault-Token: ${VAULT_TOKEN}" \
+          "${VAULT_ADDR}/v1/secret/data/registry")
+
+        echo "${CREDS}" | jq -r '.data.data.server' \
+          | tr -d '\n' &gt; $(results.registry-server.path)
+
+        echo "${CREDS}" | jq -r '.data.data.username' \
+          | tr -d '\n' &gt; $(results.registry-username.path)
+
+        echo "${CREDS}" | jq -r '.data.data.password' \
+          | tr -d '\n' &gt; $(results.registry-password.path)
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This Task authenticates to Vault using the ServiceAccount token mounted into the pipeline pod. It retrieves the registry server, username, and password from Vault and exposes them as Tekton Task results for use by downstream pipeline tasks.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_the_ci_pipeline"><a class="anchor" href="#_create_the_ci_pipeline"></a>Create the CI Pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Next, create the Tekton Pipeline that orchestrates the complete CI workflow.</p>
+</div>
+<div class="paragraph">
+<p>The pipeline performs the following activities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Clones the application source code from Git</p>
+</li>
+<li>
+<p>Builds and tests the application using Maven</p>
+</li>
+<li>
+<p>Retrieves registry credentials from Vault</p>
+</li>
+<li>
+<p>Builds the application container image using Buildah</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create the pipeline.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: etx-app-base-app-ci
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+      default: main
+    - name: image-name
+      type: string
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: clone
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+      params:
+        - name: URL
+          value: $(params.git-url)
+        - name: REVISION
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+
+    - name: build-and-test
+      runAfter: [clone]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: maven
+          - name: namespace
+            value: openshift-pipelines
+      params:
+        - name: GOALS
+          value: ["package", "-DskipTests=false"]
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: fetch-creds
+      runAfter: [clone]
+      taskRef:
+        name: vault-fetch-registry-creds
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: build-image
+      runAfter: [build-and-test, fetch-creds]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+      params:
+        - name: IMAGE
+          value: $(params.image-name):$(params.git-revision)
+        - name: DOCKERFILE
+          value: Containerfile
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+EOF</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>git-clone</code>, <code>maven</code>, and <code>buildah</code> Tasks are installed by the OpenShift Pipelines Operator in the <code>openshift-pipelines</code> namespace. This pipeline references them using the cluster resolver, which replaces the deprecated <code>ClusterTask</code> resource. You can verify that these Tasks are available by running:
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get task -n openshift-pipelines</code></pre>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lab-1.html">Lab 1: CI Pipeline</a></span>
+  <span class="next"><a href="lab-3.html">Lab 3: Test CI Pipeline</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

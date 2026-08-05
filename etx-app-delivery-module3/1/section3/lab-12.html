@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 12: Configure Quay for Image Promotion :: Software Factory and CI/CD</title>
+    <link rel="prev" href="lab-prereq.html">
+    <link rel="next" href="lab-13.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section1/index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-14.html">Lab 14: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-20.html">Lab 20: Rollback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="index.html">Application Promotion and GitOps Deployment Workflow</a></li>
+    <li><a href="lab-12.html">Lab 12: Configure Quay</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 12: Configure Quay for Image Promotion</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this exercise, you&#8217;ll prepare Quay for the image promotion workflow by creating the repository used by the promotion pipeline and storing robot account credentials securely in Vault.</p>
+</div>
+<div class="paragraph">
+<p>By the end of this exercise, you will have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Created the <code>etx_app</code> organization and <code>etx-app-base-app</code> repository in Quay</p>
+</li>
+<li>
+<p>Created a robot account for non-interactive image promotion</p>
+</li>
+<li>
+<p>Stored the Quay robot credentials in Vault for use by the promotion pipeline</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The promotion pipeline pushes images to Quay at <code>etx_app/etx-app-base-app</code> and retrieves authentication credentials from Vault at <code>secret/registry/quay</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Interactive users authenticate to Quay using Keycloak Single Sign-On, while CI/CD pipelines use robot accounts for automated, non-interactive authentication.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_the_quay_organization_and_repository"><a class="anchor" href="#_create_the_quay_organization_and_repository"></a>Create the Quay Organization and Repository</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create the Quay organization and repository that will store promoted application images.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the <strong>Quay</strong> URL from your lab environment or click the <strong>Quay</strong> tab in your Showroom.</p>
+</li>
+<li>
+<p>Sign in using ETX Keycloak Single Sign-On with one of the lab accounts:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>platform-admin</code> / <code>openshift</code></p>
+</li>
+<li>
+<p><code>platform-developer</code> / <code>openshift</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If prompted, remove any hyphens (<code>-</code>) from the suggested username and click <b class="button">Confirm Username</b>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="valid.png"><img src="_images/valid.png" alt="valid" width="400"></a>
+</div>
+<div class="title">Figure 1. Validate Quay Username</div>
+</div>
+</li>
+<li>
+<p>Click <b class="button">Create New Organization</b>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="org.png"><img src="_images/org.png" alt="org" width="400"></a>
+</div>
+<div class="title">Figure 2. Create Organization</div>
+</div>
+</li>
+<li>
+<p>Create an organization named <code>etx_app</code>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="create_org.png"><img src="_images/create_org.png" alt="create org" width="400"></a>
+</div>
+<div class="title">Figure 3. Create the Organization</div>
+</div>
+</li>
+<li>
+<p>Inside the organization, click <b class="button">Create New Repository</b>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="repo1.png"><img src="_images/repo1.png" alt="repo1" width="400"></a>
+</div>
+<div class="title">Figure 4. New Repository</div>
+</div>
+</li>
+<li>
+<p>Configure the repository:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Repository Name:</strong> <code>etx-app-base-app</code></p>
+</li>
+<li>
+<p><strong>Visibility:</strong> Public</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <b class="button">Create Public Repository</b>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="public.png"><img src="_images/public.png" alt="public" width="500"></a>
+</div>
+<div class="title">Figure 5. Create Repository</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The organization and repository names must match the destination referenced later by the promotion pipeline: <code>etx_app/etx-app-base-app</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Although the repository is public, anonymous image pulls are disabled in this Quay deployment. Runtime clusters must authenticate using an image pull secret.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_robot_account"><a class="anchor" href="#_create_a_robot_account"></a>Create a Robot Account</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The promotion pipeline requires a robot account to authenticate to Quay without using interactive Keycloak credentials.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>From the <code>etx_app</code> organization, click the <strong>Settings</strong> icon.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="setting.png"><img src="_images/setting.png" alt="setting" width="500"></a>
+</div>
+<div class="title">Figure 6. Organization Settings</div>
+</div>
+</li>
+<li>
+<p>Under <strong>User and Robot Permissions</strong>, open the dropdown and click <b class="button">Create Robot Account</b>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="robot.png"><img src="_images/robot.png" alt="robot" width="500"></a>
+</div>
+<div class="title">Figure 7. Create Robot Account</div>
+</div>
+</li>
+<li>
+<p>Create a robot account named <code>promoter</code>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="promoter.png"><img src="_images/promoter.png" alt="promoter" width="500"></a>
+</div>
+<div class="title">Figure 8. Robot Account Name</div>
+</div>
+</li>
+<li>
+<p>Grant the robot account <strong>Write</strong> permission to the repository.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="write1.png"><img src="_images/write1.png" alt="write1" width="500"></a>
+</div>
+<div class="title">Figure 9. Assign Write Permission</div>
+</div>
+</li>
+<li>
+<p>Open the newly created robot account (<code>etx-app+promoter</code>) and copy the generated credentials:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Username:</strong> <code>etx-app+promoter</code></p>
+</li>
+<li>
+<p><strong>Token:</strong> Generated robot token</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="token.png"><img src="_images/token.png" alt="token" width="500"></a>
+</div>
+<div class="title">Figure 10. Robot Account Credentials</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Save the robot token before leaving the page. It will be required when creating the Vault secret.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_store_quay_credentials_in_vault"><a class="anchor" href="#_store_quay_credentials_in_vault"></a>Store Quay Credentials in Vault</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Store the Quay robot account credentials in Vault so the promotion pipeline can retrieve them securely at runtime.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Retrieve the Quay hostname:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route -n quay \
+  -l quay-component=quay-app-route \
+  -o jsonpath='{.items[0].spec.host}' &amp;&amp; echo</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Retrieve the Vault root token:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret etx-vault-bootstrap \
+  -n vault \
+  -o jsonpath='{.data.root-token}' | base64 -d &amp;&amp; echo</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open the <strong>Vault</strong> URL from your lab environment.</p>
+</li>
+<li>
+<p>Sign in using the <strong>Token</strong> authentication method and paste the token retrieved above.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="vtoken.png"><img src="_images/vtoken.png" alt="vtoken" width="400"></a>
+</div>
+<div class="title">Figure 11. Sign in to Vault</div>
+</div>
+</li>
+<li>
+<p>From the Vault dashboard, open the <code>secret/</code> secrets engine.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="secrets.png"><img src="_images/secrets.png" alt="secrets" width="500"></a>
+</div>
+<div class="title">Figure 12. Secret Engine</div>
+</div>
+</li>
+<li>
+<p>Click <b class="button">Create secret</b>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="createsecret.png"><img src="_images/createsecret.png" alt="createsecret" width="500"></a>
+</div>
+<div class="title">Figure 13. Create Secret</div>
+</div>
+</li>
+<li>
+<p>Create a secret with the path:</p>
+<div class="listingblock">
+<div class="content">
+<pre>registry/quay</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the following key-value pairs:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>server:</strong> Quay hostname returned by the earlier command (without <code>https://</code>)</p>
+</li>
+<li>
+<p><strong>username:</strong> <code>etx-app+promoter</code></p>
+</li>
+<li>
+<p><strong>password:</strong> Robot token copied from Quay</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="csecret.png"><img src="_images/csecret.png" alt="csecret" width="550"></a>
+</div>
+<div class="title">Figure 14. Create Vault Secret</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <b class="button">Save</b>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="final.png"><img src="_images/final.png" alt="final" width="550"></a>
+</div>
+<div class="title">Figure 15. Completed Secret</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The promotion pipeline authenticates to Vault using Kubernetes authentication and retrieves these credentials automatically during execution. No Quay credentials are stored directly in the pipeline definition.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lab-prereq.html">Lab Pre-requisites</a></span>
+  <span class="next"><a href="lab-13.html">Lab 13: Stage Deployment</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>
