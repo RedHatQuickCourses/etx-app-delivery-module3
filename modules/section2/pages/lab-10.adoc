@@ -1,0 +1,52 @@
+= Lab 10: Verify Application Observability
+:navtitle: Lab 10: Verify Observability
+:experimental:
+
+In this lab, you'll verify that OpenTelemetry auto-instrumentation is working correctly for the deployed application. You'll confirm that the OpenTelemetry Java agent has been injected into the application pod and that telemetry data is being collected by the OpenTelemetry Collector.
+
+By the end of this lab, you will have:
+
+* Verified that OpenTelemetry auto-instrumentation is enabled for the application
+* Confirmed that the OpenTelemetry Java agent was injected into the application pod
+* Verified that trace data is being collected by the OpenTelemetry Collector
+
+== Verify OpenTelemetry Auto-Instrumentation
+
+In this exercise, you'll confirm that the OpenTelemetry Operator has automatically injected the Java agent into the application deployed through Argo CD.
+
+. Open a terminal in your OpenShift Dev Spaces workspace or launch the *Web Terminal* from the OpenShift console.
+
+. Verify that the application pod contains the OpenTelemetry auto-instrumentation init container:
++
+[source,bash,role=execute]
+----
+oc get pod -n etx-app-dev \
+  -l app=etx-app-base-app \
+  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'
+----
+
+The output should include:
+
+[source,text]
+----
+opentelemetry-auto-instrumentation
+----
+
+The presence of this init container confirms that the OpenTelemetry Operator has automatically injected the Java agent into the application pod.
+
+== Verify Trace Collection
+
+Next, verify that the application is sending telemetry data to the OpenTelemetry Collector.
+
+. View the recent logs from the OpenTelemetry Collector:
++
+[source,bash,role=execute]
+----
+oc logs -n etx-app-dev \
+  -l app.kubernetes.io/name=otel-collector-collector \
+  --tail=50
+----
+
+Review the output and confirm that trace data is being received and processed by the collector.
+
+Once traces appear in the collector logs, you have verified that OpenTelemetry auto-instrumentation is successfully collecting telemetry from the deployed application.

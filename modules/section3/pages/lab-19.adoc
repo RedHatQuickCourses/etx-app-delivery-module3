@@ -1,0 +1,78 @@
+= Lab 19: Explore Promotion Automation
+:navtitle: Lab 19: Promotion Automation
+:experimental:
+
+In this lab, you'll explore different approaches for controlling application promotion from development to staging, ranging from manual execution to approval-based and Git-driven workflows.
+
+By the end of this lab, you will have:
+
+* Understood different promotion strategies for application releases
+* Added an optional manual approval step to a Tekton pipeline
+* Learned how GitLab merge requests can be used to control promotions
+
+== Understand Promotion Strategies
+
+The promotion pipeline you created in the previous labs can be triggered in several ways depending on your team's release process.
+
+=== Option 1: Manual Pipeline Execution
+
+The current implementation requires a user to manually start the promotion pipeline after verifying that the application is ready for staging.
+
+This approach is suitable for:
+
+* Small development teams
+* Infrequent application releases
+* Release processes requiring manual verification
+
+=== Option 2: Add a Manual Approval Step
+
+Instead of manually starting the pipeline, you can allow the pipeline to start automatically and pause until someone explicitly approves the promotion.
+
+. Create a Tekton task that waits for manual approval:
++
+[source,bash,role=execute]
+----
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: manual-approval
+  namespace: etx-app-dev
+spec:
+  description: |
+    Pauses pipeline execution until manual approval.
+    Requires operator intervention to continue.
+  steps:
+    - name: wait-for-approval
+      image: registry.access.redhat.com/ubi9/ubi-minimal:latest
+      script: |
+        #!/bin/sh
+        echo "⏸️  Pipeline paused - waiting for manual approval"
+        echo "Run: oc patch taskrun <taskrun-name> -p '{\"spec\":{\"status\":\"Succeeded\"}}'"
+        sleep infinity
+EOF
+----
++
+The task pauses the pipeline until an operator manually approves the corresponding TaskRun.
+
+. Update the promotion pipeline by adding this task as the first task in the pipeline before the image promotion steps.
+
+This allows the pipeline to begin automatically while still requiring explicit approval before promoting an image to the staging environment.
+
+=== Option 3: Trigger Promotion from GitLab
+
+Another common approach is to promote applications through a Git-based approval workflow.
+
+In this model:
+
+. Create a dedicated promotion branch in the application repository.
+. Open a Merge Request for the promotion.
+. Request review and approval from the appropriate team members.
+. Configure a GitLab webhook to trigger the promotion pipeline after the Merge Request is merged.
+
+This approach provides several benefits:
+
+* Promotion decisions are reviewed before deployment.
+* Git maintains a complete audit history of approvals.
+* Teams collaborate using a familiar pull request workflow.
+* Promotion becomes part of the standard GitOps development process.

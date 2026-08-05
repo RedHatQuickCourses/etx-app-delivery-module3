@@ -1,0 +1,102 @@
+= Lab 15: Create and Test the Promotion Pipeline
+:navtitle: Lab 15: Promotion Pipeline
+:experimental:
+
+In this lab, you'll assemble the promotion tasks into a complete Tekton pipeline and verify that it is ready to promote application images from the development environment to the staging environment.
+
+By the end of this lab, you will have:
+
+* Created a Tekton promotion pipeline
+* Connected the pipeline tasks into a complete promotion workflow
+* Configured the pipeline to copy images to Quay and update the GitOps repository
+* Verified the pipeline configuration before running promotions
+
+== Create the Promotion Pipeline
+
+In this exercise, you'll combine the tasks created in the previous lab into a single Tekton pipeline.
+
+The promotion pipeline performs the following actions:
+
+* Retrieves Quay credentials securely from Vault
+* Copies the selected image from the OpenShift internal registry to Quay
+* Updates the staging deployment manifest in the GitOps repository
+* Triggers Argo CD to deploy the promoted image to the staging cluster
+
+. Create the promotion pipeline.
++
+[source,bash,role=execute,subs="attributes+"]
+----
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: etx-app-promotion
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: source-image-tag
+      type: string
+      description: Image tag to promote (e.g., commit SHA)
+    - name: dest-image-tag
+      type: string
+      default: stable
+      description: Tag to use in Quay (e.g., stable, v1.0.0)
+    - name: gitops-repo-url
+      type: string
+      default: https://gitlab.apps.cluster-<GUID>.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: fetch-quay-creds
+      taskRef:
+        name: vault-fetch-quay-creds
+
+    - name: copy-to-quay
+      runAfter: [fetch-quay-creds]
+      taskRef:
+        name: copy-image-to-quay
+      params:
+        - name: source-image
+          value: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:$(params.source-image-tag)
+        - name: dest-image
+          value: $(tasks.fetch-quay-creds.results.quay-server)/etx-app/etx-app-base-app:$(params.dest-image-tag)
+        - name: dest-username
+          value: $(tasks.fetch-quay-creds.results.quay-username)
+        - name: dest-password
+          value: $(tasks.fetch-quay-creds.results.quay-password)
+
+    - name: update-gitops
+      runAfter: [copy-to-quay]
+      taskRef:
+        name: update-gitops-staging
+      params:
+        - name: gitops-repo-url
+          value: $(params.gitops-repo-url)
+        - name: image-url
+          value: $(tasks.fetch-quay-creds.results.quay-server)/etx-app/etx-app-base-app:$(params.dest-image-tag)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+EOF
+----
+
+NOTE: The pipeline promotes an existing application image. It does not rebuild the application. Instead, it copies a previously tested image from the internal registry to Quay and updates the GitOps repository to trigger deployment.
+
+== Verify the Pipeline Configuration
+
+Before running the promotion pipeline, verify that the GitOps repository URL is correct.
+
+. Retrieve the GitLab URL dynamically.
++
+[source,bash,role=execute]
+----
+GITLAB_URL="https://$(oc get route -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "GitLab URL: $GITLAB_URL"
+----
+
+Use this URL when supplying the `gitops-repo-url` parameter if it differs from the default value configured in the pipeline.
+
+Once the pipeline has been created successfully, you're ready to execute a promotion and verify that the application is deployed automatically to the staging cluster.

@@ -1,0 +1,184 @@
+= Lab 3: Test the CI Pipeline
+:navtitle: Lab 3: Test CI Pipeline
+:experimental:
+
+In this lab, you'll manually execute the CI pipeline to verify that it successfully clones the application source code, builds the application, retrieves registry credentials from Vault, and pushes the container image to the internal OpenShift registry.
+
+You'll also learn how to monitor pipeline execution and troubleshoot common issues before configuring automated pipeline triggers.
+
+By the end of this lab, you will have:
+
+* Created a PipelineRun to execute the CI pipeline manually
+* Monitored the execution of PipelineRuns and TaskRuns
+* Verified that the application image was successfully built and pushed
+* Learned how to troubleshoot common pipeline failures
+
+== Run the CI Pipeline
+
+Before configuring Git webhooks, verify that the pipeline executes successfully by creating a manual PipelineRun.
+
+. Open the *OpenShift Console URL* listed on the **RHDP Lab Environment** page.
+
+. Sign in using any one of the credentials listed in the xref:lab-env-overview.adoc#lab-credentials[Lab Credentials] section.
+
+. After signing in, open the *Developer* perspective.
+
+. Click the **>_** (*Web Terminal*) icon in the upper-right corner to launch a terminal session.
+
+. Retrieve the GitLab route by running:
++
+[source,bash,role=execute]
+----
+# Get GitLab URL dynamically
+GITLAB_URL="https://$(oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "Using GitLab URL: ${GITLAB_URL}"
+----
+
+. Create a PipelineRun:
++
+[source,bash,role=execute]
+----
+oc create -f - <<EOF
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: etx-app-base-app-ci-
+  namespace: etx-app-dev
+spec:
+  pipelineRef:
+    name: etx-app-base-app-ci
+  params:
+    - name: git-url
+      value: ${GITLAB_URL}/software-factory/etx_app_base_app
+    - name: git-revision
+      value: main
+    - name: image-name
+      value: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: pipeline-workspace-pvc
+  taskRunTemplate:
+    serviceAccountName: pipeline
+EOF
+----
++
+The PipelineRun starts the CI pipeline using the source code in GitLab and executes each configured task.
+
+== Monitor Pipeline Execution
+
+Once the PipelineRun starts, monitor its progress to ensure each task completes successfully.
+
+=== Watch the PipelineRun Status
+
+The simplest way to monitor execution is to watch the PipelineRun status in real time.
+
+[source,bash,role=execute]
+----
+oc get pipelinerun -n etx-app-dev -w
+----
+
+When the pipeline finishes successfully, its status changes to `Succeeded`.
+
+=== View TaskRun Details
+
+To inspect the individual tasks executed by the pipeline:
+
+[source,bash,role=execute]
+----
+LATEST_PR=$(oc get pipelinerun \
+  -n etx-app-dev \
+  --sort-by=.metadata.creationTimestamp \
+  -o jsonpath='{.items[-1].metadata.name}')
+
+echo "PipelineRun: ${LATEST_PR}"
+
+oc get taskrun \
+  -n etx-app-dev \
+  -l tekton.dev/pipelineRun=${LATEST_PR}
+----
+
+To view the logs for a specific TaskRun:
+
+[source,bash,role=execute]
+----
+oc logs \
+  -n etx-app-dev \
+  -l tekton.dev/taskRun=<taskrun-name> \
+  -f
+----
+
+TIP: Replace `<taskrun-name>` with one of the TaskRun names returned by the previous command.
+
+=== Verify the Container Image
+
+After the pipeline completes, verify that the container image was pushed successfully.
+
+[source,bash,role=execute]
+----
+oc get imagestream etx-app-base-app -n etx-app-dev
+
+oc get imagestreamtag etx-app-base-app:main -n etx-app-dev
+----
+
+If both resources exist, the image was successfully built and pushed to the internal OpenShift image registry.
+
+== Troubleshoot Common Issues
+
+If the pipeline does not complete successfully, the following checks can help identify common problems.
+
+=== Vault Authentication Errors
+
+If the `fetch-creds` task fails with an error similar to:
+
+----
+parse error: Invalid numeric literal
+----
+
+Verify that Vault is running:
+
+[source,bash,role=execute]
+----
+oc get pods -n vault
+----
+
+Also confirm that:
+
+* The Kubernetes authentication method is configured in Vault.
+* The `pipeline` ServiceAccount exists in the `etx-app-dev` project.
+
+[source,bash,role=execute]
+----
+oc get serviceaccount pipeline -n etx-app-dev
+----
+
+=== Git Clone Errors
+
+If the `git-clone` task cannot resolve the GitLab host, verify the GitLab route:
+
+[source,bash,role=execute]
+----
+oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}{"\n"}'
+----
+
+If necessary, recreate the PipelineRun using the correct GitLab URL.
+
+=== Image Push Verification
+
+If the pipeline reports success but the image cannot be found, verify the ImageStream:
+
+[source,bash,role=execute]
+----
+oc get imagestream etx-app-base-app -n etx-app-dev
+
+oc get imagestreamtag etx-app-base-app:main -n etx-app-dev
+----
+
+A successful pipeline should create both resources in the `etx-app-dev` project.

@@ -48,17 +48,17 @@ curl -o enroll-secondary-cluster.sh \
 chmod +x enroll-secondary-cluster.sh
 ----
 
-Edit the configuration section with your cluster credentials (from RHDP emails), substitute XXXXX, {openshift_cluster_admin_password} with your lab GUID and lab password :
+Edit the configuration section with your cluster credentials (from RHDP emails), substitute RUNTIME-GUID/FACTORY-GUID, {RUNTIME/FACTORY_cluster_admin_password} with your lab GUID and lab password :
 
 [source,bash,subs="attributes+"]
 ----
-export RUNTIME_API="https://api.cluster-xxxxx.dyn.redhatworkshops.io:6443"
+export RUNTIME_API="https://api.cluster-<RUNTIME-GUID>.dyn.redhatworkshops.io:6443"
 export RUNTIME_USER="admin"
-export RUNTIME_PASSWORD="{openshift_cluster_admin_password}"
+export RUNTIME_PASSWORD="<RUNTIME_cluster_admin_password>"
 
-export FACTORY_API="https://api.cluster-xxxxx.dyn.redhatworkshops.io:6443"
+export FACTORY_API="https://api.cluster-<FACTORY-GUID>.dyn.redhatworkshops.io:6443"
 export FACTORY_USER="admin"
-export FACTORY_PASSWORD="{openshift_cluster_admin_password}"
+export FACTORY_PASSWORD="<FACTORY_cluster_admin_password>"
 ----
 
 Run the script:
@@ -73,7 +73,7 @@ You will notice output as below
 [source,bash,role=execute]
 ----
 [STEP] Step 1: Preparing runtime cluster for ArgoCD management
-[INFO] Logging into runtime cluster: https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+[INFO] Logging into runtime cluster: https://api.cluster-j7rdj.dyn.redhatworkshops.io:6443
 [INFO] Creating ArgoCD manager ServiceAccount...
 serviceaccount/argocd-manager created
 [INFO] Granting cluster-admin permissions to ArgoCD manager...
@@ -84,11 +84,9 @@ namespace/etx-app-staging created
 namespace/etx-app-prod created
 [STEP] Step 1.5: Deploying supporting services on runtime cluster
 [INFO] Installing AMQ Streams (Kafka) operator...
-Warning: resource subscriptions/amq-streams is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
-subscription.operators.coreos.com/amq-streams configured
+subscription.operators.coreos.com/amq-streams created
 [INFO] Installing OpenShift Pipelines (Tekton) operator...
-Warning: resource subscriptions/openshift-pipelines-operator-rh is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
-subscription.operators.coreos.com/openshift-pipelines-operator-rh configured
+subscription.operators.coreos.com/openshift-pipelines-operator-rh created
 [INFO] Installing Red Hat build of OpenTelemetry operator...
 subscription.operators.coreos.com/opentelemetry-product created
 [INFO] Waiting for operators to be ready (90s)...
@@ -109,7 +107,7 @@ instrumentation.opentelemetry.io/java-instrumentation created
 [STEP] Step 2: Registering runtime cluster in factory ArgoCD
 [INFO] Logging into factory cluster: https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
 [INFO] Creating ArgoCD cluster secret...
-secret/cluster-staging created
+secret/cluster-staging configured
 [STEP] Step 3: Validating enrollment
 [INFO] Cluster secret verified: cluster-staging
 
@@ -118,7 +116,7 @@ Enrollment Complete
 ========================================\033[0m
 
 Factory cluster:  https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
-Runtime cluster:  https://api.cluster-mp56f.dyn.redhatworkshops.io:6443
+Runtime cluster:  https://api.cluster-j7rdj.dyn.redhatworkshops.io:6443
 ArgoCD namespace: etx-app-dev
 Cluster name:     staging
 
@@ -309,14 +307,28 @@ oc get secret etx-vault-bootstrap -n vault -o jsonpath='{.data.root-token}' | ba
 
 . Open link:{vault_url}[Vault] or click the *Vault* tab in your Showroom
 . Log in with the *Token* method using the token above
++
+image::vtoken.png[width=400]
++
 . From the Dashboard click *secret/* under the *Secret engines*
++
+image::secrets.png[width=500]
++
 . From the `secret/` secrets engine, click btn:[Create secret]
++
+image::createsecret.png[width=500]
++
 . Set the path to `registry/quay`
 . Add the following secret data:
   * **server:** the Quay hostname from the command above (no `https://` prefix)
   * **username:** `etx-app+promoter`
   * **password:** the robot token you copied earlier
-. Click btn:[Save]
++
+image::csecret.png[width=550]
++
+. Click btn:[Save], you should be able to view below secret created.
++
+image::final.png[width=550]
 
 The promotion pipeline tasks you create next will fetch these credentials at runtime via Kubernetes auth to Vault.
 
@@ -324,11 +336,12 @@ The promotion pipeline tasks you create next will fetch these credentials at run
 
 === Create Stage Environment Manifests
 
-Create stage environment manifests in your GitOps repository:
+Create stage environment manifests in your GitOps repository, replace "XXXX" with your lab's GUID:
 
 [source,bash,role=execute]
 ----
-cd ~/workshop/etx-app-gitops
+git clone https://gitlab.apps.cluster-XXXXX.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
+cd etx-app-gitops
 mkdir -p environments/stage
 ----
 
@@ -353,14 +366,12 @@ echo "Using Quay URL: $QUAY_URL"
 ==== Create Quay Image Pull Secret on Staging
 
 The staging cluster must authenticate to Quay when pulling images.
-Create a docker-registry secret in `etx-app-staging` on the *runtime* cluster using the robot account credentials.
+Create a docker-registry secret in `etx-app-staging` on the *Service Enablement: App Platform Runtime* cluster using the robot account credentials.
 
-Login to the runtime cluster (credentials from RHDP):
-
+Login first to the **Service Enablement: App Platform Runtime** cluster (credentials from RHDP):
 [source,bash,role=execute]
 ----
-oc login $RUNTIME_API \
-  -u $RUNTIME_USER -p $RUNTIME_PASSWORD --insecure-skip-tls-verify
+oc login -u <RUNTIME_USERNAME> -p <RUNTIME_PASSWORD> <RUNTIME_API_URL> --insecure-skip-tls-verify
 ----
 
 Replace `$ROBOT_TOKEN` with the `etx-app+promoter` token:
@@ -462,7 +473,7 @@ Commit and push:
 
 [source,bash,role=execute]
 ----
-git add environments/stage/
+git add -A
 git commit -m "feat: add stage environment manifests"
 git push origin main
 ----
@@ -678,7 +689,7 @@ spec:
       description: Tag to use in Quay (e.g., stable, v1.0.0)
     - name: gitops-repo-url
       type: string
-      default: {gitlab_url}/software-factory/etx-app-gitops.git
+      default: https://gitlab.apps.cluster-<GUID>.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
   workspaces:
     - name: shared-workspace
   tasks:
@@ -742,14 +753,12 @@ Pick one of the commit SHA tags from the output.
 
 Trigger the promotion pipeline manually.
 
-First, get an actual commit SHA from the images built by the CI pipeline:
+Create a PipelineRun (replace `<COMMIT_SHA>` with an actual image tag from above):
 
 [source,bash,role=execute]
 ----
-oc get images -n etx-app-dev | grep etx-app-base-app
+oc exec -n "vault" "etx-vault-0" -- sh -c "VAULT_ADDR=\"https://$(oc get routes -n vault etx-vault -o jsonpath='{.spec.host}')\" VAULT_TOKEN=\"$(oc get secret -n vault etx-vault-bootstrap -o jsonpath='{.data.root-token}' | base64 -d)\" vault write auth/kubernetes/config token_reviewer_jwt=\"$(oc create token etx-vault -n vault --duration=24h)\" kubernetes_host='https://kubernetes.default.svc' kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 ----
-
-Then create a PipelineRun (replace `<COMMIT_SHA>` with an actual image tag from above):
 
 [source,bash,role=execute]
 ----

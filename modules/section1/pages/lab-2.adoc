@@ -1,0 +1,186 @@
+= Lab 2: Create the CI Pipeline
+:navtitle: Lab 2: Create the CI Pipeline
+:experimental:
+
+In this lab, you'll create a Tekton CI pipeline that builds the application, retrieves container registry credentials from HashiCorp Vault, and produces a container image ready for deployment.
+
+By the end of this lab, you will have:
+
+* Created a custom Tekton Task to retrieve registry credentials from Vault
+* Built a reusable Tekton Pipeline for application builds
+* Configured the pipeline to clone source code, build the application, and build a container image
+
+== Create a Task to Retrieve Registry Credentials
+
+The CI pipeline requires credentials to authenticate with the container registry before it can push application images.
+
+In this section, you'll create a custom Tekton Task that authenticates to HashiCorp Vault using the Kubernetes authentication method configured in the previous supporting services lab, retrieves the registry credentials, and makes them available to subsequent pipeline tasks.
+
+First, retrieve the Vault route from the OpenShift cluster.
+
+[source,bash,role=execute,subs="attributes"]
+----
+VAULT_URL="https://$(oc get route \
+  -n vault \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "${VAULT_URL}"
+----
+
+Next, create the Tekton Task.
+
+[source,bash,role=execute]
+----
+oc apply -f - <<EOF
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: vault-fetch-registry-creds
+  namespace: etx-app-dev
+spec:
+  workspaces:
+    - name: source
+  results:
+    - name: registry-server
+    - name: registry-username
+    - name: registry-password
+  steps:
+    - name: fetch
+      image: registry.access.redhat.com/ubi9/ubi-minimal:latest
+      script: |
+        #!/bin/sh
+        set -e
+
+        microdnf install -y jq && microdnf clean all
+
+        VAULT_ADDR="${VAULT_URL}"
+        SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+        VAULT_TOKEN=$(curl -s --request POST \
+          "${VAULT_ADDR}/v1/auth/kubernetes/login" \
+          --data "{\"role\":\"pipeline\",\"jwt\":\"${SA_TOKEN}\"}" \
+          | jq -r '.auth.client_token')
+
+        CREDS=$(curl -s \
+          --header "X-Vault-Token: ${VAULT_TOKEN}" \
+          "${VAULT_ADDR}/v1/secret/data/registry")
+
+        echo "${CREDS}" | jq -r '.data.data.server' \
+          | tr -d '\n' > $(results.registry-server.path)
+
+        echo "${CREDS}" | jq -r '.data.data.username' \
+          | tr -d '\n' > $(results.registry-username.path)
+
+        echo "${CREDS}" | jq -r '.data.data.password' \
+          | tr -d '\n' > $(results.registry-password.path)
+EOF
+----
+
+NOTE: This Task authenticates to Vault using the ServiceAccount token mounted into the pipeline pod. It retrieves the registry server, username, and password from Vault and exposes them as Tekton Task results for use by downstream pipeline tasks.
+
+== Create the CI Pipeline
+
+Next, create the Tekton Pipeline that orchestrates the complete CI workflow.
+
+The pipeline performs the following activities:
+
+* Clones the application source code from Git
+* Builds and tests the application using Maven
+* Retrieves registry credentials from Vault
+* Builds the application container image using Buildah
+
+Create the pipeline.
+
+[source,bash,role=execute,subs="attributes"]
+----
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: etx-app-base-app-ci
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: git-url
+      type: string
+    - name: git-revision
+      type: string
+      default: main
+    - name: image-name
+      type: string
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: clone
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: git-clone
+          - name: namespace
+            value: openshift-pipelines
+      params:
+        - name: URL
+          value: $(params.git-url)
+        - name: REVISION
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+
+    - name: build-and-test
+      runAfter: [clone]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: maven
+          - name: namespace
+            value: openshift-pipelines
+      params:
+        - name: GOALS
+          value: ["package", "-DskipTests=false"]
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: fetch-creds
+      runAfter: [clone]
+      taskRef:
+        name: vault-fetch-registry-creds
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: build-image
+      runAfter: [build-and-test, fetch-creds]
+      taskRef:
+        resolver: cluster
+        params:
+          - name: kind
+            value: task
+          - name: name
+            value: buildah
+          - name: namespace
+            value: openshift-pipelines
+      params:
+        - name: IMAGE
+          value: $(params.image-name):$(params.git-revision)
+        - name: DOCKERFILE
+          value: Containerfile
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+EOF
+----
+
+NOTE: The `git-clone`, `maven`, and `buildah` Tasks are installed by the OpenShift Pipelines Operator in the `openshift-pipelines` namespace. This pipeline references them using the cluster resolver, which replaces the deprecated `ClusterTask` resource. You can verify that these Tasks are available by running:
+
+[source,bash,role=execute]
+----
+oc get task -n openshift-pipelines
+----

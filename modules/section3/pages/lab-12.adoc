@@ -1,0 +1,153 @@
+= Lab 12: Configure Quay for Image Promotion
+:navtitle: Lab 12: Configure Quay
+:experimental:
+
+In this exercise, you'll prepare Quay for the image promotion workflow by creating the repository used by the promotion pipeline and storing robot account credentials securely in Vault.
+
+By the end of this exercise, you will have:
+
+* Created the `etx_app` organization and `etx-app-base-app` repository in Quay
+* Created a robot account for non-interactive image promotion
+* Stored the Quay robot credentials in Vault for use by the promotion pipeline
+
+The promotion pipeline pushes images to Quay at `etx_app/etx-app-base-app` and retrieves authentication credentials from Vault at `secret/registry/quay`.
+
+NOTE: Interactive users authenticate to Quay using Keycloak Single Sign-On, while CI/CD pipelines use robot accounts for automated, non-interactive authentication.
+
+== Create the Quay Organization and Repository
+
+Create the Quay organization and repository that will store promoted application images.
+
+. Open the *Quay* URL from your lab environment or click the *Quay* tab in your Showroom.
+. Sign in using ETX Keycloak Single Sign-On with one of the lab accounts:
++
+* `platform-admin` / `openshift`
+* `platform-developer` / `openshift`
++
+. If prompted, remove any hyphens (`-`) from the suggested username and click btn:[Confirm Username].
++
+.Validate Quay Username
+image::valid.png[link=valid.png,width=400]
++
+. Click btn:[Create New Organization].
++
+.Create Organization
+image::org.png[link=org.png,width=400]
++
+. Create an organization named `etx_app`.
++
+.Create the Organization
+image::create_org.png[link=create_org.png,width=400]
++
+. Inside the organization, click btn:[Create New Repository].
++
+.New Repository
+image::repo1.png[link=repo1.png,width=400]
++
+. Configure the repository:
++
+* **Repository Name:** `etx-app-base-app`
+* **Visibility:** Public
++
+. Click btn:[Create Public Repository].
++
+.Create Repository
+image::public.png[link=public.png,width=500]
+
+NOTE: The organization and repository names must match the destination referenced later by the promotion pipeline: `etx_app/etx-app-base-app`.
+
+IMPORTANT: Although the repository is public, anonymous image pulls are disabled in this Quay deployment. Runtime clusters must authenticate using an image pull secret.
+
+== Create a Robot Account
+
+The promotion pipeline requires a robot account to authenticate to Quay without using interactive Keycloak credentials.
+
+. From the `etx_app` organization, click the *Settings* icon.
++
+.Organization Settings
+image::setting.png[link=setting.png,width=500]
++
+. Under **User and Robot Permissions**, open the dropdown and click btn:[Create Robot Account].
++
+.Create Robot Account
+image::robot.png[link=robot.png,width=500]
++
+. Create a robot account named `promoter`.
++
+.Robot Account Name
+image::promoter.png[link=promoter.png,width=500]
++
+. Grant the robot account **Write** permission to the repository.
++
+.Assign Write Permission
+image::write1.png[link=write1.png,width=500]
++
+. Open the newly created robot account (`etx-app+promoter`) and copy the generated credentials:
++
+* **Username:** `etx-app+promoter`
+* **Token:** Generated robot token
++
+.Robot Account Credentials
+image::token.png[link=token.png,width=500]
+
+IMPORTANT: Save the robot token before leaving the page. It will be required when creating the Vault secret.
+
+== Store Quay Credentials in Vault
+
+Store the Quay robot account credentials in Vault so the promotion pipeline can retrieve them securely at runtime.
+
+. Retrieve the Quay hostname:
++
+[source,bash,role=execute]
+----
+oc get route -n quay \
+  -l quay-component=quay-app-route \
+  -o jsonpath='{.items[0].spec.host}' && echo
+----
++
+. Retrieve the Vault root token:
++
+[source,bash,role=execute]
+----
+oc get secret etx-vault-bootstrap \
+  -n vault \
+  -o jsonpath='{.data.root-token}' | base64 -d && echo
+----
+
+. Open the *Vault* URL from your lab environment.
+. Sign in using the **Token** authentication method and paste the token retrieved above.
++
+.Sign in to Vault
+image::vtoken.png[link=vtoken.png,width=400]
++
+. From the Vault dashboard, open the `secret/` secrets engine.
++
+.Secret Engine
+image::secrets.png[link=secrets.png,width=500]
++
+. Click btn:[Create secret].
++
+.Create Secret
+image::createsecret.png[link=createsecret.png,width=500]
++
+. Create a secret with the path:
++
+----
+registry/quay
+----
++
+. Add the following key-value pairs:
++
+* **server:** Quay hostname returned by the earlier command (without `https://`)
+* **username:** `etx-app+promoter`
+* **password:** Robot token copied from Quay
++
+.Create Vault Secret
+image::csecret.png[link=csecret.png,width=550]
++
+. Click btn:[Save].
++
+.Completed Secret
+image::final.png[link=final.png,width=550]
+
+NOTE: The promotion pipeline authenticates to Vault using Kubernetes authentication and retrieves these credentials automatically during execution. No Quay credentials are stored directly in the pipeline definition.

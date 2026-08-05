@@ -1,0 +1,99 @@
+= Lab 16: Test the Promotion Pipeline
+:navtitle: Lab 16: Test Promotion
+:experimental:
+
+In this lab, you'll verify the complete promotion workflow by manually triggering the promotion pipeline and confirming that it copies a container image to Quay and updates the GitOps repository for the staging environment.
+
+By the end of this lab, you will have:
+
+* Selected a container image built by the CI pipeline for promotion
+* Triggered the Tekton promotion pipeline
+* Verified that the image was copied from the internal registry to Quay
+* Confirmed that the GitOps repository was updated with the promoted image
+
+== Retrieve an Image Tag
+
+The promotion pipeline requires the tag of an image previously built by the CI pipeline.
+
+. List the available image tags:
++
+[source,bash,role=execute]
+----
+oc get imagestream etx-app-base-app -n etx-app-dev -o json | \
+  jq -r '.status.tags[].tag' | head -5
+----
++
+. Note one of the commit SHA tags from the output. You will use it when creating the PipelineRun.
+
+== Refresh the Vault Kubernetes Authentication Token
+
+Before running the promotion pipeline, refresh the Vault Kubernetes authentication configuration.
+
+. Run the following command:
++
+[source,bash,role=execute]
+----
+oc exec -n vault etx-vault-0 -- sh -c \
+"VAULT_ADDR=\"https://$(oc get route -n vault etx-vault -o jsonpath='{.spec.host}')\" \
+VAULT_TOKEN=\"$(oc get secret -n vault etx-vault-bootstrap -o jsonpath='{.data.root-token}' | base64 -d)\" \
+vault write auth/kubernetes/config \
+token_reviewer_jwt=\"$(oc create token etx-vault -n vault --duration=24h)\" \
+kubernetes_host='https://kubernetes.default.svc' \
+kubernetes_ca_cert=@/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+----
+
+NOTE: This refreshes the Kubernetes Token Reviewer JWT used by Vault. In a production environment, this configuration is typically automated and does not require manual intervention.
+
+== Trigger the Promotion Pipeline
+
+Create a PipelineRun to promote the selected image to the staging environment.
+
+. Create the PipelineRun, replacing `<COMMIT_SHA>` with one of the image tags from the previous step:
++
+[source,bash,role=execute]
+----
+oc create -f - <<EOF
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: etx-app-promotion-
+  namespace: etx-app-dev
+spec:
+  pipelineRef:
+    name: etx-app-promotion
+  params:
+    - name: source-image-tag
+      value: <COMMIT_SHA>
+    - name: dest-image-tag
+      value: stable
+    - name: gitops-repo-url
+      value: ${GITLAB_URL}/software-factory/etx-app-gitops.git
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: promotion-workspace-pvc
+  taskRunTemplate:
+    serviceAccountName: pipeline
+EOF
+----
+
+== Verify the Promotion
+
+Confirm that the promotion pipeline completed successfully.
+
+. Watch the PipelineRun status:
++
+[source,bash,role=execute]
+----
+oc get pipelinerun -n etx-app-dev -w
+----
++
+Press kbd:[Ctrl+C] once the PipelineRun reaches the `Succeeded` state.
+
+The promotion pipeline performs the following actions:
+
+* Retrieves the Quay robot account credentials from Vault
+* Copies the selected image from the OpenShift internal registry to Quay
+* Updates the staging deployment manifest in the GitOps repository with the promoted image
+
+At this point, the GitOps repository references the promoted image, allowing Argo CD to detect the change and deploy the updated application to the staging environment.

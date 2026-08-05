@@ -1,0 +1,161 @@
+= Lab Pre-requisites
+:navtitle: Lab Pre-requisites
+:experimental:
+
+In this lab, you'll prepare the environment required for multi-cluster application promotion. You'll enroll a runtime cluster with Argo CD, provision the required supporting services, and understand how application promotion moves validated container images from the development environment to staging.
+
+By the end of this lab, you will have:
+
+* Reviewed the multi-cluster application promotion workflow
+* Verified the prerequisites for multi-cluster application promotion
+* Enrolled a runtime cluster with the factory Argo CD instance
+* Provisioned the staging environment and supporting platform services
+* Verified that the runtime cluster is registered successfully
+
+== Review the Promotion Architecture
+
+In the previous exercises, you built a CI pipeline that automatically builds container images and deploys them to the development environment.
+
+In this lab, you'll prepare the infrastructure required to promote validated application images to a staging environment running on a separate OpenShift cluster.
+
+The promotion workflow performs the following actions:
+
+* Copies container images from the OpenShift internal registry to Quay for cross-cluster access
+* Updates the GitOps repository with the new staging image tag
+* Allows Argo CD to synchronize the updated manifests to the runtime cluster
+
+== Understand the Promotion Workflow
+
+Unlike the development environment, where every successful build is deployed automatically, promotion to staging is an intentional action initiated by the development team.
+
+The promotion workflow consists of the following steps:
+
+.Promotion Workflow
+[cols="1,3,4",options="header"]
+|===
+|Step |Component |Action
+
+|1
+|Developer
+|Approves the promotion by manually triggering the promotion pipeline.
+
+|2
+|GitLab
+|Starts the promotion pipeline.
+
+|3
+|Promotion Pipeline
+|Pulls the application image from the OpenShift internal registry using the image SHA.
+
+|4
+|Promotion Pipeline
+|Pushes the image to Quay using the `stable` tag.
+
+|5
+|Promotion Pipeline
+|Updates the `environments/stage/deployment.yaml` manifest in the GitOps repository.
+
+|6
+|Argo CD
+|Detects the updated GitOps repository.
+
+|7
+|Argo CD
+|Synchronizes the updated manifests and deploys the application to the staging cluster.
+|===
+
+The promotion workflow follows these principles:
+
+* **Development** uses images stored in the OpenShift internal registry for fast local deployments.
+* **Staging** uses images stored in Quay so they can be accessed by multiple OpenShift clusters.
+* **Promotion is explicit**, allowing developers to decide when a validated application is ready for staging.
+* **GitOps ensures deployments remain version-controlled**, with every staging deployment driven by changes committed to the GitOps repository.
+
+== Verify the Prerequisites
+
+Before continuing, ensure you have completed the following exercises:
+
+* xref:day2-lab1-ci-pipeline.adoc[Application CI Pipeline]
+* xref:day2-lab1-app-deployment.adoc[Application Deployment]
+
+You should also have:
+
+* A working CI pipeline that builds and pushes application images
+* Argo CD managing the application deployment
+* Access to Quay using Keycloak Single Sign-On (`platform-admin` or `platform-developer`)
+* A runtime OpenShift cluster provisioned through RHDP
+
+== Enroll the Runtime Cluster
+
+The promotion workflow requires two OpenShift clusters:
+
+* **Factory Cluster** – Hosts the Software Factory, CI pipelines, and Argo CD.
+* **Runtime Cluster** – Hosts the staging and production application environments.
+
+In this exercise, you'll register the runtime cluster with the Argo CD instance running on the factory cluster.
+
+. Download the enrollment script:
++
+[source,bash,role=execute]
+----
+curl -o enroll-secondary-cluster.sh \
+  https://raw.githubusercontent.com/rh-etx-app-platform/etx_app_tooling/main/scripts/enroll-secondary-cluster.sh
+
+chmod +x enroll-secondary-cluster.sh
+----
+
+. Update the configuration variables using the runtime and factory cluster information provided in your RHDP lab environment.
++
+[source,bash,subs="attributes+"]
+----
+export RUNTIME_API="https://api.cluster-<RUNTIME-GUID>.dyn.redhatworkshops.io:6443"
+export RUNTIME_USER="admin"
+export RUNTIME_PASSWORD="<RUNTIME_cluster_admin_password>"
+
+export FACTORY_API="https://api.cluster-<FACTORY-GUID>.dyn.redhatworkshops.io:6443"
+export FACTORY_USER="admin"
+export FACTORY_PASSWORD="<FACTORY_cluster_admin_password>"
+----
+
+. Run the enrollment script:
++
+[source,bash,role=execute]
+----
+./enroll-secondary-cluster.sh
+----
+
+The script automatically performs the following tasks:
+
+* Creates the required ServiceAccount and permissions on the runtime cluster.
+* Creates the staging and production namespaces.
+* Installs the required platform operators.
+* Deploys PostgreSQL, Kafka, OpenTelemetry Collector, and Java auto-instrumentation.
+* Registers the runtime cluster with the factory Argo CD instance.
+
+When the script completes successfully, you should see an **Enrollment Complete** message.
+
+== Verify the Runtime Cluster Registration
+
+Confirm that the runtime cluster has been registered with Argo CD.
+
+. Run the following command:
++
+[source,bash,role=execute]
+----
+oc get secret -n etx-app-dev \
+  -l argocd.argoproj.io/secret-type=cluster \
+  -o json | \
+jq -r '.items[] | .metadata.name + " - " + (.data.name | @base64d)'
+----
+
+. Verify that the output includes both clusters:
++
+[source,text]
+----
+argocd-default-cluster-config - in-cluster
+cluster-staging - staging
+----
+
+If both entries are displayed, the runtime cluster has been enrolled successfully and is ready to receive application deployments through Argo CD.
+
+In the next lab, you'll build the promotion pipeline that automatically promotes validated application images from the factory cluster to the staging environment.

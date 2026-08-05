@@ -1,0 +1,126 @@
+= Lab 11: Integrate CI with GitOps
+:navtitle: Lab 11: CI to GitOps
+:experimental:
+
+In this lab, you'll connect your Tekton CI pipeline to your GitOps repository so that every successful build automatically updates the application image referenced by Argo CD.
+
+By the end of this lab, you will have:
+
+* Created a Tekton Task that updates the GitOps repository with a new image tag
+* Extended the CI pipeline to invoke the GitOps update task after a successful image build
+* Automated the flow from code commit to GitOps repository update
+
+== Create the GitOps Update Task
+
+In this exercise, you'll create a Tekton Task that clones the GitOps repository, updates the application image tag, commits the change, and pushes it back to GitLab.
+
+. Open a terminal in your OpenShift Dev Spaces workspace or launch the *Web Terminal* from the OpenShift console.
+
+. Create the Task:
++
+[source,bash,role=execute]
+----
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: update-gitops-repo
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: gitops-repo-url
+      type: string
+    - name: image-tag
+      type: string
+    - name: environment
+      type: string
+      default: dev
+  workspaces:
+    - name: source
+  steps:
+    - name: update-image
+      image: registry.access.redhat.com/ubi9/ubi:latest
+      script: |
+        #!/bin/bash
+        set -e
+
+        dnf install -y git && dnf clean all
+
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
+        git clone "$REPO_URL" /tmp/gitops
+        cd /tmp/gitops/environments/$(params.environment)
+
+        sed -i "s|image:.*etx-app-base-app:.*|image: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:$(params.image-tag)|" deployment.yaml
+
+        git config user.email "pipeline@openshift.local"
+        git config user.name "Tekton Pipeline"
+
+        git add .
+        git commit -m "Update etx-app-base-app image to $(params.image-tag)"
+        git push
+EOF
+----
++
+The Task updates the deployment manifest in the GitOps repository with the newly built image tag and pushes the change back to GitLab.
+
+== Update the CI Pipeline
+
+Next, extend the existing CI pipeline so it automatically executes the GitOps update task after the container image has been built successfully.
+
+. Retrieve the GitLab URL:
++
+[source,bash,role=execute]
+----
+GITLAB_URL="https://$(oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "${GITLAB_URL}"
+----
+
+. Edit the existing pipeline:
++
+[source,bash,role=execute]
+----
+oc edit pipeline etx-app-base-app-ci -n etx-app-dev
+----
+
+. Under the `spec.tasks` section, add the following task definition:
++
+[source,yaml]
+----
+- name: update-gitops
+  runAfter:
+    - build-image
+  taskRef:
+    kind: Task
+    name: update-gitops-repo
+  params:
+    - name: gitops-repo-url
+      value: SUBSTITUTE-GITLAB-URL-HERE/software-factory/etx-app-gitops.git
+    - name: image-tag
+      value: $(params.git-revision)
+    - name: environment
+      value: dev
+  workspaces:
+    - name: source
+      workspace: shared-workspace
+----
+
+NOTE: Replace `SUBSTITUTE-GITLAB-URL-HERE` with the GitLab URL retrieved earlier. If you're recreating the pipeline using a shell heredoc, you can use the `${GITLAB_URL}` variable instead.
+
+== Verify the Integration
+
+After saving the pipeline, every successful pipeline execution will automatically update the deployment manifest in the GitOps repository.
+
+When the updated manifest is pushed:
+
+* The GitOps repository receives a new commit with the updated image tag.
+* Argo CD detects the repository change automatically.
+* Argo CD synchronizes the updated manifest to the cluster.
+* The application is redeployed using the newly built container image.

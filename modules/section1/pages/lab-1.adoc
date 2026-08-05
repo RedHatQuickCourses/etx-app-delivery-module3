@@ -1,0 +1,83 @@
+= Lab 1: Prepare the CI Pipeline
+:navtitle: Lab 1: Prepare the CI Pipeline
+:experimental:
+
+In this lab, you'll prepare the foundational resources required for Tekton pipelines.
+
+You'll create a shared workspace for pipeline tasks and configure a ServiceAccount with the permissions required to build container images and deploy application resources.
+
+By the end of this lab, you will have:
+
+* Created a PersistentVolumeClaim for the pipeline workspace
+* Created a ServiceAccount for running Tekton pipelines
+* Granted the ServiceAccount permissions to manage resources in the development project
+
+== Create the Pipeline Workspace and Service Account
+
+Tekton pipelines use a shared workspace to exchange files between tasks. In this exercise, you'll create a PersistentVolumeClaim (PVC) that provides persistent storage for the pipeline, along with a ServiceAccount that Tekton uses to execute pipeline tasks.
+
+. Open the *OpenShift Console URL* listed on the **RHDP Lab Environment** page.
+
+. Sign in using any one of the credentials listed in the xref:lab-env-overview.adoc#lab-credentials[Lab Credentials] section.
+
+. After signing in, open the *Developer* perspective.
+
+. Click the **>_** (*Web Terminal*) icon in the upper-right corner to launch a terminal session.
+
+. Create the pipeline workspace and ServiceAccount by running the following command:
++
+[source,bash,role=execute,subs="attributes"]
+----
+oc apply -f - <<'EOF'
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-workspace-pvc
+  namespace: etx-app-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline
+  namespace: etx-app-dev
+EOF
+----
++
+The command creates:
+
+* A `pipeline-workspace-pvc` PersistentVolumeClaim for sharing files between pipeline tasks.
+* A `pipeline` ServiceAccount that Tekton uses to execute the pipeline.
+
+NOTE: If the `pipeline` ServiceAccount already exists (for example, it was created during namespace provisioning), you may see `serviceaccount/pipeline configured` instead of `created`. This is expected and can be safely ignored.
+
+== Grant Pipeline Permissions
+
+The pipeline ServiceAccount requires permission to create and manage application resources within the development project.
+
+. Run the following command:
++
+[source,bash,role=execute]
+----
+oc adm policy add-role-to-user edit \
+  system:serviceaccount:etx-app-dev:pipeline \
+  -n etx-app-dev
+----
+
+The `edit` role allows the pipeline to create and manage resources such as ImageStreams, Deployments, Services, Routes, and other application resources in the `etx-app-dev` project.
+
+== Verify the Pipeline Resources
+
+Confirm that the workspace and ServiceAccount were created successfully.
+
+[source,bash,role=execute]
+----
+oc get pvc pipeline-workspace-pvc
+
+oc get sa pipeline
+----

@@ -1,0 +1,15 @@
+= 📋 Lab Summary
+:navtitle: 📋 Lab Summary
+
+Throughout these labs, you built a complete continuous integration (CI) workflow using OpenShift Pipelines (Tekton).
+
+Starting with the foundational pipeline resources, you created a reusable CI pipeline that clones application source code, builds and tests the application, securely retrieves registry credentials from HashiCorp Vault, and publishes container images to the OpenShift internal registry. You then automated pipeline execution by integrating GitLab webhooks with Tekton Triggers and verified the complete end-to-end CI workflow.
+
+You now have:
+
+* A Tekton pipeline for building, testing, and containerizing applications
+* A shared pipeline workspace and ServiceAccount with the required permissions
+* Secure registry credential retrieval using HashiCorp Vault
+* Automated pipeline execution through GitLab webhooks and Tekton Triggers
+* Container images automatically published to the OpenShift internal registry
+* A fully validated, event-driven CI pipeline running on OpenShift

@@ -1,0 +1,8 @@
+* xref:index.adoc[CI with OpenShift Pipelines]
+** xref:lab-1.adoc[Lab 1: CI Pipeline]
+** xref:lab-2.adoc[Lab 2: Create the CI Pipeline]
+** xref:lab-3.adoc[Lab 3: Test CI Pipeline]
+** xref:lab-4.adoc[Lab 4: Automate CI Pipeline]
+** xref:lab-5.adoc[Lab 5: Validate CI Pipeline]
+** xref:lab-summary.adoc[Lab Summary]
+

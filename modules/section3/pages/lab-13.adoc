@@ -1,0 +1,177 @@
+= Lab 13: Configure Multi-Cluster Stage Deployment
+:navtitle: Lab 13: Stage Deployment
+:experimental:
+
+In this lab, you'll prepare the staging environment for multi-cluster deployments by creating stage-specific GitOps manifests and configuring the runtime cluster to securely pull application images from Quay.
+
+By the end of this lab, you will have:
+
+* Created GitOps manifests for the staging environment
+* Configured the runtime cluster to authenticate with Quay using an image pull secret
+* Updated the staging deployment to use Quay-hosted images
+* Committed and pushed the staging manifests to the GitOps repository
+
+== Prepare the Stage Environment
+
+In this exercise, you'll create a staging environment in the GitOps repository based on the existing development manifests.
+
+. Clone the GitOps repository (replace `XXXXX` with your lab GUID):
++
+[source,bash,role=execute]
+----
+git clone https://gitlab.apps.cluster-XXXXX.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
+cd etx-app-gitops
+mkdir -p environments/stage
+----
+
+. Copy the development manifests as the starting point for the staging environment.
++
+[source,bash,role=execute]
+----
+cp environments/dev/*.yaml environments/stage/
+----
+
+. Retrieve the Quay registry URL that will host promoted application images.
++
+[source,bash,role=execute]
+----
+QUAY_URL=$(oc get route -n quay \
+  -l quay-component=quay-app-route \
+  -o jsonpath='{.items[0].spec.host}')
+
+echo "Using Quay URL: $QUAY_URL"
+----
+
+== Configure Image Pull Access
+
+The runtime cluster must authenticate with Quay before it can pull promoted container images.
+
+. Log in to the *Service Enablement: App Platform Runtime* cluster using the credentials provided by RHDP.
++
+[source,bash,role=execute]
+----
+oc login \
+  -u <RUNTIME_USERNAME> \
+  -p <RUNTIME_PASSWORD> \
+  <RUNTIME_API_URL> \
+  --insecure-skip-tls-verify
+----
+
+. Create a Quay image pull secret in the `etx-app-staging` namespace using the robot account credentials created in the previous lab.
++
+[source,bash,role=execute]
+----
+oc create secret docker-registry quay-pull-secret \
+  -n etx-app-staging \
+  --docker-server=$QUAY_URL \
+  --docker-username='etx-app+promoter' \
+  --docker-password=$ROBOT_TOKEN
+----
+
+. Switch back to the factory cluster before continuing.
++
+[source,bash,role=execute]
+----
+oc login $FACTORY_API \
+  -u $FACTORY_USER \
+  -p $FACTORY_PASSWORD \
+  --insecure-skip-tls-verify
+----
+
+NOTE: The runtime cluster uses this image pull secret whenever it pulls application images from Quay.
+
+== Create the Stage Deployment Manifest
+
+Create a deployment manifest that references the staging namespace and Quay-hosted application image.
+
+. Replace the existing deployment manifest with the following configuration.
++
+[source,bash,role=execute]
+----
+cat > environments/stage/deployment.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etx-app-base-app
+  namespace: etx-app-staging
+  labels:
+    app: etx-app-base-app
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: etx-app-base-app
+  template:
+    metadata:
+      labels:
+        app: etx-app-base-app
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+    spec:
+      imagePullSecrets:
+        - name: quay-pull-secret
+      containers:
+        - name: etx-app-base-app
+          image: ${QUAY_URL}/etx-app/etx-app-base-app:stable
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          env:
+            - name: POSTGRESQL_HOST
+              value: "parasol-db.etx-app-staging.svc.cluster.local"
+            - name: POSTGRESQL_DATABASE
+              value: "parasol"
+            - name: POSTGRESQL_USER
+              value: "parasol"
+            - name: POSTGRESQL_PASSWORD
+              value: "parasol"
+            - name: QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION
+              value: update
+EOF
+----
+
+Compared to the development environment, the staging deployment includes several production-oriented changes:
+
+* Deploys to the `etx-app-staging` namespace
+* Runs two application replicas for improved availability
+* Pulls images from the Quay registry instead of the OpenShift internal registry
+* Uses the `quay-pull-secret` to authenticate with Quay
+
+== Update and Commit the Stage Manifests
+
+Update the remaining manifests to reference the staging namespace and commit the changes to the GitOps repository.
+
+. Update the Service and Route manifests.
++
+[source,bash,role=execute]
+----
+sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' \
+  environments/stage/service.yaml \
+  environments/stage/route.yaml
+----
+
+. Verify that all manifests reference the staging namespace.
++
+[source,bash,role=execute]
+----
+grep namespace environments/stage/*.yaml
+----
+
+. Commit and push the staging environment manifests.
++
+[source,bash,role=execute]
+----
+git add -A
+git commit -m "feat: add stage environment manifests"
+git push origin main
+----
+
+Once the changes are pushed, the GitOps repository contains separate deployment definitions for both the development and staging environments, enabling Argo CD to manage each environment independently.

@@ -4,4 +4,7 @@ version: 1
 nav:
 - modules/ROOT/nav.adoc
 - modules/LABENV/nav.adoc
-- modules/chapter1/nav.adoc
+- modules/section1/nav.adoc
+- modules/section2/nav.adoc
+- modules/section3/nav.adoc
+#- modules/section1/nav.adoc

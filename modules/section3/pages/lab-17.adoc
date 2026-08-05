@@ -1,0 +1,89 @@
+= Lab 17: Deploy the Staging Application
+:navtitle: Lab 17: Stage Deployment
+:experimental:
+
+In this lab, you'll deploy the staging application by creating an Argo CD Application that targets the secondary cluster. Argo CD will continuously synchronize the staging environment with the manifests stored in the GitOps repository.
+
+By the end of this lab, you will have:
+
+* Created an Argo CD Application for the staging environment
+* Configured Argo CD to deploy to the secondary cluster
+* Verified that the staging application is synchronized successfully
+* Confirmed that the staging deployment is visible in the Argo CD dashboard
+
+== Create the Staging Application
+
+In this exercise, you'll create an Argo CD Application that deploys the staging manifests from the GitOps repository to the runtime cluster.
+
+. Retrieve the GitLab repository URL:
++
+[source,bash,role=execute]
+----
+GITLAB_URL="https://$(oc get route -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "Using GitLab URL: ${GITLAB_URL}"
+----
+
+. Create the Argo CD Application:
++
+[source,bash,role=execute]
+----
+oc apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: etx-app-stage
+  namespace: etx-app-dev
+  labels:
+    app.kubernetes.io/part-of: etx_app_base_app
+spec:
+  project: default
+  source:
+    repoURL: ${GITLAB_URL}/software-factory/etx-app-gitops.git
+    targetRevision: main
+    path: environments/stage
+  destination:
+    name: staging
+    namespace: etx-app-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+EOF
+----
+
+NOTE: The `staging` destination refers to the secondary cluster that was enrolled with Argo CD in the earlier lab.
+
+== Verify the Staging Deployment
+
+Confirm that Argo CD has synchronized the staging application successfully.
+
+. Check the synchronization status:
++
+[source,bash,role=execute]
+----
+oc get application etx-app-stage -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}{"\n"}'
+----
++
+The output should be:
++
+[source,text]
+----
+Synced
+----
+
+. Open the Argo CD dashboard.
+
+. Verify that the following applications are listed:
++
+* `etx-app-dev` – Application deployed to the primary (development) cluster
+* `etx-app-stage` – Application deployed to the secondary (staging) cluster
+
+. Select the `etx-app-stage` application to review its synchronization status, managed resources, and deployment health.
+
+NOTE: Because the staging cluster is registered with Argo CD, you can monitor and manage the remote deployment directly from the Argo CD dashboard without logging in to the secondary cluster.

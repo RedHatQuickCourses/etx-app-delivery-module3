@@ -1,0 +1,129 @@
+= Lab 5: Validate Automated Pipeline Execution
+:navtitle: Lab 5: Validate CI Pipeline
+:experimental:
+
+In this lab, you'll verify that your GitLab webhook automatically triggers the Tekton pipeline whenever code is pushed to the application repository.
+
+You'll make a small change to the application, observe the pipeline execution, and confirm that a new container image is successfully built and stored in the OpenShift internal registry.
+
+By the end of this lab, you will have:
+
+* Triggered the CI pipeline automatically using a Git push
+* Monitored the PipelineRun execution
+* Verified that the application image was successfully built and pushed
+* Confirmed that the CI pipeline is fully operational
+
+== Trigger the CI Pipeline
+
+Now that the webhook integration is configured, any push to the GitLab repository automatically starts the Tekton pipeline.
+
+. Open your **etx-app-base-app** Dev Spaces workspace.
+
+. Open a terminal in the workspace.
+
+. Make a small change and push it to the Git repository.
++
+[source,bash,role=execute]
+----
+# Make a trivial change
+echo "# CI/CD test" >> README.md
+
+git add README.md
+git commit -m "Test webhook trigger"
+git push origin feature/add-devfile
+----
+
+The Git push sends a webhook event to the Tekton EventListener, which automatically creates a new PipelineRun.
+
+== Monitor the Pipeline Execution
+
+Verify that a new pipeline has started.
+
+. Run the following command:
++
+[source,bash,role=execute]
+----
+oc get pipelinerun -n etx-app-dev
+----
+
+You should see a new `etx-app-base-app-ci-*` PipelineRun with a status of `Running`. Once complete, the status changes to `Succeeded`.
+
+== View Pipeline Logs
+
+Monitor the execution of the latest PipelineRun.
+
+. Retrieve the most recent PipelineRun and stream its logs.
++
+[source,bash,role=execute]
+----
+# Get the latest PipelineRun
+LATEST_PR=$(oc get pipelinerun -n etx-app-dev \
+  --sort-by=.metadata.creationTimestamp \
+  -o jsonpath='{.items[-1].metadata.name}')
+
+echo "Following logs for: $LATEST_PR"
+
+# Stream logs from the currently running task
+oc logs -f $(oc get pods \
+  -n etx-app-dev \
+  -l tekton.dev/pipelineRun=$LATEST_PR \
+  --sort-by=.metadata.creationTimestamp \
+  -o jsonpath='{.items[-1].metadata.name}') \
+  -n etx-app-dev
+----
+
+Review the output to confirm that all pipeline tasks complete successfully.
+
+NOTE: Since Tekton executes each task in a separate pod, the log stream ends when the current task finishes. If needed, rerun the command to follow the next task.
+
+== Verify the Generated Image
+
+Confirm that the pipeline pushed the application image to the OpenShift internal registry.
+
+. Run the following command:
++
+[source,bash,role=execute]
+----
+oc get imagestream etx-app-base-app -n etx-app-dev
+----
+
+Verify that the ImageStream contains a newly generated image tagged with the latest commit SHA.
+
+== Verify the CI Environment
+
+Perform a final validation of the pipeline components.
+
+. Run the following commands:
++
+[source,bash,role=execute]
+----
+# Verify the pipeline
+oc get pipeline etx-app-base-app-ci -n etx-app-dev
+
+# Verify the EventListener
+oc get pods -n etx-app-dev | grep el-gitlab-listener
+
+# Verify the EventListener route
+oc get route el-gitlab-listener -n etx-app-dev
+
+# Display recent PipelineRuns
+oc get pipelinerun -n etx-app-dev \
+  --sort-by=.metadata.creationTimestamp | tail -5
+----
+
+Confirm that:
+
+* The `etx-app-base-app-ci` pipeline exists.
+* The `el-gitlab-listener` pod is running.
+* The EventListener route is available.
+* The latest PipelineRun completed successfully.
+
+[TIP]
+====
+If the pipeline does not execute as expected, check the following:
+
+* **Pipeline fails during clone** — Verify the Git repository URL and credentials.
+* **Build task fails** — Ensure the application builds successfully outside the pipeline.
+* **Image push fails** — Confirm the `pipeline` ServiceAccount has the required permissions.
+* **Pipeline is not triggered** — Verify the GitLab webhook configuration and ensure the EventListener pod is running.
+====

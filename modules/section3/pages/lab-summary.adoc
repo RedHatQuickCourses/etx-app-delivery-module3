@@ -1,0 +1,39 @@
+== 📋 Lab Summary
+
+You have completed the Promotion Pipeline exercise and established a secure, GitOps-based application promotion workflow.
+
+You now have the following capabilities:
+
+* **Automated Image Promotion** – Application images can be promoted from the internal registry to Quay without rebuilding.
+* **GitOps-Based Deployments** – Staging deployments are managed through Git repositories and synchronized by Argo CD.
+* **Secure Credential Management** – Registry credentials are securely retrieved and managed using Vault.
+* **Multi-Cluster Deployment Support** – Application versions can be promoted across different OpenShift environments.
+* **Rollback Capability** – Previous application versions can be restored using Git history or previously validated images.
+
+== Key Takeaways
+
+=== Promotion Does Not Mean Re-Build
+
+The promotion process moves the same validated container image between environments.
+
+* The same container image identified by its SHA is promoted from development to staging.
+* No application rebuild occurs between environments.
+* Configuration changes are applied separately from the application artifact.
+* This ensures that the application you test is exactly the application you deploy.
+
+=== GitOps Ensures Consistency
+
+Git remains the source of truth for application deployments.
+
+* All deployment state is stored and versioned in Git.
+* Changes are fully auditable and reversible.
+* Argo CD continuously synchronizes the cluster state with the desired state defined in Git.
+* Drift detection ensures that environments remain consistent.
+
+=== Multi-Cluster Architecture
+
+The promotion workflow supports application delivery across multiple OpenShift environments.
+
+* Development uses the internal registry for fast local image builds and testing.
+* Staging uses Quay for a trusted, externally accessible image registry.
+* Argo CD provides centralized deployment management across clusters.

@@ -1,0 +1,199 @@
+= Lab 14: Create the Promotion Pipeline
+:navtitle: Lab 14: Promotion Pipeline
+:experimental:
+
+In this lab, you'll create the Tekton resources required to promote application images from the development environment to the staging environment. The promotion pipeline securely retrieves credentials from Vault, copies images to Quay, and updates the GitOps repository to trigger a deployment.
+
+By the end of this lab, you will have:
+
+* Created a workspace for the promotion pipeline
+* Retrieved Quay credentials securely from Vault
+* Created a task to copy images from the OpenShift internal registry to Quay
+* Created a task to update the staging GitOps manifests automatically
+
+== Create the Promotion Pipeline Workspace
+
+The promotion pipeline requires persistent storage for cloning and updating the GitOps repository.
+
+. Create a PersistentVolumeClaim for the promotion pipeline workspace.
++
+[source,bash,role=execute]
+----
+oc apply -f - <<'EOF'
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: promotion-workspace-pvc
+  namespace: etx-app-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+EOF
+----
+
+== Create the Vault Credentials Task
+
+The promotion pipeline retrieves the Quay robot account credentials you stored in Vault rather than embedding secrets directly in the pipeline.
+
+. Create the `vault-fetch-quay-creds` task.
++
+[source,bash,role=execute,subs="attributes+"]
+----
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: vault-fetch-quay-creds
+  namespace: etx-app-dev
+spec:
+  results:
+    - name: quay-server
+    - name: quay-username
+    - name: quay-password
+  steps:
+    - name: fetch
+      image: registry.access.redhat.com/ubi9/ubi-minimal:latest
+      script: |
+        #!/bin/sh
+        set -e
+
+        microdnf install -y jq && microdnf clean all
+
+        VAULT_ADDR="{vault_url}"
+        SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+        VAULT_TOKEN=$(curl -s --request POST \
+          "$\{VAULT_ADDR}/v1/auth/kubernetes/login" \
+          --data "{\"role\":\"pipeline\",\"jwt\":\"$\{SA_TOKEN}\"}" \
+          | jq -r '.auth.client_token')
+
+        CREDS=$(curl -s --header "X-Vault-Token: $\{VAULT_TOKEN}" \
+          "$\{VAULT_ADDR}/v1/secret/data/registry/quay")
+
+        echo "$\{CREDS}" | jq -r '.data.data.server' \
+          | tr -d '\n' > $(results.quay-server.path)
+        echo "$\{CREDS}" | jq -r '.data.data.username' \
+          | tr -d '\n' > $(results.quay-username.path)
+        echo "$\{CREDS}" | jq -r '.data.data.password' \
+          | tr -d '\n' > $(results.quay-password.path)
+EOF
+----
+
+NOTE: The task authenticates to Vault using the pipeline ServiceAccount and Kubernetes authentication. Quay credentials are never stored in the pipeline definition.
+
+== Create the Image Promotion Task
+
+After retrieving the credentials, the promotion pipeline copies the application image from the OpenShift internal registry to Quay using Skopeo.
+
+. Create the `copy-image-to-quay` task.
++
+[source,bash,role=execute]
+----
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: copy-image-to-quay
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: source-image
+      type: string
+    - name: dest-image
+      type: string
+    - name: dest-username
+      type: string
+    - name: dest-password
+      type: string
+  steps:
+    - name: copy
+      image: quay.io/skopeo/stable:latest
+      script: |
+        #!/bin/bash
+        set -e
+
+        echo "Copying image from internal registry to Quay..."
+
+        SRC_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+        skopeo copy \
+          --src-tls-verify=false \
+          --dest-tls-verify=false \
+          --src-creds="pipeline:${SRC_TOKEN}" \
+          --dest-creds="$(params.dest-username):$(params.dest-password)" \
+          "docker://$(params.source-image)" \
+          "docker://$(params.dest-image)"
+
+        echo "Image copied successfully!"
+EOF
+----
+
+NOTE: Skopeo performs a registry-to-registry image copy without pulling the container image locally, making promotions faster and more efficient.
+
+== Create the GitOps Update Task
+
+The final task updates the staging deployment manifest in the GitOps repository with the newly promoted image. Once the change is committed, Argo CD automatically synchronizes the staging environment.
+
+. Create the `update-gitops-staging` task.
++
+[source,bash,role=execute,subs="attributes+"]
+----
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: update-gitops-staging
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: gitops-repo-url
+      type: string
+    - name: image-url
+      type: string
+    - name: git-username
+      type: string
+      default: "Tekton Pipeline"
+    - name: git-email
+      type: string
+      default: "pipeline@openshift.local"
+  workspaces:
+    - name: source
+  steps:
+    - name: update
+      image: registry.access.redhat.com/ubi9/ubi:latest
+      script: |
+        #!/bin/bash
+        set -e
+
+        dnf install -y git && dnf clean all
+
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
+        git clone "$REPO_URL" /workspace/gitops
+        cd /workspace/gitops
+
+        sed -i "s|image:.*etx-app-base-app:.*|image: $(params.image-url)|" \
+          environments/stage/deployment.yaml
+
+        git config user.email "$(params.git-email)"
+        git config user.name "$(params.git-username)"
+
+        git add environments/stage/deployment.yaml
+
+        if git diff --cached --quiet; then
+          echo "No changes to commit."
+        else
+          git commit -m "Promote to staging: $(params.image-url)"
+          git push origin main
+          echo "GitOps repository updated successfully!"
+        fi
+EOF
+----
+
+Once these tasks are created, you have all the building blocks required for the promotion pipeline. In the next lab, you'll assemble these tasks into a complete Tekton pipeline that automates image promotion from development to the staging environment.

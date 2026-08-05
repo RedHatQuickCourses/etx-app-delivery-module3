@@ -1,0 +1,10 @@
+= 📋 Lab Summary
+:navtitle: 📋 Lab Summary
+
+You have completed the GitOps deployment workflow. Your application platform now provides:
+
+* A dedicated Argo CD instance integrated with Keycloak Single Sign-On
+* A GitOps repository containing environment-specific Kubernetes manifests
+* Automated application deployment and synchronization with self-healing enabled
+* OpenTelemetry auto-instrumentation for application observability
+* End-to-end CI/CD integration, where successful Tekton builds automatically update the GitOps repository and trigger application deployment through Argo CD

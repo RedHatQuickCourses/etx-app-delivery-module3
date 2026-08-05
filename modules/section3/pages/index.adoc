@@ -1,0 +1,36 @@
+= Application Promotion and GitOps Deployment Workflow
+:navtitle: Application Promotion and GitOps Workflow
+
+++++
+<div class="module-card">
+<div class="module-header">
+++++
+
+image::ROOT:mini-illustration-book-red-RH.Large_square_transparent.png[width=40,align=left]
+
+**What's in this section?**
+
+++++
+</div>
+++++
+
+In this section, you'll learn how modern application platforms promote applications across environments using a *secure, GitOps-based delivery workflow*.
+
+You'll explore how container images move from development to staging without rebuilding, how Git remains the source of truth for deployment configuration, and how tools such as *OpenShift Pipelines, Quay, Vault, and Argo CD* enable automated, secure, and repeatable application delivery.
+
+Throughout this section, you'll build an application promotion workflow that provides:
+
+* Automated image promotion between environments
+* Secure registry credential management
+* GitOps-based deployment synchronization
+* Multi-cluster application delivery
+* Reliable rollback capabilities using Git history and validated images
+
+[TIP]
+====
+If you're already familiar with CI/CD pipelines, container registries, and GitOps concepts, feel free to skim this section and continue to xref:lab-12.adoc[Lab 12: Configure Quay]. The concepts introduced here provide useful context for understanding how enterprise application platforms manage application releases across environments.
+====
+
+++++
+</div>
+++++

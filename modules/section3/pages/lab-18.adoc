@@ -1,0 +1,112 @@
+= Lab 18: Verify the GitOps Promotion Workflow
+:navtitle: Lab 18: Verify Promotion
+:experimental:
+
+In this lab, you'll validate the complete GitOps promotion workflow by verifying that the application is healthy in the development environment and that the promotion pipeline successfully synchronized the staging environment through Argo CD.
+
+By the end of this lab, you will have:
+
+* Reviewed the end-to-end GitOps promotion workflow
+* Verified that the development application is healthy
+* Confirmed that the GitOps repository references the promoted image
+* Verified that Argo CD synchronized the staging application successfully
+
+== Understand the Promotion Workflow
+
+In this exercise, you'll review how a container image moves from the development environment to the staging environment using Tekton, Quay, Git, and Argo CD.
+
+The promotion workflow consists of the following steps:
+
+. The CI pipeline builds the application and pushes a container image to the OpenShift internal registry using the commit SHA as the image tag.
+. The promotion pipeline copies the validated image to the Quay registry and assigns it the `stable` tag.
+. The promotion pipeline updates the `environments/stage/deployment.yaml` manifest in the GitOps repository with the promoted image.
+. Argo CD detects the Git commit and automatically synchronizes the updated manifests to the staging cluster.
+
+This GitOps workflow provides several advantages:
+
+* **Version control** – All deployment changes are stored and tracked in Git.
+* **Auditability** – Every deployment is associated with a Git commit, providing a complete deployment history.
+* **Rollback capability** – Reverting a Git commit restores a previous application version.
+* **Multi-cluster consistency** – The same Git repository can be used to deploy applications across multiple clusters.
+
+== Verify the Development Deployment
+
+Confirm that the development environment is healthy and that the application is running correctly.
+
+. Verify the deployment status:
++
+[source,bash,role=execute]
+----
+# Check Argo CD application status
+oc get application etx-app-dev -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}: {.status.health.status}{"\n"}'
+
+# Check application pods
+oc get pods -n etx-app-dev -l app=etx-app-base-app
+
+# Verify the application health endpoint
+curl https://$(oc get route etx-app-base-app -n etx-app-dev \
+  -o jsonpath='{.spec.host}')/q/health
+
+# Verify OpenTelemetry auto-instrumentation
+oc get pod -n etx-app-dev -l app=etx-app-base-app \
+  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'
+----
++
+You should observe:
+
+* Argo CD reports `Synced: Healthy`
+* Application pods are in the `Running` state
+* The health endpoint returns a successful response
+* The `opentelemetry-auto-instrumentation` init container is present
+
+[TIP]
+====
+**Common Issues**
+
+* **ImagePullBackOff** — Verify that the CI pipeline successfully built and pushed the application image.
+* **CrashLoopBackOff** — Review the application logs and confirm that required services such as PostgreSQL and Kafka are available.
+* **Argo CD Out of Sync** — Synchronize the application manually from the Argo CD dashboard or verify the GitOps repository changes.
+* **Health endpoint unavailable** — Ensure that all supporting services are running and the application has started successfully.
+====
+
+== Verify the Staging Promotion
+
+Confirm that the promotion pipeline updated the GitOps repository and that Argo CD synchronized the staging environment.
+
+. Verify that the staging deployment manifest references the promoted image:
++
+[source,bash,role=execute]
+----
+cd ~/workshop/etx-app-gitops
+
+git pull origin main
+
+grep image: environments/stage/deployment.yaml
+----
++
+The deployment manifest should reference the Quay image using the `stable` tag.
+
+. Verify the staging application status:
++
+[source,bash,role=execute]
+----
+oc get application etx-app-stage -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}{"\n"}'
+----
++
+The output should be:
++
+[source,text]
+----
+Synced
+----
+
+. Open the Argo CD dashboard.
+
+. Select the `etx-app-stage` application and verify that:
++
+* The application status is **Synced** and **Healthy**
+* The deployment references the promoted image stored in Quay
+
+At this point, you have validated the complete GitOps promotion workflow. A successful promotion updates the GitOps repository, and Argo CD automatically deploys the new application version to the staging cluster.

@@ -1,0 +1,198 @@
+= Lab 4: Automate the CI Pipeline
+:navtitle: Lab 4: Automate CI Pipeline
+:experimental:
+
+In this lab, you'll configure Tekton Triggers and GitLab webhooks to automatically start the CI pipeline whenever changes are pushed to the application repository.
+
+You'll create the Tekton Trigger resources, expose an EventListener, configure GitLab to send push events, and verify that commits automatically trigger new PipelineRuns.
+
+By the end of this lab, you will have:
+
+* Created a TriggerBinding to map GitLab webhook payloads to pipeline parameters
+* Created a TriggerTemplate that generates PipelineRuns
+* Deployed an EventListener to receive GitLab webhook events
+* Exposed the EventListener using an OpenShift Route
+* Configured a GitLab webhook to trigger the pipeline automatically
+* Verified end-to-end CI pipeline automation
+
+== Create the Tekton Trigger Resources
+
+Tekton Triggers connect external events, such as GitLab push notifications, to Tekton Pipelines.
+
+In this exercise, you'll create the TriggerBinding, TriggerTemplate, and EventListener resources required to automatically start a new PipelineRun whenever code is pushed to GitLab.
+
+=== Create the TriggerBinding
+
+The TriggerBinding extracts values from the GitLab webhook payload and maps them to parameters used by the pipeline.
+
+. In the Web Terminal, run:
++
+[source,bash,role=execute,subs="attributes"]
+----
+<existing TriggerBinding YAML>
+----
+
+The binding maps:
+
+* The Git repository URL
+* The commit SHA used as the pipeline revision
+
+=== Create the TriggerTemplate
+
+The TriggerTemplate defines the PipelineRun that Tekton creates when a webhook event is received.
+
+. Run the following command:
++
+[source,bash,role=execute,subs="attributes"]
+----
+<existing TriggerTemplate YAML>
+----
+
+The template creates a new PipelineRun using the shared workspace and pipeline ServiceAccount created in the previous labs.
+
+=== Create the EventListener
+
+The EventListener exposes an HTTP endpoint that receives webhook requests from GitLab.
+
+. Run:
++
+[source,bash,role=execute,subs="attributes"]
+----
+<existing EventListener YAML>
+----
+
+The EventListener connects the GitLab webhook to the TriggerBinding and TriggerTemplate.
+
+== Expose the EventListener
+
+GitLab must be able to securely reach the EventListener.
+
+. Create an HTTPS route:
++
+[source,bash,role=execute]
+----
+<existing route command>
+----
+
+. Retrieve the EventListener URL:
++
+[source,bash,role=execute]
+----
+<existing echo command>
+----
+
+Copy this URL. You'll use it when configuring the GitLab webhook.
+
+NOTE: GitLab requires HTTPS endpoints for webhooks. The OpenShift Route provides TLS termination for the EventListener.
+
+== Configure the GitLab Webhook
+
+To allow GitLab to automatically trigger the pipeline, configure a webhook for the application repository.
+
+IMPORTANT: Creating GitLab webhooks requires **Maintainer** or **Owner** access to the project. Administrative configuration also requires the GitLab `root` account.
+
+=== Enable Local Network Webhooks
+
+By default, GitLab blocks webhook requests to internal cluster addresses.
+
+. Retrieve the GitLab administrator information:
++
+[source,bash,role=execute]
+----
+<existing command>
+----
+
+. Sign in to GitLab using the built-in `root` administrator account.
+
+. Navigate to:
+
+* menu:Admin Area[Settings > Network]
+
+. Expand **Outbound requests**.
+
+. Enable:
+
+* ☑ Allow requests to the local network from webhooks and integrations
+
+. Save the changes.
+
+NOTE: This setting allows GitLab to communicate with services running inside the OpenShift cluster, including the Tekton EventListener.
+
+=== Create the Repository Webhook
+
+After enabling local network requests, configure the repository webhook.
+
+. Open the `etx_app_base_app` repository.
+
+. Navigate to:
+
+* menu:Settings[Webhooks]
+
+. Click btn:[Add new webhook].
+
+. Configure the webhook:
+
+* URL: Paste the EventListener Route URL
+* Trigger: Push events
+* SSL Verification: Disable for this lab environment
+
+. Click btn:[Add webhook].
+
+=== Test the Webhook
+
+Verify that GitLab can communicate with the EventListener.
+
+. Select the webhook.
+
+. Click btn:[Test] → *Push events*.
+
+A successful test returns an HTTP `202 Accepted` response.
+
+== Verify Automatic Pipeline Execution
+
+After the webhook is configured successfully, verify that GitLab automatically starts the CI pipeline.
+
+. Commit and push a small change to the `main` branch.
+
+. Monitor PipelineRuns:
+
++
+[source,bash,role=execute]
+----
+oc get pipelinerun -n etx-app-dev -w
+----
+
+A new PipelineRun should be created automatically without manual intervention.
+
+== Troubleshoot Common Issues
+
+If the webhook does not trigger the pipeline, verify the following.
+
+=== Invalid URL
+
+If GitLab reports **Invalid url given**:
+
+* Ensure local network webhooks are enabled.
+* Verify the EventListener Route uses HTTPS.
+* Confirm the Route is reachable.
+
+=== SSL Certificate Errors
+
+If webhook delivery fails due to certificate validation:
+
+* Disable SSL verification for the webhook.
+
+This is acceptable for the lab environment because the cluster uses self-signed certificates.
+
+=== EventListener Not Receiving Requests
+
+Verify that the EventListener pod is running:
+
+[source,bash,role=execute]
+----
+oc get pods -n etx-app-dev | grep el-gitlab-listener
+
+oc logs -n etx-app-dev -l eventlistener=gitlab-listener
+----
+
+The logs should show incoming webhook requests from GitLab.

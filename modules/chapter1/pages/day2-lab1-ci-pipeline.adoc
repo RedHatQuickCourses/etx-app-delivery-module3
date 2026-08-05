@@ -690,7 +690,7 @@ oc logs -n etx-app-dev -l eventlistener=gitlab-listener
 
 == Verify the Pipeline
 
-Push a change to your repository and confirm the pipeline triggers:
+Navigate to your devspaces **etx-app-base-app** workspaces and push a change to your repository and confirm the pipeline triggers:
 
 [source,bash,role=execute]
 ----

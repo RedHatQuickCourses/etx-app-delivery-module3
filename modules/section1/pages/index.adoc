@@ -1,0 +1,24 @@
+= Continuous Integration with OpenShift Pipelines
+:navtitle: CI with OpenShift Pipelines
+
+++++
+<div class="module-card">
+<div class="module-header">
+++++
+
+image::ROOT:mini-illustration-book-red-RH.Large_square_transparent.png[width=40,align=left]
+
+**What's in this section?**
+
+++++
+</div>
+++++
+
+In this section, you'll build a complete cloud-native Continuous Integration (CI) workflow using OpenShift Pipelines (Tekton).
+
+You'll create a reusable CI pipeline, securely retrieve registry credentials from HashiCorp Vault, automate pipeline execution with GitLab webhooks and Tekton Triggers, and validate the end-to-end build process that produces container images for deployment on OpenShift.
+
+
+++++
+</div>
+++++

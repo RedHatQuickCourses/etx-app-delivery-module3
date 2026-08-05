@@ -1,0 +1,74 @@
+= Lab 20: Roll Back a Staging Deployment
+:navtitle: Lab 20: Rollback
+:experimental:
+
+In this lab, you'll learn two common approaches for rolling back an application deployment in a GitOps environment when a release needs to be reverted.
+
+By the end of this lab, you will have:
+
+* Rolled back a deployment by reverting a Git commit
+* Promoted a previously built application image back to staging
+* Understood how GitOps enables safe and repeatable rollbacks
+
+== Roll Back Using Git
+
+The recommended rollback approach is to restore a previous version of the deployment manifests in the GitOps repository.
+
+. Navigate to your local GitOps repository:
++
+[source,bash,role=execute]
+----
+cd ~/workshop/etx-app-gitops
+----
+
+. Review the commit history for the staging deployment manifest:
++
+[source,bash,role=execute]
+----
+git log environments/stage/deployment.yaml
+----
+
+. Revert the desired commit and push the change:
++
+[source,bash,role=execute]
+----
+git revert <commit-hash>
+git push origin main
+----
+
+Once the commit is pushed, Argo CD automatically detects the change and synchronizes the staging environment to the previous application version.
+
+== Roll Back by Re-Promoting a Previous Image
+
+If you know the image tag of a previously validated application version, you can rerun the promotion pipeline using that image.
+
+. Create a new PipelineRun using the previous image tag:
++
+[source,bash,role=execute]
+----
+oc create -f - <<EOF
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: etx-app-promotion-
+  namespace: etx-app-dev
+spec:
+  pipelineRef:
+    name: etx-app-promotion
+  params:
+    - name: source-image-tag
+      value: <PREVIOUS_SHA>
+    - name: dest-image-tag
+      value: stable
+  workspaces:
+    - name: shared-workspace
+      persistentVolumeClaim:
+        claimName: promotion-workspace-pvc
+  taskRunTemplate:
+    serviceAccountName: pipeline
+EOF
+----
+
+The promotion pipeline copies the selected image to Quay, updates the GitOps repository, and Argo CD automatically deploys the previous application version to the staging environment.
+
+TIP: In a GitOps workflow, Git remains the source of truth for deployments. Whether you revert a Git commit or re-promote an earlier application image, Argo CD continuously reconciles the cluster to match the desired state stored in the GitOps repository.
