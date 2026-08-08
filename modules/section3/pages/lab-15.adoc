@@ -22,7 +22,15 @@ The promotion pipeline performs the following actions:
 * Updates the staging deployment manifest in the GitOps repository
 * Triggers Argo CD to deploy the promoted image to the staging cluster
 
-. Create the promotion pipeline.
+Copy the GITLAB_URL as it will required in next step.
+
+[source,bash,role=execute,subs="attributes+"]
+----
+export GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+echo $GITLAB_URL
+----
+
+. Create the promotion pipeline, make sure to substitute <GITLAB_URL>.
 +
 [source,bash,role=execute,subs="attributes+"]
 ----
@@ -43,7 +51,7 @@ spec:
       description: Tag to use in Quay (e.g., stable, v1.0.0)
     - name: gitops-repo-url
       type: string
-      default: https://gitlab.apps.cluster-<GUID>.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
+      default: <GITLAB_URL>/software-factory/etx-app-gitops.git
   workspaces:
     - name: shared-workspace
   tasks:
@@ -84,19 +92,11 @@ NOTE: The pipeline promotes an existing application image. It does not rebuild t
 
 == Verify the Pipeline Configuration
 
-Before running the promotion pipeline, verify that the GitOps repository URL is correct.
+Before running the promotion pipeline, verify that the GitLab repository URL is correct.
 
-. Retrieve the GitLab URL dynamically.
-+
 [source,bash,role=execute]
 ----
-GITLAB_URL="https://$(oc get route -n gitlab \
-  -l app=webservice \
-  -o jsonpath='{.items[0].spec.host}')"
-
-echo "GitLab URL: $GITLAB_URL"
+oc describe pipeline etx-app-promotion -n etx-app-dev
 ----
-
-Use this URL when supplying the `gitops-repo-url` parameter if it differs from the default value configured in the pipeline.
 
 Once the pipeline has been created successfully, you're ready to execute a promotion and verify that the application is deployed automatically to the staging cluster.

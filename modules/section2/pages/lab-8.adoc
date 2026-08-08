@@ -1,207 +1,117 @@
-= Lab 8: Create the GitOps Repository
-:navtitle: Lab 8: GitOps Repository
+= Lab 8: Deploy the Application with Argo CD
+:navtitle: Lab 8: Deploy with Argo CD
 :experimental:
 
-In this lab, you'll create a GitOps repository in GitLab to store the Kubernetes manifests that define your application deployment. This repository will serve as the source of truth that Argo CD continuously monitors and synchronizes with your OpenShift cluster.
+In this lab, you'll create an Argo CD Application that continuously synchronizes the GitOps repository with your OpenShift cluster. Once configured, Argo CD automatically deploys the application and keeps the cluster aligned with the desired state stored in Git.
 
 By the end of this lab, you will have:
 
-* Created a GitOps repository in GitLab
-* Organized Kubernetes manifests for the development environment
-* Committed and pushed the initial application manifests
+* Granted Argo CD permission to manage resources in the development project
+* Created an Argo CD Application for the development environment
+* Verified that the application was synchronized and deployed successfully
 
-== Create the GitOps Repository
+== Grant Argo CD Permissions
 
-In this exercise, you'll create a new GitLab repository that will store the Kubernetes manifests used by Argo CD for GitOps-based application deployment.
+Before Argo CD can deploy applications, its application controller requires permission to manage resources in the `etx-app-dev` project.
 
-. Open a terminal in your OpenShift Dev Spaces workspace or launch the *Web Terminal* from the OpenShift console.
+Grant the required permissions:
 
-. Retrieve the GitLab URL:
-+
 [source,bash,role=execute]
 ----
-# Get GitLab URL
-GITLAB_URL="https://$(oc get route -n gitlab \
-  -l app=webservice \
-  -o jsonpath='{.items[0].spec.host}')"
-
-echo "GitLab URL: ${GITLAB_URL}"
+oc adm policy add-role-to-user admin \
+  system:serviceaccount:etx-app-dev:argocd-application-controller \
+  -n etx-app-dev
 ----
 
-. Open the displayed GitLab URL in your browser.
+This grants the Argo CD Application Controller administrative access within the `etx-app-dev` project so it can create, update, and remove application resources during synchronization.
 
-. Create a new project named `etx-app-gitops` in the `software-factory` group.
-+
-image::new.png[width=400]
-+
-image::create.png[width=400]
-+
-image::infos.png[width=600]
+== Create the Argo CD Application
 
-. Clone the repository locally:
-+
+Next, create an Argo CD Application that monitors the GitOps repository and synchronizes the manifests for the development environment.
+
+Create the Argo CD Application:
+
 [source,bash,role=execute]
 ----
-git clone ${GITLAB_URL}/software-factory/etx-app-gitops.git
-
-cd etx-app-gitops
-----
-
-The repository will use the following directory structure:
-
-----
-etx-app-gitops/
-├── environments/
-│   ├── dev/
-│   │   ├── namespace.yaml
-│   │   ├── deployment.yaml
-│   │   ├── service.yaml
-│   │   └── route.yaml
-│   └── stage/
-│       ├── namespace.yaml
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       └── route.yaml
-└── README.md
-----
-
-== Create the Development Environment Manifests
-
-Create the Kubernetes manifests that define the application's development environment.
-
-. Create the directory structure and namespace manifest:
-+
-[source,bash,role=execute]
-----
-mkdir -p environments/dev
-
-cat > environments/dev/namespace.yaml <<'EOF'
-apiVersion: v1
-kind: Namespace
+oc apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
   name: etx-app-dev
-EOF
-----
-
-. Create the Deployment manifest:
-+
-[source,bash,role=execute]
-----
-cat > environments/dev/deployment.yaml <<'EOF'
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: etx-app-base-app
   namespace: etx-app-dev
   labels:
-    app: etx-app-base-app
-  annotations:
-    instrumentation.opentelemetry.io/inject-java: "true"
+    app.kubernetes.io/part-of: etx_app_base_app
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: etx-app-base-app
-  template:
-    metadata:
-      labels:
-        app: etx-app-base-app
-      annotations:
-        instrumentation.opentelemetry.io/inject-java: "true"
-    spec:
-      containers:
-        - name: etx-app-base-app
-          image: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:latest
-          ports:
-            - containerPort: 8080
-          resources:
-            requests:
-              cpu: 250m
-              memory: 512Mi
-            limits:
-              cpu: "1"
-              memory: 1Gi
+  project: default
+  source:
+    repoURL: ${GITLAB_URL}/software-factory/etx-app-gitops.git
+    targetRevision: main
+    path: environments/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: etx-app-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
 EOF
 ----
 
-NOTE: The OpenTelemetry annotation automatically injects the Java agent using the Instrumentation custom resource created during the supporting services setup.
+The application continuously watches the `environments/dev` directory in the GitOps repository and automatically synchronizes any changes to the OpenShift cluster.
 
-NOTE: The container image tag is updated automatically by the CI pipeline after a successful build.
+NOTE: `CreateNamespace=false` is specified because the `etx-app-dev` namespace already exists.
 
-. Create the Service manifest:
+== Verify the Application Synchronization
+
+Confirm that Argo CD has successfully synchronized the application.
+
+. Check the synchronization status:
 +
 [source,bash,role=execute]
 ----
-cat > environments/dev/service.yaml <<'EOF'
-apiVersion: v1
-kind: Service
-metadata:
-  name: etx-app-base-app
-  namespace: etx-app-dev
-spec:
-  selector:
-    app: etx-app-base-app
-  ports:
-    - port: 8080
-      targetPort: 8080
-EOF
+# Argo CD application status
+oc get application etx-app-dev -n etx-app-dev \
+  -o jsonpath='{.status.sync.status}{"\n"}'
+----
++
+The command should return:
++
+[source,text]
+----
+Synced
 ----
 
-. Create the Route manifest:
+. Confirm application pods are **running**:
 +
 [source,bash,role=execute]
 ----
-cat > environments/dev/route.yaml <<'EOF'
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: etx-app-base-app
-  namespace: etx-app-dev
-spec:
-  to:
-    kind: Service
-    name: etx-app-base-app
-  port:
-    targetPort: 8080
-  tls:
-    termination: edge
-EOF
+oc get pods -n etx-app-dev -l app=etx-app-base-app
 ----
 
-== Commit the Initial Manifests
+== Verify the Application Deployment
 
-Commit the development environment manifests and push them to the GitOps repository.
-
-. Configure your Git identity:
+. Verify the application is running:
 +
 [source,bash,role=execute]
 ----
-git config --global user.email "platform-developer@example.com"
-git config --global user.name "Platform Developer"
+oc get route etx-app-base-app -n etx-app-dev -o jsonpath='{.spec.host}{"\n"}'
 ----
++
+Open the route URL in your browser to confirm the application is accessible.
++
+.Parasol Application(_Click the image to view it in full size in a new browser tab_)
+image::app2.png[link={imagesdir}/app2.png, width=500]
 
-. Retrieve the GitLab administrator credentials:
+. Verify that the argocd application status is **Synced**.
 +
 [source,bash,role=execute]
 ----
-GITLAB_ROOT_PASSWORD=$(oc get secret \
-  -n gitlab \
-  gitlab-gitlab-initial-root-password \
-  -o jsonpath='{.data.password}' | base64 -d)
-
-echo "Root Username: root"
-echo "Root Password: ${GITLAB_ROOT_PASSWORD}"
+oc get route argocd-server -n etx-app-dev -o jsonpath='https://{.spec.host}{"\n"}'
 ----
-
-. Commit and push the manifests:
 +
-[source,bash,role=execute]
-----
-git add environments/dev/
-
-git commit -m "feat: add dev environment manifests"
-
-git push origin main
-----
-
-Once the changes are pushed, the GitOps repository contains the Kubernetes manifests that Argo CD will use as the desired state for the development environment in the following labs.
+Open the route URL in your browser to confirm the application is accessible.
++
+.Argo CD dashboard(_Click the image to view it in full size in a new browser tab_)
+image::sync.png[link={imagesdir}/sync.png, width=500]

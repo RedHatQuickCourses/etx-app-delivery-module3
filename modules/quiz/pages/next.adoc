@@ -1,0 +1,11 @@
+= Summary and What's Next?
+
+_Congratulations! You have successfully established the foundation of your Software Factory._
+
+In this module, you learned how organizations standardize software delivery using a Software Factory, explored Git's role in enabling collaborative development and GitOps workflows, prepared the required platform services, and configured a cloud-native development environment using OpenShift Dev Spaces and GitLab.
+
+You now have everything required to begin building, deploying, and managing applications on the platform. 
+
+In the next modules, you'll use this environment to implement automated software delivery pipelines, GitOps workflows, developer self-service capabilities, and trusted software supply chain practices.
+
+

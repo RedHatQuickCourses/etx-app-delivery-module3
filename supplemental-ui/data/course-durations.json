@@ -1,6 +1,6 @@
 {
-  "totalSeconds": 2124,
-  "pageCount": 29,
+  "totalSeconds": 2220,
+  "pageCount": 31,
   "pages": [
     {
       "module": "ROOT",
@@ -9,8 +9,8 @@
     },
     {
       "module": "LABENV",
-      "page": "index.adoc",
-      "seconds": 68
+      "page": "lab-env-overview.adoc",
+      "seconds": 93
     },
     {
       "module": "section1",
@@ -25,22 +25,17 @@
     {
       "module": "section1",
       "page": "lab-2.adoc",
-      "seconds": 121
+      "seconds": 120
     },
     {
       "module": "section1",
       "page": "lab-3.adoc",
-      "seconds": 86
+      "seconds": 102
     },
     {
       "module": "section1",
       "page": "lab-4.adoc",
-      "seconds": 91
-    },
-    {
-      "module": "section1",
-      "page": "lab-5.adoc",
-      "seconds": 103
+      "seconds": 135
     },
     {
       "module": "section1",
@@ -54,33 +49,33 @@
     },
     {
       "module": "section2",
+      "page": "lab-5.adoc",
+      "seconds": 54
+    },
+    {
+      "module": "section2",
       "page": "lab-6.adoc",
-      "seconds": 45
+      "seconds": 95
     },
     {
       "module": "section2",
       "page": "lab-7.adoc",
-      "seconds": 103
+      "seconds": 86
     },
     {
       "module": "section2",
       "page": "lab-8.adoc",
-      "seconds": 82
+      "seconds": 60
     },
     {
       "module": "section2",
       "page": "lab-9.adoc",
-      "seconds": 53
-    },
-    {
-      "module": "section2",
-      "page": "lab-10.adoc",
       "seconds": 58
     },
     {
       "module": "section2",
-      "page": "lab-11.adoc",
-      "seconds": 93
+      "page": "lab-10.adoc",
+      "seconds": 133
     },
     {
       "module": "section2",
@@ -95,7 +90,12 @@
     {
       "module": "section3",
       "page": "lab-prereq.adoc",
-      "seconds": 154
+      "seconds": 128
+    },
+    {
+      "module": "section3",
+      "page": "lab-11.adoc",
+      "seconds": 40
     },
     {
       "module": "section3",
@@ -105,22 +105,22 @@
     {
       "module": "section3",
       "page": "lab-13.adoc",
-      "seconds": 86
+      "seconds": 99
     },
     {
       "module": "section3",
       "page": "lab-14.adoc",
-      "seconds": 83
+      "seconds": 97
     },
     {
       "module": "section3",
       "page": "lab-15.adoc",
-      "seconds": 89
+      "seconds": 73
     },
     {
       "module": "section3",
       "page": "lab-16.adoc",
-      "seconds": 82
+      "seconds": 84
     },
     {
       "module": "section3",
@@ -130,7 +130,7 @@
     {
       "module": "section3",
       "page": "lab-18.adoc",
-      "seconds": 92
+      "seconds": 94
     },
     {
       "module": "section3",
@@ -146,6 +146,16 @@
       "module": "section3",
       "page": "lab-summary.adoc",
       "seconds": 70
+    },
+    {
+      "module": "quiz",
+      "page": "index.adoc",
+      "seconds": 6
+    },
+    {
+      "module": "quiz",
+      "page": "next.adoc",
+      "seconds": 28
     }
   ]
 }

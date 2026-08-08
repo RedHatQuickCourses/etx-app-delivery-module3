@@ -1,5 +1,5 @@
-= Lab 19: Explore Promotion Automation
-:navtitle: Lab 19: Promotion Automation
+= Lab 19: Explore Promotion Automation (Optional)
+:navtitle: Lab 19: Promotion Automation (Optional)
 :experimental:
 
 In this lab, you'll explore different approaches for controlling application promotion from development to staging, ranging from manual execution to approval-based and Git-driven workflows.

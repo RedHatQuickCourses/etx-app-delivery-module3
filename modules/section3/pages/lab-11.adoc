@@ -1,0 +1,78 @@
+= Lab 11: Getting started
+:navtitle: Lab 11: Getting started
+:experimental:
+
+The promotion workflow requires two OpenShift clusters:
+
+* **Factory Cluster (https://catalog.demo.redhat.com/catalog/babylon-catalog-prod?item=babylon-catalog-prod/openshift-cnv.app-platform-factory-cnv.prod&utm_source=webapp&utm_medium=share-link[Service Enablement: App Platform Software Factory])** – Hosts the Software Factory, CI pipelines, and Argo CD.
+* **Runtime Cluster (https://catalog.demo.redhat.com/catalog/babylon-catalog-prod?item=babylon-catalog-prod/openshift-cnv.app-platform-runtime-cnv.prod&utm_source=webapp&utm_medium=share-link[Service Enablement: App Platform Runtime])** – Hosts the staging and production application environments.
+
+In this exercise, you'll register the runtime cluster with the Argo CD instance running on the factory cluster.
+
+== Enroll the Runtime Cluster
+
+. Download the enrollment script:
++
+[source,bash,role=execute]
+----
+curl -o enroll-secondary-cluster.sh \
+  https://raw.githubusercontent.com/rh-etx-app-platform/etx_app_tooling/main/scripts/enroll-secondary-cluster.sh
+
+chmod +x enroll-secondary-cluster.sh
+----
+
+. Substitute the placeholder values (`RUNTIME-GUID`, `RUNTIME_CLUSTER_ADMIN_PASSWORD`, `FACTORY-GUID`, and `FACTORY_CLUSTER_ADMIN_PASSWORD`) with the information provided in your **RHDP lab environment**, then run the following commands to configure the environment variables used throughout the remaining labs.
++
+[source,bash,subs="attributes+"]
+----
+export RUNTIME_API="https://api.cluster-<RUNTIME-GUID>.dyn.redhatworkshops.io:6443"
+export RUNTIME_USER="admin"
+export RUNTIME_PASSWORD="<RUNTIME_CLUSTER_ADMIN_PASSWORD>"
+
+export FACTORY_API="https://api.cluster-<FACTORY-GUID>.dyn.redhatworkshops.io:6443"
+export FACTORY_USER="admin"
+export FACTORY_PASSWORD="<FACTORY_CLUSTER_ADMIN_PASSWORD>"
+----
+
+. Run the enrollment script:
++
+[source,bash,role=execute]
+----
+./enroll-secondary-cluster.sh
+----
+
+The script automatically performs the following tasks:
+
+* Creates the required ServiceAccount and permissions on the runtime cluster.
+* Creates the staging and production namespaces.
+* Installs the required platform operators.
+* Deploys PostgreSQL, Kafka, OpenTelemetry Collector, and Java auto-instrumentation.
+* Registers the runtime cluster with the factory Argo CD instance.
+
+When the script completes successfully, you should see an **Enrollment Complete** message.
+
+== Verify the Runtime Cluster Registration
+
+Confirm that the runtime cluster has been registered with Argo CD.
+
+Run the following command:
+
+[source,bash,role=execute]
+----
+oc get secret -n etx-app-dev \
+  -l argocd.argoproj.io/secret-type=cluster \
+  -o json | \
+jq -r '.items[] | .metadata.name + " - " + (.data.name | @base64d)'
+----
+
+Verify that the output includes both clusters:
+
+[source,text]
+----
+argocd-default-cluster-config - in-cluster
+cluster-staging - staging
+----
+
+If both entries are displayed, the runtime cluster has been enrolled successfully and is ready to receive application deployments through Argo CD.
+
+In the next lab, you'll build the promotion pipeline that automatically promotes validated application images from the factory cluster to the staging environment.

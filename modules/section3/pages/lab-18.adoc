@@ -33,8 +33,8 @@ This GitOps workflow provides several advantages:
 
 Confirm that the development environment is healthy and that the application is running correctly.
 
-. Verify the deployment status:
-+
+Verify the deployment status:
+
 [source,bash,role=execute]
 ----
 # Check Argo CD application status
@@ -52,7 +52,7 @@ curl https://$(oc get route etx-app-base-app -n etx-app-dev \
 oc get pod -n etx-app-dev -l app=etx-app-base-app \
   -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'
 ----
-+
+
 You should observe:
 
 * Argo CD reports `Synced: Healthy`
@@ -74,39 +74,54 @@ You should observe:
 
 Confirm that the promotion pipeline updated the GitOps repository and that Argo CD synchronized the staging environment.
 
-. Verify that the staging deployment manifest references the promoted image:
-+
+Verify that the staging deployment manifest references the promoted image. For this, navigate to the clone **etx-app-gitops** repository.
+
 [source,bash,role=execute]
 ----
-cd ~/workshop/etx-app-gitops
+cd etx-app-gitops
 
 git pull origin main
 
 grep image: environments/stage/deployment.yaml
 ----
-+
+
 The deployment manifest should reference the Quay image using the `stable` tag.
 
-. Verify the staging application status:
-+
+_Sample Output:_
+
+[source,bash,role=execute]
+----
+image: quay.apps.cluster-f86c6.dyn.redhatworkshops.io/etx-app/etx-app-base-app:stable
+----
+
+Verify the staging application status:
+
 [source,bash,role=execute]
 ----
 oc get application etx-app-stage -n etx-app-dev \
   -o jsonpath='{.status.sync.status}{"\n"}'
 ----
-+
-The output should be:
-+
+
+_Sample Output:_
+
 [source,text]
 ----
 Synced
 ----
 
-. Open the Argo CD dashboard.
+Retreive the ArgoCD application URL and open the Argo CD dashboard.
 
-. Select the `etx-app-stage` application and verify that:
-+
+[source,bash,role=execute]
+----
+oc get route argocd-server -n etx-app-dev -o jsonpath='https://{.spec.host}{"\n"}'
+----
+
+Select the `etx-app-stage` application and verify that:
+
 * The application status is **Synced** and **Healthy**
 * The deployment references the promoted image stored in Quay
+
+.ArgoCD Application status
+image::stage2.png[link=stage2.png,width=700]
 
 At this point, you have validated the complete GitOps promotion workflow. A successful promotion updates the GitOps repository, and Argo CD automatically deploys the new application version to the staging cluster.

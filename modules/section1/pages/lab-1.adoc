@@ -16,15 +16,14 @@ By the end of this lab, you will have:
 
 Tekton pipelines use a shared workspace to exchange files between tasks. In this exercise, you'll create a PersistentVolumeClaim (PVC) that provides persistent storage for the pipeline, along with a ServiceAccount that Tekton uses to execute pipeline tasks.
 
-. Open the *OpenShift Console URL* listed on the **RHDP Lab Environment** page.
-
-. Sign in using any one of the credentials listed in the xref:lab-env-overview.adoc#lab-credentials[Lab Credentials] section.
-
-. After signing in, open the *Developer* perspective.
+. Open the *OpenShift Console URL* listed on the **RHDP Lab Environment** page and sign in using any one of the credentials listed in the **Info** page.
 
 . Click the **>_** (*Web Terminal*) icon in the upper-right corner to launch a terminal session.
 
-. Create the pipeline workspace and ServiceAccount by running the following command:
+.Web Terminal in Openshift console(_Click the image to view it in full size in a new browser tab_)
+image::commandline.png[link={imagesdir}/commandline.png, width=500]
+
+. Create the **pipeline workspace** and **ServiceAccount** by running the following command:
 +
 [source,bash,role=execute,subs="attributes"]
 ----

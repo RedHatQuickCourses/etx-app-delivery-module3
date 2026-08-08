@@ -1,5 +1,5 @@
-= Lab 20: Roll Back a Staging Deployment
-:navtitle: Lab 20: Rollback
+= Lab 20: Roll Back a Staging Deployment (Optional)
+:navtitle: Lab 20: Rollback (Optional)
 :experimental:
 
 In this lab, you'll learn two common approaches for rolling back an application deployment in a GitOps environment when a release needs to be reverted.
@@ -14,11 +14,11 @@ By the end of this lab, you will have:
 
 The recommended rollback approach is to restore a previous version of the deployment manifests in the GitOps repository.
 
-. Navigate to your local GitOps repository:
+. Navigate to your local **etx-app-gitops** GitOps repository:
 +
 [source,bash,role=execute]
 ----
-cd ~/workshop/etx-app-gitops
+cd etx-app-gitops
 ----
 
 . Review the commit history for the staging deployment manifest:

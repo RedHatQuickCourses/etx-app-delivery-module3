@@ -15,11 +15,16 @@ By the end of this lab, you will have:
 
 In this exercise, you'll create a staging environment in the GitOps repository based on the existing development manifests.
 
-. Clone the GitOps repository (replace `XXXXX` with your lab GUID):
+. Clone the GitOps repository:
 +
 [source,bash,role=execute]
 ----
-git clone https://gitlab.apps.cluster-XXXXX.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
+GITLAB_URL="https://$(oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+git clone ${GITLAB_URL}/software-factory/etx-app-gitops.git
 cd etx-app-gitops
 mkdir -p environments/stage
 ----
@@ -35,29 +40,25 @@ cp environments/dev/*.yaml environments/stage/
 +
 [source,bash,role=execute]
 ----
-QUAY_URL=$(oc get route -n quay \
-  -l quay-component=quay-app-route \
-  -o jsonpath='{.items[0].spec.host}')
-
+QUAY_URL=$(oc get route -n quay -l quay-component=quay-app-route -o jsonpath='{.items[0].spec.host}')
 echo "Using Quay URL: $QUAY_URL"
 ----
+
 
 == Configure Image Pull Access
 
 The runtime cluster must authenticate with Quay before it can pull promoted container images.
 
-. Log in to the *Service Enablement: App Platform Runtime* cluster using the credentials provided by RHDP.
+. Log in to the https://catalog.demo.redhat.com/catalog/babylon-catalog-prod?item=babylon-catalog-prod/openshift-cnv.app-platform-runtime-cnv.prod&utm_source=webapp&utm_medium=share-link[**Service Enablement: App Platform Runtime**] cluster.
 +
 [source,bash,role=execute]
 ----
-oc login \
-  -u <RUNTIME_USERNAME> \
-  -p <RUNTIME_PASSWORD> \
-  <RUNTIME_API_URL> \
-  --insecure-skip-tls-verify
+oc login -u $RUNTIME_USER -p $RUNTIME_PASSWORD $RUNTIME_API --insecure-skip-tls-verify
 ----
-
-. Create a Quay image pull secret in the `etx-app-staging` namespace using the robot account credentials created in the previous lab.
++
+NOTE: Make sure you have properly set the `RUNTIME_USER`, `RUNTIME_PASSWORD`, and `RUNTIME_API` values as described in Step 2 of xref:lab-11.adoc#_enroll_the_runtime_cluster[Lab 11: Enroll the Runtime Cluster].
++
+. Create a docker-registry secret in `etx-app-staging` on the runtime cluster using the robot account credentials. Replace **$ROBOT_TOKEN** with the etx-app+promoter token:
 +
 [source,bash,role=execute]
 ----
@@ -68,21 +69,29 @@ oc create secret docker-registry quay-pull-secret \
   --docker-password=$ROBOT_TOKEN
 ----
 
-. Switch back to the factory cluster before continuing.
+. Switch back to the factory cluster using the credentials provided by RHDP lab environment page.
 +
 [source,bash,role=execute]
 ----
-oc login $FACTORY_API \
-  -u $FACTORY_USER \
-  -p $FACTORY_PASSWORD \
-  --insecure-skip-tls-verify
+oc login $FACTORY_API -u $FACTORY_USER -p $FACTORY_PASSWORD --insecure-skip-tls-verify
 ----
++
+NOTE: Make sure you have properly set the `FACTORY_USER`, `FACTORY_PASSWORD`, and `FACTORY_API` values as described in Step 2 of xref:lab-11.adoc#_enroll_the_runtime_cluster[Lab 11: Enroll the Runtime Cluster].
 
-NOTE: The runtime cluster uses this image pull secret whenever it pulls application images from Quay.
 
 == Create the Stage Deployment Manifest
 
 Create a deployment manifest that references the staging namespace and Quay-hosted application image.
+
+. Navigate to the **etx-app-gitops** repository that you cloned previously or freshly clone the **etx-app-gitops** repository locally:
++
+[source,bash,role=execute]
+----
+GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+
+git clone ${GITLAB_URL}/software-factory/etx-app-gitops.git
+cd etx-app-gitops
+----
 
 . Replace the existing deployment manifest with the following configuration.
 +
@@ -164,6 +173,15 @@ sed -i 's/namespace: etx-app-dev/namespace: etx-app-staging/' \
 ----
 grep namespace environments/stage/*.yaml
 ----
++
+Sample output:
++
+[source,bash]
+----
+environments/stage/deployment.yaml:  namespace: etx-app-staging
+environments/stage/route.yaml:  namespace: etx-app-staging
+environments/stage/service.yaml:  namespace: etx-app-staging
+----
 
 . Commit and push the staging environment manifests.
 +
@@ -173,5 +191,5 @@ git add -A
 git commit -m "feat: add stage environment manifests"
 git push origin main
 ----
-
++
 Once the changes are pushed, the GitOps repository contains separate deployment definitions for both the development and staging environments, enabling Argo CD to manage each environment independently.

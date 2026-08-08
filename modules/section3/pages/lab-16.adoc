@@ -15,15 +15,15 @@ By the end of this lab, you will have:
 
 The promotion pipeline requires the tag of an image previously built by the CI pipeline.
 
-. List the available image tags:
-+
+List the available image tags:
+
 [source,bash,role=execute]
 ----
 oc get imagestream etx-app-base-app -n etx-app-dev -o json | \
   jq -r '.status.tags[].tag' | head -5
 ----
-+
-. Note one of the commit SHA tags from the output. You will use it when creating the PipelineRun.
+
+Note one of the commit SHA tags from the output. You will use it when creating the PipelineRun.
 
 == Refresh the Vault Kubernetes Authentication Token
 
@@ -46,10 +46,8 @@ NOTE: This refreshes the Kubernetes Token Reviewer JWT used by Vault. In a produ
 
 == Trigger the Promotion Pipeline
 
-Create a PipelineRun to promote the selected image to the staging environment.
+Create the PipelineRun, replacing `<COMMIT_SHA>` with one of the image tags from the previous step:
 
-. Create the PipelineRun, replacing `<COMMIT_SHA>` with one of the image tags from the previous step:
-+
 [source,bash,role=execute]
 ----
 oc create -f - <<EOF
@@ -81,13 +79,13 @@ EOF
 
 Confirm that the promotion pipeline completed successfully.
 
-. Watch the PipelineRun status:
-+
+Watch the PipelineRun status:
+
 [source,bash,role=execute]
 ----
 oc get pipelinerun -n etx-app-dev -w
 ----
-+
+
 Press kbd:[Ctrl+C] once the PipelineRun reaches the `Succeeded` state.
 
 The promotion pipeline performs the following actions:

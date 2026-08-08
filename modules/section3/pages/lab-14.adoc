@@ -1,5 +1,5 @@
-= Lab 14: Create the Promotion Pipeline
-:navtitle: Lab 14: Promotion Pipeline
+= Lab 14: Create the Image Promotion Pipeline
+:navtitle: Lab 14: Create the Image Promotion Pipeline
 :experimental:
 
 In this lab, you'll create the Tekton resources required to promote application images from the development environment to the staging environment. The promotion pipeline securely retrieves credentials from Vault, copies images to Quay, and updates the GitOps repository to trigger a deployment.
@@ -15,8 +15,8 @@ By the end of this lab, you will have:
 
 The promotion pipeline requires persistent storage for cloning and updating the GitOps repository.
 
-. Create a PersistentVolumeClaim for the promotion pipeline workspace.
-+
+Create a PersistentVolumeClaim for the promotion pipeline workspace.
+
 [source,bash,role=execute]
 ----
 oc apply -f - <<'EOF'
@@ -38,7 +38,9 @@ EOF
 
 The promotion pipeline retrieves the Quay robot account credentials you stored in Vault rather than embedding secrets directly in the pipeline.
 
-. Create the `vault-fetch-quay-creds` task.
+. Copy the **Vault URL** from your lab environment.
+
+. Create the `vault-fetch-quay-creds` task, make sure to substitute <YOUR-VAULT-URL> in below file with your environment's vault url.
 +
 [source,bash,role=execute,subs="attributes+"]
 ----
@@ -60,36 +62,39 @@ spec:
         #!/bin/sh
         set -e
 
+        # Install jq
         microdnf install -y jq && microdnf clean all
 
-        VAULT_ADDR="{vault_url}"
+        # Authenticate to Vault using ServiceAccount token
+        VAULT_ADDR=<YOUR-VAULT-URL>
         SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
         VAULT_TOKEN=$(curl -s --request POST \
-          "$\{VAULT_ADDR}/v1/auth/kubernetes/login" \
-          --data "{\"role\":\"pipeline\",\"jwt\":\"$\{SA_TOKEN}\"}" \
+          "${VAULT_ADDR}/v1/auth/kubernetes/login" \
+          --data "{\"role\":\"pipeline\",\"jwt\":\"${SA_TOKEN}\"}" \
           | jq -r '.auth.client_token')
 
-        CREDS=$(curl -s --header "X-Vault-Token: $\{VAULT_TOKEN}" \
-          "$\{VAULT_ADDR}/v1/secret/data/registry/quay")
+        # Fetch Quay credentials
+        CREDS=$(curl -s --header "X-Vault-Token: ${VAULT_TOKEN}" \
+          "${VAULT_ADDR}/v1/secret/data/registry/quay")
 
-        echo "$\{CREDS}" | jq -r '.data.data.server' \
+        echo "${CREDS}" | jq -r '.data.data.server' \
           | tr -d '\n' > $(results.quay-server.path)
-        echo "$\{CREDS}" | jq -r '.data.data.username' \
+        echo "${CREDS}" | jq -r '.data.data.username' \
           | tr -d '\n' > $(results.quay-username.path)
-        echo "$\{CREDS}" | jq -r '.data.data.password' \
+        echo "${CREDS}" | jq -r '.data.data.password' \
           | tr -d '\n' > $(results.quay-password.path)
 EOF
 ----
-
++
 NOTE: The task authenticates to Vault using the pipeline ServiceAccount and Kubernetes authentication. Quay credentials are never stored in the pipeline definition.
 
 == Create the Image Promotion Task
 
 After retrieving the credentials, the promotion pipeline copies the application image from the OpenShift internal registry to Quay using Skopeo.
 
-. Create the `copy-image-to-quay` task.
-+
+Create the `copy-image-to-quay` task.
+
 [source,bash,role=execute]
 ----
 oc apply -f - <<'EOF'
@@ -102,8 +107,10 @@ spec:
   params:
     - name: source-image
       type: string
+      description: Source image URL (internal registry)
     - name: dest-image
       type: string
+      description: Destination image URL (Quay)
     - name: dest-username
       type: string
     - name: dest-password
@@ -116,9 +123,14 @@ spec:
         set -e
 
         echo "Copying image from internal registry to Quay..."
+        echo "Source: $(params.source-image)"
+        echo "Destination: $(params.dest-image)"
 
+        # Authenticate to the OpenShift internal registry with the
+        # pipeline ServiceAccount token (destination uses Quay robot creds)
         SRC_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
+        # Copy image using skopeo
         skopeo copy \
           --src-tls-verify=false \
           --dest-tls-verify=false \
@@ -137,8 +149,8 @@ NOTE: Skopeo performs a registry-to-registry image copy without pulling the cont
 
 The final task updates the staging deployment manifest in the GitOps repository with the newly promoted image. Once the change is committed, Argo CD automatically synchronizes the staging environment.
 
-. Create the `update-gitops-staging` task.
-+
+Create the `update-gitops-staging` task.
+
 [source,bash,role=execute,subs="attributes+"]
 ----
 oc apply -f - <<'EOF'
@@ -153,6 +165,7 @@ spec:
       type: string
     - name: image-url
       type: string
+      description: Full image URL to update in staging manifest
     - name: git-username
       type: string
       default: "Tekton Pipeline"
@@ -168,6 +181,7 @@ spec:
         #!/bin/bash
         set -e
 
+        # Install git
         dnf install -y git && dnf clean all
 
         REPO_URL="$(params.gitops-repo-url)"
@@ -175,19 +189,20 @@ spec:
 
         git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
 
+        # Clone GitOps repo
         git clone "$REPO_URL" /workspace/gitops
         cd /workspace/gitops
 
+        # Update the image in staging deployment
         sed -i "s|image:.*etx-app-base-app:.*|image: $(params.image-url)|" \
           environments/stage/deployment.yaml
 
+        # Commit and push only when the image reference changed
         git config user.email "$(params.git-email)"
         git config user.name "$(params.git-username)"
-
         git add environments/stage/deployment.yaml
-
         if git diff --cached --quiet; then
-          echo "No changes to commit."
+          echo "No changes to commit - staging already references $(params.image-url)"
         else
           git commit -m "Promote to staging: $(params.image-url)"
           git push origin main

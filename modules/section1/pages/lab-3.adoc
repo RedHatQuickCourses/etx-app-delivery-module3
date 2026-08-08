@@ -17,19 +17,10 @@ By the end of this lab, you will have:
 
 Before configuring Git webhooks, verify that the pipeline executes successfully by creating a manual PipelineRun.
 
-. Open the *OpenShift Console URL* listed on the **RHDP Lab Environment** page.
-
-. Sign in using any one of the credentials listed in the xref:lab-env-overview.adoc#lab-credentials[Lab Credentials] section.
-
-. After signing in, open the *Developer* perspective.
-
-. Click the **>_** (*Web Terminal*) icon in the upper-right corner to launch a terminal session.
-
 . Retrieve the GitLab route by running:
 +
 [source,bash,role=execute]
 ----
-# Get GitLab URL dynamically
 GITLAB_URL="https://$(oc get route \
   -n gitlab \
   -l app=webservice \
@@ -69,6 +60,7 @@ EOF
 +
 The PipelineRun starts the CI pipeline using the source code in GitLab and executes each configured task.
 
+
 == Monitor Pipeline Execution
 
 Once the PipelineRun starts, monitor its progress to ensure each task completes successfully.
@@ -84,32 +76,42 @@ oc get pipelinerun -n etx-app-dev -w
 
 When the pipeline finishes successfully, its status changes to `Succeeded`.
 
+_Sample Output:_
+
+[source,bash]
+----
+NAME                        SUCCEEDED   REASON    STARTTIME   COMPLETIONTIME
+etx-app-base-app-ci-n252n   Unknown     Running   10s         
+etx-app-base-app-ci-n252n   Unknown     Running   26s         
+etx-app-base-app-ci-n252n   Unknown     Running   38s         
+etx-app-base-app-ci-n252n   Unknown     Running   87s         
+etx-app-base-app-ci-n252n   True        Succeeded   2m27s       0s
+etx-app-base-app-ci-n252n   True        Succeeded   2m27s       0s
+etx-app-base-app-ci-n252n   True        Succeeded   2m28s       1s
+----
+
+
 === View TaskRun Details
 
 To inspect the individual tasks executed by the pipeline:
 
 [source,bash,role=execute]
 ----
-LATEST_PR=$(oc get pipelinerun \
-  -n etx-app-dev \
-  --sort-by=.metadata.creationTimestamp \
-  -o jsonpath='{.items[-1].metadata.name}')
+# Get the name of the latest PipelineRun
+LATEST_PR=$(oc get pipelinerun -n etx-app-dev --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}')
 
-echo "PipelineRun: ${LATEST_PR}"
+echo "PipelineRun: $LATEST_PR"
 
-oc get taskrun \
-  -n etx-app-dev \
-  -l tekton.dev/pipelineRun=${LATEST_PR}
+# List all TaskRuns for this PipelineRun
+oc get taskrun -n etx-app-dev -l tekton.dev/pipelineRun=$LATEST_PR
 ----
 
 To view the logs for a specific TaskRun:
 
 [source,bash,role=execute]
 ----
-oc logs \
-  -n etx-app-dev \
-  -l tekton.dev/taskRun=<taskrun-name> \
-  -f
+# View logs of a specific TaskRun (example: fetch-creds)
+oc logs -n etx-app-dev -l tekton.dev/taskRun=<taskrun-name> -f
 ----
 
 TIP: Replace `<taskrun-name>` with one of the TaskRun names returned by the previous command.
@@ -127,9 +129,9 @@ oc get imagestreamtag etx-app-base-app:main -n etx-app-dev
 
 If both resources exist, the image was successfully built and pushed to the internal OpenShift image registry.
 
-== Troubleshoot Common Issues
+== Troubleshoot Common Issues (Optional)
 
-If the pipeline does not complete successfully, the following checks can help identify common problems.
+If the pipeline does not complete successfully, the following checks can help identify common problems. Skip this section if you have encountered no issues in previous steps.
 
 === Vault Authentication Errors
 

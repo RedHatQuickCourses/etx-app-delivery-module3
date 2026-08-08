@@ -1,52 +1,211 @@
-= Lab 10: Verify Application Observability
-:navtitle: Lab 10: Verify Observability
+= Lab 10: Integrate CI with GitOps
+:navtitle: Lab 10: CI to GitOps
 :experimental:
 
-In this lab, you'll verify that OpenTelemetry auto-instrumentation is working correctly for the deployed application. You'll confirm that the OpenTelemetry Java agent has been injected into the application pod and that telemetry data is being collected by the OpenTelemetry Collector.
+In this lab, you'll connect your Tekton CI pipeline to your GitOps repository so that every successful build automatically updates the application image referenced by Argo CD.
 
 By the end of this lab, you will have:
 
-* Verified that OpenTelemetry auto-instrumentation is enabled for the application
-* Confirmed that the OpenTelemetry Java agent was injected into the application pod
-* Verified that trace data is being collected by the OpenTelemetry Collector
+* Created a Tekton Task that updates the GitOps repository with a new image tag
+* Extended the CI pipeline to invoke the GitOps update task after a successful image build
+* Automated the flow from code commit to GitOps repository update
 
-== Verify OpenTelemetry Auto-Instrumentation
+== Create the GitOps Update Task
 
-In this exercise, you'll confirm that the OpenTelemetry Operator has automatically injected the Java agent into the application deployed through Argo CD.
+In this exercise, you'll create a Tekton Task that clones the GitOps repository, updates the application image tag, commits the change, and pushes it back to GitLab.
 
 . Open a terminal in your OpenShift Dev Spaces workspace or launch the *Web Terminal* from the OpenShift console.
 
-. Verify that the application pod contains the OpenTelemetry auto-instrumentation init container:
+. Create the Task:
 +
 [source,bash,role=execute]
 ----
-oc get pod -n etx-app-dev \
-  -l app=etx-app-base-app \
-  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'
+oc apply -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: update-gitops-repo
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: gitops-repo-url
+      type: string
+    - name: image-tag
+      type: string
+    - name: environment
+      type: string
+      default: dev
+  workspaces:
+    - name: source
+  steps:
+    - name: update-image
+      image: registry.access.redhat.com/ubi9/ubi:latest
+      script: |
+        #!/bin/bash
+        set -e
+
+        # Install git
+        dnf install -y git && dnf clean all
+
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
+        git clone "$REPO_URL" /tmp/gitops
+        cd /tmp/gitops/environments/$(params.environment)
+
+        # Update the image tag in the deployment manifest
+        sed -i "s|image:.*etx-app-base-app:.*|image: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:$(params.image-tag)|" deployment.yaml
+
+        git config user.email "pipeline@openshift.local"
+        git config user.name "Tekton Pipeline"
+        git add .
+        git commit -m "Update etx-app-base-app image to $(params.image-tag)"
+        git push
+EOF
+----
++
+The Task updates the deployment manifest in the GitOps repository with the newly built image tag and pushes the change back to GitLab.
+
+== Update the CI Pipeline
+
+Next, extend the existing CI pipeline so it automatically executes the GitOps update task after the container image has been built successfully.
+
+. Retrieve the GitLab URL:
++
+[source,bash,role=execute]
+----
+GITLAB_URL="https://$(oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "${GITLAB_URL}"
 ----
 
-The output should include:
+. Edit the existing pipeline:
++
+[source,bash,role=execute]
+----
+oc edit pipeline etx-app-base-app-ci -n etx-app-dev
+----
 
+. Under the `spec.tasks` section, add the following task definition:
++
+[source,yaml]
+----
+    - name: update-gitops
+      runAfter: [build-image]
+      taskRef:
+        name: update-gitops-repo
+      params:
+        - name: gitops-repo-url
+          value: SUBSTITUTE-GITLAB-URL-HERE/software-factory/etx-app-gitops.git
+        - name: image-tag
+          value: $(params.git-revision)
+        - name: environment
+          value: dev
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+----
+
+NOTE: Replace `SUBSTITUTE-GITLAB-URL-HERE` with the GitLab URL retrieved earlier. If you're recreating the pipeline using a shell heredoc, you can use the `${GITLAB_URL}` variable instead.
+
+== Verify the Integration
+
+You'll trigger the CI pipeline by making a code change and verify that the GitOps repository is updated automatically. You'll then confirm that Argo CD detects the change and deploys the new application version.
+
+. Open a terminal in your Dev Spaces workspace.
+
+. Make a small change to the application and commit it:
++
+[source,bash,role=execute]
+----
+echo "====" >> README.md
+git add -A
+git commit -m "Verify CI to GitOps integration"
+git push -u origin feature/add-devfile
+----
+
+. Monitor the pipeline until it completes successfully:
++
+[source,bash,role=execute]
+----
+oc get pipelineruns -n etx-app-dev --watch
+----
++
+Wait until the latest PipelineRun shows a status of `Succeeded`.
+
+. In Openshift console terminal, verify that the GitOps repository **etx-app-gitops** has been updated automatically:
++
+[source,bash,role=execute]
+----
+GITLAB_URL="https://$(oc get route -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+git clone ${GITLAB_URL}/software-factory/etx-app-gitops.git
+git pull
+grep "image:" environments/dev/deployment.yaml
+----
++
+Sample output:
++
+[source,bash]
+----
+image: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:30615ccd54c01ac19f28a0a71df611ff22dde254
+----
++
+The image tag should now match the Git commit SHA from the pipeline execution. 
+
+. View the latest Git commit:
++
+[source,bash,role=execute]
+----
+git log -1 --oneline
+----
++
+You should see a commit similar to:
++
 [source,text]
 ----
-opentelemetry-auto-instrumentation
+1df86ef (HEAD -> main, origin/main, origin/HEAD) Update etx-app-base-app image to 30615ccd54c01ac19f28a0a71df611ff22dde254
 ----
 
-The presence of this init container confirms that the OpenTelemetry Operator has automatically injected the Java agent into the application pod.
-
-== Verify Trace Collection
-
-Next, verify that the application is sending telemetry data to the OpenTelemetry Collector.
-
-. View the recent logs from the OpenTelemetry Collector:
+. Verify that Argo CD synchronized the change:
 +
 [source,bash,role=execute]
 ----
-oc logs -n etx-app-dev \
-  -l app.kubernetes.io/name=otel-collector-collector \
-  --tail=50
+oc get applications -n openshift-gitops
 ----
++
+Confirm that the `etx-app-dev` application reports `Synced` and `Healthy`.
 
-Review the output and confirm that trace data is being received and processed by the collector.
+. Verify that the application is running the updated image:
++
+[source,bash,role=execute]
+----
+oc describe deployment etx-app-base-app -n etx-app-dev | grep Image:
+----
++
+Sample Output:
++
+[source,bash]
+----
+Image:      image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:30615ccd54c01ac19f28a0a71df611ff22dde254
+----
++
+The deployment should reference the same image tag that was committed to the GitOps repository.
 
-Once traces appear in the collector logs, you have verified that OpenTelemetry auto-instrumentation is successfully collecting telemetry from the deployed application.
+[NOTE]
+====
+The complete deployment flow is now fully automated:
+
+* A code commit triggers the Tekton CI pipeline.
+* Tekton builds and pushes a new container image.
+* The pipeline updates the GitOps repository with the new image tag.
+* A new commit is pushed to GitLab automatically.
+* Argo CD detects the Git change and synchronizes the application.
+* OpenShift deploys the updated application without any manual intervention.
+====

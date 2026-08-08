@@ -1,0 +1,59 @@
+= Lab 5: Configure GitOps Authentication
+:navtitle: Lab 5: GitOps Authentication
+:experimental:
+
+In this lab, you'll verify that the OpenShift GitOps Operator is installed and configure OpenID Connect (OIDC) authentication for Argo CD using the shared Keycloak client.
+
+By the end of this lab, you will have:
+
+* Verified that the OpenShift GitOps Operator is installed
+* Configured Argo CD to use the shared Keycloak OIDC client
+* Created the OIDC secret required for Argo CD authentication
+
+== Verify the OpenShift GitOps Operator
+
+The OpenShift GitOps Operator is pre-installed as part of the lab environment. Before creating GitOps resources, verify that the operator is available and running successfully.
+
+. Verify that the OpenShift GitOps Operator is installed:
++
+[source,bash,role=execute]
+----
+oc get csv -n openshift-operators | grep gitops
+----
+
+Confirm that the `openshift-gitops-operator` ClusterServiceVersion (CSV) is listed with the `Succeeded` phase.
+
+NOTE: If the operator is not yet in the `Succeeded` phase, wait a few moments and rerun the command before proceeding.
+
+== Configure Keycloak Authentication for Argo CD
+
+The ETX platform uses a shared Keycloak OpenID Connect (OIDC) client named `argocd` for all Argo CD instances. This enables users to authenticate to Argo CD using the same enterprise credentials they use for GitLab, Vault, and other platform services.
+
+In this exercise, you'll create the Kubernetes Secret that stores the shared OIDC client credentials.
+
+. Run the following command to create the Argo CD OIDC secret:
++
+[source,bash,role=execute]
+----
+# Get Keycloak URL (etx-sso route)
+KEYCLOAK_URL="https://etx-sso.apps.$(oc get route -n etx-keycloak -o jsonpath='{.items[0].spec.host}' | sed 's/etx-sso\.apps\.//')"
+
+# Use the shared argocd client secret from etx-gitops
+CLIENT_SECRET="changeme"
+
+oc create secret generic argocd-oidc-secret -n etx-app-dev \
+  --from-literal=clientSecret=${CLIENT_SECRET}
+
+# Add labels to help ArgoCD operator recognize the secret
+oc label secret argocd-oidc-secret -n etx-app-dev \
+  app.kubernetes.io/name=argocd-oidc-secret \
+  app.kubernetes.io/part-of=argocd
+
+echo "Keycloak issuer: ${KEYCLOAK_URL}/realms/etx-lab"
+----
+
+NOTE: Use the value **`changeme`** exactly as shown. In this lab environment, it is the shared client secret configured for the existing `argocd` OIDC client. Do **not** replace it with another value.
+
+The command creates the `argocd-oidc-secret` Secret in the `etx-app-dev` namespace and labels it so it can be used by the OpenShift GitOps Operator.
+
+IMPORTANT: The `argocd` OIDC client is shared across the ETX platform. Do **not** create a new client in Keycloak. Use the existing client and the shared client secret provided for this lab.

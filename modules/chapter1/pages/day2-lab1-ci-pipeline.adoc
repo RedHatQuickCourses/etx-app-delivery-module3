@@ -633,6 +633,7 @@ echo "https://$(oc get route el-gitlab-listener -n etx-app-dev -o jsonpath='{.sp
 +
 image::settings.png[width=500]
 
+
 . Click btn:[Add webhook]
 
 . Test the webhook:

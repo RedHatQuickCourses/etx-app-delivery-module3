@@ -14,7 +14,7 @@ By the end of this lab, you will have:
 
 The CI pipeline requires credentials to authenticate with the container registry before it can push application images.
 
-In this section, you'll create a custom Tekton Task that authenticates to HashiCorp Vault using the Kubernetes authentication method configured in the previous supporting services lab, retrieves the registry credentials, and makes them available to subsequent pipeline tasks.
+Create a custom **Tekton Task** that authenticates to **HashiCorp Vault** using the Kubernetes authentication method configured in the previous supporting services lab, retrieves the registry credentials, and makes them available to subsequent pipeline tasks.
 
 First, retrieve the Vault route from the OpenShift cluster.
 
@@ -51,28 +51,28 @@ spec:
         #!/bin/sh
         set -e
 
+        # Install jq
         microdnf install -y jq && microdnf clean all
 
+        # Authenticate to Vault using ServiceAccount token
         VAULT_ADDR="${VAULT_URL}"
-        SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+        SA_TOKEN=\$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
-        VAULT_TOKEN=$(curl -s --request POST \
-          "${VAULT_ADDR}/v1/auth/kubernetes/login" \
-          --data "{\"role\":\"pipeline\",\"jwt\":\"${SA_TOKEN}\"}" \
+        VAULT_TOKEN=\$(curl -s --request POST \
+          "\${VAULT_ADDR}/v1/auth/kubernetes/login" \
+          --data "{\"role\":\"pipeline\",\"jwt\":\"\${SA_TOKEN}\"}" \
           | jq -r '.auth.client_token')
 
-        CREDS=$(curl -s \
-          --header "X-Vault-Token: ${VAULT_TOKEN}" \
-          "${VAULT_ADDR}/v1/secret/data/registry")
+        # Fetch registry credentials
+        CREDS=\$(curl -s --header "X-Vault-Token: \${VAULT_TOKEN}" \
+          "\${VAULT_ADDR}/v1/secret/data/registry")
 
-        echo "${CREDS}" | jq -r '.data.data.server' \
-          | tr -d '\n' > $(results.registry-server.path)
-
-        echo "${CREDS}" | jq -r '.data.data.username' \
-          | tr -d '\n' > $(results.registry-username.path)
-
-        echo "${CREDS}" | jq -r '.data.data.password' \
-          | tr -d '\n' > $(results.registry-password.path)
+        echo "\${CREDS}" | jq -r '.data.data.server' \
+          | tr -d '\n' > \$(results.registry-server.path)
+        echo "\${CREDS}" | jq -r '.data.data.username' \
+          | tr -d '\n' > \$(results.registry-username.path)
+        echo "\${CREDS}" | jq -r '.data.data.password' \
+          | tr -d '\n' > \$(results.registry-password.path)
 EOF
 ----
 

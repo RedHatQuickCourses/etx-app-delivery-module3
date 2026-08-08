@@ -29,7 +29,19 @@ The TriggerBinding extracts values from the GitLab webhook payload and maps them
 +
 [source,bash,role=execute,subs="attributes"]
 ----
-<existing TriggerBinding YAML>
+oc apply -f - <<'EOF'
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: gitlab-push-binding
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: git-url
+      value: $(body.repository.git_http_url)
+    - name: git-revision
+      value: $(body.checkout_sha)
+EOF
 ----
 
 The binding maps:
@@ -45,7 +57,38 @@ The TriggerTemplate defines the PipelineRun that Tekton creates when a webhook e
 +
 [source,bash,role=execute,subs="attributes"]
 ----
-<existing TriggerTemplate YAML>
+oc apply -f - <<'EOF'
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: gitlab-push-template
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1
+      kind: PipelineRun
+      metadata:
+        generateName: etx-app-base-app-ci-
+      spec:
+        pipelineRef:
+          name: etx-app-base-app-ci
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-revision
+            value: $(tt.params.git-revision)
+          - name: image-name
+            value: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app
+        workspaces:
+          - name: shared-workspace
+            persistentVolumeClaim:
+              claimName: pipeline-workspace-pvc
+        taskRunTemplate:
+          serviceAccountName: pipeline
+EOF
 ----
 
 The template creates a new PipelineRun using the shared workspace and pipeline ServiceAccount created in the previous labs.
@@ -58,7 +101,21 @@ The EventListener exposes an HTTP endpoint that receives webhook requests from G
 +
 [source,bash,role=execute,subs="attributes"]
 ----
-<existing EventListener YAML>
+oc apply -f - <<'EOF'
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: gitlab-listener
+  namespace: etx-app-dev
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: gitlab-push
+      bindings:
+        - ref: gitlab-push-binding
+      template:
+        ref: gitlab-push-template
+EOF
 ----
 
 The EventListener connects the GitLab webhook to the TriggerBinding and TriggerTemplate.
@@ -71,14 +128,24 @@ GitLab must be able to securely reach the EventListener.
 +
 [source,bash,role=execute]
 ----
-<existing route command>
+oc create route edge el-gitlab-listener \
+  --service=el-gitlab-listener \
+  --port=http-listener \
+  -n etx-app-dev
 ----
 
 . Retrieve the EventListener URL:
 +
 [source,bash,role=execute]
 ----
-<existing echo command>
+echo "https://$(oc get route el-gitlab-listener -n etx-app-dev -o jsonpath='{.spec.host}')"
+----
+
+. Sample output:
++
+[source,bash]
+----
+https://el-gitlab-listener-etx-app-dev.apps.cluster-xxxxx.dynamic.redhatworkshops.io
 ----
 
 Copy this URL. You'll use it when configuring the GitLab webhook.
@@ -99,44 +166,83 @@ By default, GitLab blocks webhook requests to internal cluster addresses.
 +
 [source,bash,role=execute]
 ----
-<existing command>
+GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+GITLAB_ROOT_PASSWORD=$(oc get secret -n gitlab gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' | base64 -d)
+
+echo "GitLab URL: $GITLAB_URL"
+echo "Admin Area: $GITLAB_URL/admin"
+echo "Network Settings (Direct): $GITLAB_URL/admin/application_settings/network"
+echo ""
+echo "Root Username: root"
+echo "Root Password: $GITLAB_ROOT_PASSWORD"
 ----
 
-. Sign in to GitLab using the built-in `root` administrator account.
+. Sign in to GitLab using the built-in `root` administrator account. Click *Standard* tab (not ETX Lab SSO)
++
+.GitLab Login Page(_Click the image to view it in full size in a new browser tab_)
+image::gitlab_signin.png[link={imagesdir}/gitlab_signin.png, width=500]
++
+* *Username:* `root`
+* *Password:* Use the password from the command above
 
 . Navigate to:
-
 * menu:Admin Area[Settings > Network]
-
++
+.Admin Area Options(_Click the image to view it in full size in a new browser tab_)
+image::network.png[link={imagesdir}/network.png, width=500]
++
 . Expand **Outbound requests**.
-
-. Enable:
-
-* ☑ Allow requests to the local network from webhooks and integrations
-
-. Save the changes.
++
+.Outbound Requests(_Click the image to view it in full size in a new browser tab_)
+image::outbound1.png[link={imagesdir}/outbound1.png, width=500]
++
+. Enable local network webhooks:
+  * Check ☑️ *Allow requests to the local network from webhooks and integrations*
+  * Optionally check ☑️ *Allow requests to the local network from system hooks*
++
+.Outbound Settings(_Click the image to view it in full size in a new browser tab_)
+image::outbound.png[link={imagesdir}/outbound.png, width=500]
++
+. Click btn:[Save] to save the changes.
 
 NOTE: This setting allows GitLab to communicate with services running inside the OpenShift cluster, including the Tekton EventListener.
 
 === Create the Repository Webhook
 
-After enabling local network requests, configure the repository webhook.
+// After enabling local network requests, configure the repository webhook.
 
-. Open the `etx_app_base_app` repository.
+//. Click btn:[Project] and select the `software-factory/etx_app_base_app` repository.
+//+
+//.Project Explorer(_Click the image to view it in full size in a new browser tab_)
+//image::project.png[link={imagesdir}/project.png, width=500]
+//+
 
-. Navigate to:
-
-* menu:Settings[Webhooks]
-
+. Navigate back to btn:[Admin Area] -> btn:[System hooks]
++
+.System hooks menu(_Click the image to view it in full size in a new browser tab_)
+image::hooks.png[link={imagesdir}/hooks.png, width=400]
++
 . Click btn:[Add new webhook].
-
++
+.Add new hook(_Click the image to view it in full size in a new browser tab_)
+image::add.png[link={imagesdir}/add.png, width=500]
++
 . Configure the webhook:
 
-* URL: Paste the EventListener Route URL
-* Trigger: Push events
-* SSL Verification: Disable for this lab environment
-
-. Click btn:[Add webhook].
+* *URL*: Paste the EventListener Route URL by retrieving it from below command.
++
+[source,bash,role=execute]
+----
+echo "https://$(oc get route el-gitlab-listener -n etx-app-dev -o jsonpath='{.spec.host}')"
+----
++
+* *Trigger*: Check ☑️ *Push events*
+  * *SSL verification*: Uncheck for lab environments with self-signed certificates
++
+.Sample Hook Settings(_Click the image to view it in full size in a new browser tab_)
+image::setting_hook.png[link={imagesdir}/setting_hook.png, width=500]
++
+. Click btn:[Add webhook]
 
 === Test the Webhook
 
@@ -145,54 +251,65 @@ Verify that GitLab can communicate with the EventListener.
 . Select the webhook.
 
 . Click btn:[Test] → *Push events*.
-
-A successful test returns an HTTP `202 Accepted` response.
++
+.Push events(_Click the image to view it in full size in a new browser tab_)
+image::push1.png[link={imagesdir}/push1.png, width=600]
++
+. A successful test returns an HTTP `202 Accepted` response.
++
+.Push test results(_Click the image to view it in full size in a new browser tab_)
+image::202.png[link={imagesdir}/202.png, width=600]
 
 == Verify Automatic Pipeline Execution
 
 After the webhook is configured successfully, verify that GitLab automatically starts the CI pipeline.
 
-. Commit and push a small change to the `main` branch.
+. Retrieve the Red Hat Dev Spaces URL by running the following command:
++
+[source,bash,role=execute]
+----
+oc get checluster devspaces -n openshift-devspaces -o jsonpath='{.status.cheURL}{"\n"}'
+----
+
+. Open the URL displayed in the output in your web browser and open a terminal inside your workspace.
+
+. Push a change to your repository and confirm the pipeline triggers:
++
+[source,bash,role=execute]
+----
+echo "# CI/CD test" >> README.md
+git add README.md
+git commit -m "Test webhook trigger"
+git push origin feature/add-devfile
+----
 
 . Monitor PipelineRuns:
-
 +
 [source,bash,role=execute]
 ----
 oc get pipelinerun -n etx-app-dev -w
 ----
++
+A new PipelineRun should be created automatically without manual intervention and should *Succeeded*.
 
-A new PipelineRun should be created automatically without manual intervention.
-
-== Troubleshoot Common Issues
-
-If the webhook does not trigger the pipeline, verify the following.
-
-=== Invalid URL
-
-If GitLab reports **Invalid url given**:
-
-* Ensure local network webhooks are enabled.
-* Verify the EventListener Route uses HTTPS.
-* Confirm the Route is reachable.
-
-=== SSL Certificate Errors
-
-If webhook delivery fails due to certificate validation:
-
-* Disable SSL verification for the webhook.
-
-This is acceptable for the lab environment because the cluster uses self-signed certificates.
-
-=== EventListener Not Receiving Requests
-
-Verify that the EventListener pod is running:
-
+. Follow the latest run logs:
++
 [source,bash,role=execute]
 ----
-oc get pods -n etx-app-dev | grep el-gitlab-listener
+# Get the name of the latest PipelineRun
+LATEST_PR=$(oc get pipelinerun -n etx-app-dev --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}')
 
-oc logs -n etx-app-dev -l eventlistener=gitlab-listener
+echo "Following logs for: $LATEST_PR"
+
+# Follow the logs
+oc logs -f $(oc get pods -n etx-app-dev -l tekton.dev/pipelineRun=$LATEST_PR --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}') -n etx-app-dev
 ----
 
-The logs should show incoming webhook requests from GitLab.
+. Verify the image was pushed:
++
+[source,bash,role=execute]
+----
+oc get imagestream etx-app-base-app -n etx-app-dev
+----
++
+You should see the image tagged with the commit SHA.
