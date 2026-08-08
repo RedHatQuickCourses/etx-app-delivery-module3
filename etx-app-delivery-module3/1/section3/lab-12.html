@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Lab 12: Configure Quay for Image Promotion :: Software Factory and CI/CD</title>
-    <link rel="prev" href="lab-prereq.html">
+    <link rel="prev" href="lab-11.html">
     <link rel="next" href="lab-13.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -75,9 +75,6 @@
     <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
@@ -91,22 +88,22 @@
     <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+    <a class="nav-link" href="../section2/lab-5.html">Lab 5: GitOps Authentication</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: Deploy Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: GitOps Repository</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: Deploy with Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Verify Observability</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: CI to GitOps</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
@@ -124,6 +121,9 @@
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-prereq.html">Lab Pre-requisites</a>
   </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-11.html">Lab 11: Getting started</a>
+  </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="lab-12.html">Lab 12: Configure Quay</a>
   </li>
@@ -131,7 +131,7 @@
     <a class="nav-link" href="lab-13.html">Lab 13: Stage Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-14.html">Lab 14: Promotion Pipeline</a>
+    <a class="nav-link" href="lab-14.html">Lab 14: Image Promotion Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-15.html">Lab 15: Promotion Pipeline</a>
@@ -146,15 +146,25 @@
     <a class="nav-link" href="lab-18.html">Lab 18: Verify Promotion</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation</a>
+    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-20.html">Lab 20: Rollback</a>
+    <a class="nav-link" href="lab-20.html">Lab 20: Rollback (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-summary.html">Lab Summary</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
   </li>
 </ul>
   </li>
@@ -209,7 +219,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Created the <code>etx_app</code> organization and <code>etx-app-base-app</code> repository in Quay</p>
+<p>Created the <code>etx-app</code> organization and <code>etx-app-base-app</code> repository in Quay</p>
 </li>
 <li>
 <p>Created a robot account for non-interactive image promotion</p>
@@ -220,7 +230,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>The promotion pipeline pushes images to Quay at <code>etx_app/etx-app-base-app</code> and retrieves authentication credentials from Vault at <code>secret/registry/quay</code>.</p>
+<p>The promotion pipeline pushes images to Quay at <code>etx-app/etx-app-base-app</code> and retrieves authentication credentials from Vault at <code>secret/registry/quay</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -245,10 +255,16 @@ Interactive users authenticate to Quay using Keycloak Single Sign-On, while CI/C
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Open the <strong>Quay</strong> URL from your lab environment or click the <strong>Quay</strong> tab in your Showroom.</p>
+<p>Open the <strong>Quay</strong> URL from your <strong>RHDP lab environment</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="_images/quay.png"><img src="_images/quay.png" alt="quay" width="500"></a>
+</div>
+<div class="title">Figure 1. Quay Login Page(<em>Click the image to view it in full size in a new browser tab</em>)</div>
+</div>
 </li>
 <li>
-<p>Sign in using ETX Keycloak Single Sign-On with one of the lab accounts:</p>
+<p>Sign in using <strong>ETX Keycloak Single Sign-On</strong> with one of the lab accounts:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -266,7 +282,7 @@ Interactive users authenticate to Quay using Keycloak Single Sign-On, while CI/C
 <div class="content">
 <a class="image" href="valid.png"><img src="_images/valid.png" alt="valid" width="400"></a>
 </div>
-<div class="title">Figure 1. Validate Quay Username</div>
+<div class="title">Figure 2. Validate Quay Username</div>
 </div>
 </li>
 <li>
@@ -275,29 +291,23 @@ Interactive users authenticate to Quay using Keycloak Single Sign-On, while CI/C
 <div class="content">
 <a class="image" href="org.png"><img src="_images/org.png" alt="org" width="400"></a>
 </div>
-<div class="title">Figure 2. Create Organization</div>
+<div class="title">Figure 3. Create Organization</div>
 </div>
 </li>
 <li>
-<p>Create an organization named <code>etx_app</code>.</p>
+<p>Create an organization named <code>etx-app</code>.</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="create_org.png"><img src="_images/create_org.png" alt="create org" width="400"></a>
+<a class="image" href="create_org.png"><img src="_images/create_org.png" alt="create org" width="600"></a>
 </div>
-<div class="title">Figure 3. Create the Organization</div>
-</div>
-</li>
-<li>
-<p>Inside the organization, click <b class="button">Create New Repository</b>.</p>
-<div class="imageblock">
-<div class="content">
-<a class="image" href="repo1.png"><img src="_images/repo1.png" alt="repo1" width="400"></a>
-</div>
-<div class="title">Figure 4. New Repository</div>
+<div class="title">Figure 4. Create the Organization</div>
 </div>
 </li>
 <li>
-<p>Configure the repository:</p>
+<p>Inside the organization, click <b class="button">Create New Repository</b></p>
+</li>
+<li>
+<p>Configure the repository and click <b class="button">Create Public Repository</b>.:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -305,17 +315,14 @@ Interactive users authenticate to Quay using Keycloak Single Sign-On, while CI/C
 </li>
 <li>
 <p><strong>Visibility:</strong> Public</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Click <b class="button">Create Public Repository</b>.</p>
 <div class="imageblock">
 <div class="content">
 <a class="image" href="public.png"><img src="_images/public.png" alt="public" width="500"></a>
 </div>
 <div class="title">Figure 5. Create Repository</div>
+</div>
+</li>
+</ul>
 </div>
 </li>
 </ol>
@@ -327,7 +334,7 @@ Interactive users authenticate to Quay using Keycloak Single Sign-On, while CI/C
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The organization and repository names must match the destination referenced later by the promotion pipeline: <code>etx_app/etx-app-base-app</code>.
+The organization and repository names must match the destination referenced later by the promotion pipeline: <code>etx-app/etx-app-base-app</code>.
 </td>
 </tr>
 </table>
@@ -355,7 +362,7 @@ Although the repository is public, anonymous image pulls are disabled in this Qu
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>From the <code>etx_app</code> organization, click the <strong>Settings</strong> icon.</p>
+<p>From the <code>etx-app</code> organization, click the <strong>Settings</strong> icon.</p>
 <div class="imageblock">
 <div class="content">
 <a class="image" href="setting.png"><img src="_images/setting.png" alt="setting" width="500"></a>
@@ -367,16 +374,16 @@ Although the repository is public, anonymous image pulls are disabled in this Qu
 <p>Under <strong>User and Robot Permissions</strong>, open the dropdown and click <b class="button">Create Robot Account</b>.</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="robot.png"><img src="_images/robot.png" alt="robot" width="500"></a>
+<a class="image" href="robot.png"><img src="_images/robot.png" alt="robot" width="700"></a>
 </div>
 <div class="title">Figure 7. Create Robot Account</div>
 </div>
 </li>
 <li>
-<p>Create a robot account named <code>promoter</code>.</p>
+<p>Create a robot account named <code>promoter</code> and click <b class="button">Create robot account</b>.</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="promoter.png"><img src="_images/promoter.png" alt="promoter" width="500"></a>
+<a class="image" href="promoter.png"><img src="_images/promoter.png" alt="promoter" width="700"></a>
 </div>
 <div class="title">Figure 8. Robot Account Name</div>
 </div>
@@ -385,13 +392,22 @@ Although the repository is public, anonymous image pulls are disabled in this Qu
 <p>Grant the robot account <strong>Write</strong> permission to the repository.</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="write1.png"><img src="_images/write1.png" alt="write1" width="500"></a>
+<a class="image" href="write1.png"><img src="_images/write1.png" alt="write1" width="700"></a>
 </div>
 <div class="title">Figure 9. Assign Write Permission</div>
 </div>
 </li>
 <li>
-<p>Open the newly created robot account (<code>etx-app+promoter</code>) and copy the generated credentials:</p>
+<p>Open the newly created robot account by clicking <b class="button">etx-app+promoter</b></p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="{imagedir}/account.png"><img src="_images/account.png" alt="account" width="700"></a>
+</div>
+<div class="title">Figure 10. Robot Account</div>
+</div>
+</li>
+<li>
+<p>Copy the generated credentials:</p>
 <div class="ulist">
 <ul>
 <li>
@@ -403,7 +419,7 @@ Although the repository is public, anonymous image pulls are disabled in this Qu
 <div class="content">
 <a class="image" href="token.png"><img src="_images/token.png" alt="token" width="500"></a>
 </div>
-<div class="title">Figure 10. Robot Account Credentials</div>
+<div class="title">Figure 11. Robot Account Credentials</div>
 </div>
 </li>
 </ul>
@@ -462,25 +478,25 @@ Save the robot token before leaving the page. It will be required when creating 
 <div class="content">
 <a class="image" href="vtoken.png"><img src="_images/vtoken.png" alt="vtoken" width="400"></a>
 </div>
-<div class="title">Figure 11. Sign in to Vault</div>
+<div class="title">Figure 12. Sign in to Vault</div>
 </div>
 </li>
 <li>
 <p>From the Vault dashboard, open the <code>secret/</code> secrets engine.</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="secrets.png"><img src="_images/secrets.png" alt="secrets" width="500"></a>
+<a class="image" href="secrets.png"><img src="_images/secrets.png" alt="secrets" width="600"></a>
 </div>
-<div class="title">Figure 12. Secret Engine</div>
+<div class="title">Figure 13. Secret Engine</div>
 </div>
 </li>
 <li>
 <p>Click <b class="button">Create secret</b>.</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="createsecret.png"><img src="_images/createsecret.png" alt="createsecret" width="500"></a>
+<a class="image" href="createsecret.png"><img src="_images/createsecret.png" alt="createsecret" width="600"></a>
 </div>
-<div class="title">Figure 13. Create Secret</div>
+<div class="title">Figure 14. Create Secret</div>
 </div>
 </li>
 <li>
@@ -496,7 +512,7 @@ Save the robot token before leaving the page. It will be required when creating 
 <div class="ulist">
 <ul>
 <li>
-<p><strong>server:</strong> Quay hostname returned by the earlier command (without <code>https://</code>)</p>
+<p><strong>server:</strong> Quay hostname returned by the earlier command in Step 1 (without <code>https://</code>)</p>
 </li>
 <li>
 <p><strong>username:</strong> <code>etx-app+promoter</code></p>
@@ -505,9 +521,9 @@ Save the robot token before leaving the page. It will be required when creating 
 <p><strong>password:</strong> Robot token copied from Quay</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="csecret.png"><img src="_images/csecret.png" alt="csecret" width="550"></a>
+<a class="image" href="csecret.png"><img src="_images/csecret.png" alt="csecret" width="700"></a>
 </div>
-<div class="title">Figure 14. Create Vault Secret</div>
+<div class="title">Figure 15. Create Vault Secret</div>
 </div>
 </li>
 </ul>
@@ -517,9 +533,9 @@ Save the robot token before leaving the page. It will be required when creating 
 <p>Click <b class="button">Save</b>.</p>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="final.png"><img src="_images/final.png" alt="final" width="550"></a>
+<a class="image" href="final.png"><img src="_images/final.png" alt="final" width="700"></a>
 </div>
-<div class="title">Figure 15. Completed Secret</div>
+<div class="title">Figure 16. Completed Secret</div>
 </div>
 </li>
 </ol>
@@ -539,7 +555,7 @@ The promotion pipeline authenticates to Vault using Kubernetes authentication an
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="lab-prereq.html">Lab Pre-requisites</a></span>
+  <span class="prev"><a href="lab-11.html">Lab 11: Getting started</a></span>
   <span class="next"><a href="lab-13.html">Lab 13: Stage Deployment</a></span>
 </nav>
 </article>

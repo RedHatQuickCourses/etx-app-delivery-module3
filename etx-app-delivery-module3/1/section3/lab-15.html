@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -75,9 +75,6 @@
     <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
@@ -91,22 +88,22 @@
     <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+    <a class="nav-link" href="../section2/lab-5.html">Lab 5: GitOps Authentication</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: Deploy Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: GitOps Repository</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: Deploy with Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Verify Observability</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: CI to GitOps</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
@@ -125,13 +122,16 @@
     <a class="nav-link" href="lab-prereq.html">Lab Pre-requisites</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-12.html">Lab 12: Configure Quay</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-13.html">Lab 13: Stage Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-14.html">Lab 14: Promotion Pipeline</a>
+    <a class="nav-link" href="lab-14.html">Lab 14: Image Promotion Pipeline</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="lab-15.html">Lab 15: Promotion Pipeline</a>
@@ -146,15 +146,25 @@
     <a class="nav-link" href="lab-18.html">Lab 18: Verify Promotion</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation</a>
+    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-20.html">Lab 20: Rollback</a>
+    <a class="nav-link" href="lab-20.html">Lab 20: Rollback (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-summary.html">Lab Summary</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
   </li>
 </ul>
   </li>
@@ -246,10 +256,22 @@
 </li>
 <li>
 <p>Triggers Argo CD to deploy the promoted image to the staging cluster</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Copy the GITLAB_URL as it will required in next step.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export GITLAB_URL="https://$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')"
+echo $GITLAB_URL</code></pre>
+</div>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Create the promotion pipeline.</p>
+<p>Create the promotion pipeline, make sure to substitute &lt;GITLAB_URL&gt;.</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;'EOF'
@@ -269,7 +291,7 @@ spec:
       description: Tag to use in Quay (e.g., stable, v1.0.0)
     - name: gitops-repo-url
       type: string
-      default: https://gitlab.apps.cluster-&lt;GUID&gt;.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
+      default: &lt;GITLAB_URL&gt;/software-factory/etx-app-gitops.git
   workspaces:
     - name: shared-workspace
   tasks:
@@ -309,9 +331,6 @@ EOF</code></pre>
 </li>
 </ol>
 </div>
-</li>
-</ul>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -330,26 +349,12 @@ The pipeline promotes an existing application image. It does not rebuild the app
 <h2 id="_verify_the_pipeline_configuration"><a class="anchor" href="#_verify_the_pipeline_configuration"></a>Verify the Pipeline Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before running the promotion pipeline, verify that the GitOps repository URL is correct.</p>
+<p>Before running the promotion pipeline, verify that the GitLab repository URL is correct.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Retrieve the GitLab URL dynamically.</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">GITLAB_URL="https://$(oc get route -n gitlab \
-  -l app=webservice \
-  -o jsonpath='{.items[0].spec.host}')"
-
-echo "GitLab URL: $GITLAB_URL"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc describe pipeline etx-app-promotion -n etx-app-dev</code></pre>
 </div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Use this URL when supplying the <code>gitops-repo-url</code> parameter if it differs from the default value configured in the pipeline.</p>
 </div>
 <div class="paragraph">
 <p>Once the pipeline has been created successfully, you&#8217;re ready to execute a promotion and verify that the application is deployed automatically to the staging cluster.</p>
@@ -357,7 +362,7 @@ echo "GitLab URL: $GITLAB_URL"</code></pre>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="lab-14.html">Lab 14: Promotion Pipeline</a></span>
+  <span class="prev"><a href="lab-14.html">Lab 14: Image Promotion Pipeline</a></span>
   <span class="next"><a href="lab-16.html">Lab 16: Test Promotion</a></span>
 </nav>
 </article>

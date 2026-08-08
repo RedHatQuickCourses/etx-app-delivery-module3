@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lab 11: Getting started :: Software Factory and CI/CD</title>
+    <link rel="prev" href="lab-prereq.html">
+    <link rel="next" href="lab-12.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Factory and CI/CD</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Factory and CI/CD</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Factory and DevSpaces</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section1/index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-5.html">Lab 5: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-14.html">Lab 14: Image Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-20.html">Lab 20: Rollback (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Factory and CI/CD</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Factory and CI/CD</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Factory and CI/CD</a></li>
+    <li><a href="index.html">Application Promotion and GitOps Deployment Workflow</a></li>
+    <li><a href="lab-11.html">Lab 11: Getting started</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Lab 11: Getting started</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The promotion workflow requires two OpenShift clusters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Factory Cluster (<a href="https://catalog.demo.redhat.com/catalog/babylon-catalog-prod?item=babylon-catalog-prod/openshift-cnv.app-platform-factory-cnv.prod&amp;utm_source=webapp&amp;utm_medium=share-link">Service Enablement: App Platform Software Factory</a>)</strong> – Hosts the Software Factory, CI pipelines, and Argo CD.</p>
+</li>
+<li>
+<p><strong>Runtime Cluster (<a href="https://catalog.demo.redhat.com/catalog/babylon-catalog-prod?item=babylon-catalog-prod/openshift-cnv.app-platform-runtime-cnv.prod&amp;utm_source=webapp&amp;utm_medium=share-link">Service Enablement: App Platform Runtime</a>)</strong> – Hosts the staging and production application environments.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In this exercise, you&#8217;ll register the runtime cluster with the Argo CD instance running on the factory cluster.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enroll_the_runtime_cluster"><a class="anchor" href="#_enroll_the_runtime_cluster"></a>Enroll the Runtime Cluster</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the enrollment script:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -o enroll-secondary-cluster.sh \
+  https://raw.githubusercontent.com/rh-etx-app-platform/etx_app_tooling/main/scripts/enroll-secondary-cluster.sh
+
+chmod +x enroll-secondary-cluster.sh</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Substitute the placeholder values (<code>RUNTIME-GUID</code>, <code>RUNTIME_CLUSTER_ADMIN_PASSWORD</code>, <code>FACTORY-GUID</code>, and <code>FACTORY_CLUSTER_ADMIN_PASSWORD</code>) with the information provided in your <strong>RHDP lab environment</strong>, then run the following commands to configure the environment variables used throughout the remaining labs.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export RUNTIME_API="https://api.cluster-&lt;RUNTIME-GUID&gt;.dyn.redhatworkshops.io:6443"
+export RUNTIME_USER="admin"
+export RUNTIME_PASSWORD="&lt;RUNTIME_CLUSTER_ADMIN_PASSWORD&gt;"
+
+export FACTORY_API="https://api.cluster-&lt;FACTORY-GUID&gt;.dyn.redhatworkshops.io:6443"
+export FACTORY_USER="admin"
+export FACTORY_PASSWORD="&lt;FACTORY_CLUSTER_ADMIN_PASSWORD&gt;"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the enrollment script:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">./enroll-secondary-cluster.sh</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The script automatically performs the following tasks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Creates the required ServiceAccount and permissions on the runtime cluster.</p>
+</li>
+<li>
+<p>Creates the staging and production namespaces.</p>
+</li>
+<li>
+<p>Installs the required platform operators.</p>
+</li>
+<li>
+<p>Deploys PostgreSQL, Kafka, OpenTelemetry Collector, and Java auto-instrumentation.</p>
+</li>
+<li>
+<p>Registers the runtime cluster with the factory Argo CD instance.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When the script completes successfully, you should see an <strong>Enrollment Complete</strong> message.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_the_runtime_cluster_registration"><a class="anchor" href="#_verify_the_runtime_cluster_registration"></a>Verify the Runtime Cluster Registration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Confirm that the runtime cluster has been registered with Argo CD.</p>
+</div>
+<div class="paragraph">
+<p>Run the following command:</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret -n etx-app-dev \
+  -l argocd.argoproj.io/secret-type=cluster \
+  -o json | \
+jq -r '.items[] | .metadata.name + " - " + (.data.name | @base64d)'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify that the output includes both clusters:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">argocd-default-cluster-config - in-cluster
+cluster-staging - staging</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If both entries are displayed, the runtime cluster has been enrolled successfully and is ready to receive application deployments through Argo CD.</p>
+</div>
+<div class="paragraph">
+<p>In the next lab, you&#8217;ll build the promotion pipeline that automatically promotes validated application images from the factory cluster to the staging environment.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="lab-prereq.html">Lab Pre-requisites</a></span>
+  <span class="next"><a href="lab-12.html">Lab 12: Configure Quay</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

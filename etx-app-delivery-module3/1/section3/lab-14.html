@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab 14: Create the Promotion Pipeline :: Software Factory and CI/CD</title>
+    <title>Lab 14: Create the Image Promotion Pipeline :: Software Factory and CI/CD</title>
     <link rel="prev" href="lab-13.html">
     <link rel="next" href="lab-15.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -75,9 +75,6 @@
     <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
@@ -91,22 +88,22 @@
     <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+    <a class="nav-link" href="../section2/lab-5.html">Lab 5: GitOps Authentication</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: Deploy Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: GitOps Repository</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: Deploy with Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Verify Observability</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: CI to GitOps</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
@@ -125,13 +122,16 @@
     <a class="nav-link" href="lab-prereq.html">Lab Pre-requisites</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-12.html">Lab 12: Configure Quay</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-13.html">Lab 13: Stage Deployment</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="lab-14.html">Lab 14: Promotion Pipeline</a>
+    <a class="nav-link" href="lab-14.html">Lab 14: Image Promotion Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-15.html">Lab 15: Promotion Pipeline</a>
@@ -146,15 +146,25 @@
     <a class="nav-link" href="lab-18.html">Lab 18: Verify Promotion</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation</a>
+    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-20.html">Lab 20: Rollback</a>
+    <a class="nav-link" href="lab-20.html">Lab 20: Rollback (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-summary.html">Lab Summary</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
   </li>
 </ul>
   </li>
@@ -188,7 +198,7 @@
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
     <li><a href="index.html">Application Promotion and GitOps Deployment Workflow</a></li>
-    <li><a href="lab-14.html">Lab 14: Promotion Pipeline</a></li>
+    <li><a href="lab-14.html">Lab 14: Image Promotion Pipeline</a></li>
   </ul>
 </nav>
 </div>
@@ -197,7 +207,7 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab 14: Create the Promotion Pipeline</h1>
+<h1 class="page">Lab 14: Create the Image Promotion Pipeline</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
@@ -230,10 +240,9 @@
 <div class="paragraph">
 <p>The promotion pipeline requires persistent storage for cloning and updating the GitOps repository.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
+<div class="paragraph">
 <p>Create a PersistentVolumeClaim for the promotion pipeline workspace.</p>
+</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;'EOF'
@@ -251,9 +260,6 @@ spec:
 EOF</code></pre>
 </div>
 </div>
-</li>
-</ol>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -265,7 +271,10 @@ EOF</code></pre>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Create the <code>vault-fetch-quay-creds</code> task.</p>
+<p>Copy the <strong>Vault URL</strong> from your lab environment.</p>
+</li>
+<li>
+<p>Create the <code>vault-fetch-quay-creds</code> task, make sure to substitute &lt;YOUR-VAULT-URL&gt; in below file with your environment&#8217;s vault url.</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;'EOF'
@@ -286,9 +295,11 @@ spec:
         #!/bin/sh
         set -e
 
+        # Install jq
         microdnf install -y jq &amp;&amp; microdnf clean all
 
-        VAULT_ADDR="{vault_url}"
+        # Authenticate to Vault using ServiceAccount token
+        VAULT_ADDR=&lt;YOUR-VAULT-URL&gt;
         SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
         VAULT_TOKEN=$(curl -s --request POST \
@@ -296,6 +307,7 @@ spec:
           --data "{\"role\":\"pipeline\",\"jwt\":\"${SA_TOKEN}\"}" \
           | jq -r '.auth.client_token')
 
+        # Fetch Quay credentials
         CREDS=$(curl -s --header "X-Vault-Token: ${VAULT_TOKEN}" \
           "${VAULT_ADDR}/v1/secret/data/registry/quay")
 
@@ -307,9 +319,6 @@ spec:
           | tr -d '\n' &gt; $(results.quay-password.path)
 EOF</code></pre>
 </div>
-</div>
-</li>
-</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -323,6 +332,9 @@ The task authenticates to Vault using the pipeline ServiceAccount and Kubernetes
 </tr>
 </table>
 </div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -331,10 +343,9 @@ The task authenticates to Vault using the pipeline ServiceAccount and Kubernetes
 <div class="paragraph">
 <p>After retrieving the credentials, the promotion pipeline copies the application image from the OpenShift internal registry to Quay using Skopeo.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
+<div class="paragraph">
 <p>Create the <code>copy-image-to-quay</code> task.</p>
+</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;'EOF'
@@ -347,8 +358,10 @@ spec:
   params:
     - name: source-image
       type: string
+      description: Source image URL (internal registry)
     - name: dest-image
       type: string
+      description: Destination image URL (Quay)
     - name: dest-username
       type: string
     - name: dest-password
@@ -361,9 +374,14 @@ spec:
         set -e
 
         echo "Copying image from internal registry to Quay..."
+        echo "Source: $(params.source-image)"
+        echo "Destination: $(params.dest-image)"
 
+        # Authenticate to the OpenShift internal registry with the
+        # pipeline ServiceAccount token (destination uses Quay robot creds)
         SRC_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
+        # Copy image using skopeo
         skopeo copy \
           --src-tls-verify=false \
           --dest-tls-verify=false \
@@ -375,9 +393,6 @@ spec:
         echo "Image copied successfully!"
 EOF</code></pre>
 </div>
-</div>
-</li>
-</ol>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -399,10 +414,9 @@ Skopeo performs a registry-to-registry image copy without pulling the container 
 <div class="paragraph">
 <p>The final task updates the staging deployment manifest in the GitOps repository with the newly promoted image. Once the change is committed, Argo CD automatically synchronizes the staging environment.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
+<div class="paragraph">
 <p>Create the <code>update-gitops-staging</code> task.</p>
+</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;'EOF'
@@ -417,6 +431,7 @@ spec:
       type: string
     - name: image-url
       type: string
+      description: Full image URL to update in staging manifest
     - name: git-username
       type: string
       default: "Tekton Pipeline"
@@ -432,6 +447,7 @@ spec:
         #!/bin/bash
         set -e
 
+        # Install git
         dnf install -y git &amp;&amp; dnf clean all
 
         REPO_URL="$(params.gitops-repo-url)"
@@ -439,19 +455,20 @@ spec:
 
         git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
 
+        # Clone GitOps repo
         git clone "$REPO_URL" /workspace/gitops
         cd /workspace/gitops
 
+        # Update the image in staging deployment
         sed -i "s|image:.*etx-app-base-app:.*|image: $(params.image-url)|" \
           environments/stage/deployment.yaml
 
+        # Commit and push only when the image reference changed
         git config user.email "$(params.git-email)"
         git config user.name "$(params.git-username)"
-
         git add environments/stage/deployment.yaml
-
         if git diff --cached --quiet; then
-          echo "No changes to commit."
+          echo "No changes to commit - staging already references $(params.image-url)"
         else
           git commit -m "Promote to staging: $(params.image-url)"
           git push origin main
@@ -459,9 +476,6 @@ spec:
         fi
 EOF</code></pre>
 </div>
-</div>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p>Once these tasks are created, you have all the building blocks required for the promotion pipeline. In the next lab, you&#8217;ll assemble these tasks into a complete Tekton pipeline that automates image promotion from development to the staging environment.</p>

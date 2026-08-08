@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab 6: Configure GitOps Authentication :: Software Factory and CI/CD</title>
-    <link rel="prev" href="index.html">
+    <title>Lab 6: Deploy an Argo CD Instance :: Software Factory and CI/CD</title>
+    <link rel="prev" href="lab-5.html">
     <link rel="next" href="lab-7.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -75,9 +75,6 @@
     <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
@@ -90,23 +87,23 @@
     <button class="nav-item-toggle"></button>
     <a class="nav-link" href="index.html">GitOps Continuous Deployment</a>
 <ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-5.html">Lab 5: GitOps Authentication</a>
+  </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="lab-6.html">Lab 6: GitOps Authentication</a>
+    <a class="nav-link" href="lab-6.html">Lab 6: Deploy Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-7.html">Lab 7: Deploy Argo CD</a>
+    <a class="nav-link" href="lab-7.html">Lab 7: GitOps Repository</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-8.html">Lab 8: GitOps Repository</a>
+    <a class="nav-link" href="lab-8.html">Lab 8: Deploy with Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-9.html">Lab 9: Deploy with Argo CD</a>
+    <a class="nav-link" href="lab-9.html">Lab 9: Verify Observability</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-10.html">Lab 10: Verify Observability</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-11.html">Lab 11: CI to GitOps</a>
+    <a class="nav-link" href="lab-10.html">Lab 10: CI to GitOps</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-summary.html">Lab Summary</a>
@@ -125,13 +122,16 @@
     <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Promotion Pipeline</a>
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Image Promotion Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
@@ -146,15 +146,25 @@
     <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation</a>
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback</a>
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
   </li>
 </ul>
   </li>
@@ -188,7 +198,7 @@
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
     <li><a href="index.html">GitOps Continuous Deployment</a></li>
-    <li><a href="lab-6.html">Lab 6: GitOps Authentication</a></li>
+    <li><a href="lab-6.html">Lab 6: Deploy Argo CD</a></li>
   </ul>
 </nav>
 </div>
@@ -197,11 +207,11 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab 6: Configure GitOps Authentication</h1>
+<h1 class="page">Lab 6: Deploy an Argo CD Instance</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this lab, you&#8217;ll verify that the OpenShift GitOps Operator is installed and configure OpenID Connect (OIDC) authentication for Argo CD using the shared Keycloak client.</p>
+<p>In this lab, you&#8217;ll deploy an Argo CD instance in your development project and configure it to use the shared Keycloak OpenID Connect (OIDC) integration created in the previous lab.</p>
 </div>
 <div class="paragraph">
 <p>By the end of this lab, you will have:</p>
@@ -209,104 +219,147 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Verified that the OpenShift GitOps Operator is installed</p>
+<p>Deployed an Argo CD instance in the <code>etx-app-dev</code> project</p>
 </li>
 <li>
-<p>Configured Argo CD to use the shared Keycloak OIDC client</p>
+<p>Configured Argo CD to authenticate using the shared Keycloak OIDC integration</p>
 </li>
 <li>
-<p>Created the OIDC secret required for Argo CD authentication</p>
+<p>Verified that the Argo CD components and Route are available</p>
+</li>
+<li>
+<p>Accessed the Argo CD dashboard using Keycloak Single Sign-On</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_verify_the_openshift_gitops_operator"><a class="anchor" href="#_verify_the_openshift_gitops_operator"></a>Verify the OpenShift GitOps Operator</h2>
+<h2 id="_deploy_the_argo_cd_instance"><a class="anchor" href="#_deploy_the_argo_cd_instance"></a>Deploy the Argo CD Instance</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The OpenShift GitOps Operator is pre-installed as part of the lab environment. Before creating GitOps resources, verify that the operator is available and running successfully.</p>
+<p>In this exercise, you&#8217;ll deploy an Argo CD instance that will be used to manage application deployments throughout the remaining labs.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Open the <strong>OpenShift Console URL</strong> listed on the <strong>RHDP Lab Environment</strong> page.</p>
-</li>
-<li>
-<p>Sign in using any one of the credentials listed in the <a href="#lab-env-overview.adoc#lab-credentials" class="xref unresolved">Lab Credentials</a> section.</p>
-</li>
-<li>
-<p>After signing in, open the <strong>Developer</strong> perspective.</p>
-</li>
-<li>
-<p>Click the <strong>&gt;_</strong> (<strong>Web Terminal</strong>) icon in the upper-right corner to launch a terminal session.</p>
-</li>
-<li>
-<p>Verify that the OpenShift GitOps Operator is installed:</p>
+<p>Retrieve the cluster domain:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get csv -n openshift-operators | grep gitops</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CLUSTER_DOMAIN="$(oc get route -n etx-keycloak -o jsonpath='{.items[0].spec.host}' | sed 's/etx-sso\.apps\.//')"
+echo "Cluster domain: ${CLUSTER_DOMAIN}"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Deploy the Argo CD instance:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">CLUSTER_DOMAIN="$(oc get route -n etx-keycloak -o jsonpath='{.items[0].spec.host}' | sed 's/etx-sso\.apps\.//')"
+
+cat &lt;&lt;EOF | oc apply -f -
+apiVersion: argoproj.io/v1beta1
+kind: ArgoCD
+metadata:
+  name: argocd
+  namespace: etx-app-dev
+spec:
+  server:
+    autoscale:
+      enabled: false
+    grpc:
+      ingress:
+        enabled: false
+    ingress:
+      enabled: false
+    insecure: true
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 125m
+        memory: 128Mi
+    route:
+      enabled: true
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+    service:
+      type: ClusterIP
+  grafana:
+    enabled: false
+    ingress:
+      enabled: false
+    route:
+      enabled: false
+  prometheus:
+    enabled: false
+    ingress:
+      enabled: false
+    route:
+      enabled: false
+  initialSSHKnownHosts: {}
+  rbac:
+    defaultPolicy: 'role:readonly'
+    policy: |
+      g, platform-admin, role:admin
+      g, platform-developer, role:admin
+    scopes: '[groups, preferred_username]'
+  extraConfig:
+    oidc.config: |
+      name: ETX Keycloak
+      issuer: https://etx-sso.apps.${CLUSTER_DOMAIN}/realms/etx-lab
+      clientID: argocd
+      clientSecret: \$argocd-oidc-secret:clientSecret
+      requestedScopes:
+        - openid
+      requestedIDTokenClaims:
+        groups:
+          essential: true
+      logoutURL: https://etx-sso.apps.${CLUSTER_DOMAIN}/realms/etx-lab/protocol/openid-connect/logout
+  repo:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+  resourceExclusions: |
+    - apiGroups:
+      - tekton.dev
+      clusters:
+      - '*'
+      kinds:
+      - TaskRun
+      - PipelineRun
+  controller:
+    processors: {}
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+      requests:
+        cpu: 250m
+        memory: 1Gi
+  ha:
+    enabled: false
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+EOF</code></pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Confirm that the <code>openshift-gitops-operator</code> ClusterServiceVersion (CSV) is listed with the <code>Succeeded</code> phase.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-If the operator is not yet in the <code>Succeeded</code> phase, wait a few moments and rerun the command before proceeding.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_configure_keycloak_authentication_for_argo_cd"><a class="anchor" href="#_configure_keycloak_authentication_for_argo_cd"></a>Configure Keycloak Authentication for Argo CD</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The ETX platform uses a shared Keycloak OpenID Connect (OIDC) client named <code>argocd</code> for all Argo CD instances. This enables users to authenticate to Argo CD using the same enterprise credentials they use for GitLab, Vault, and other platform services.</p>
-</div>
-<div class="paragraph">
-<p>In this exercise, you&#8217;ll create the Kubernetes Secret that stores the shared OIDC client credentials.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Run the following command to create the Argo CD OIDC secret:</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get Keycloak URL (etx-sso route)
-KEYCLOAK_URL="https://etx-sso.apps.$(oc get route -n keycloak -o jsonpath='{.items[0].spec.host}' | sed 's/sso\.apps\.//')"
-
-# Shared Argo CD client secret
-CLIENT_SECRET="changeme"
-
-oc create secret generic argocd-oidc-secret \
-  -n etx-app-dev \
-  --from-literal=clientSecret=${CLIENT_SECRET}
-
-# Label the secret for the Argo CD Operator
-oc label secret argocd-oidc-secret \
-  -n etx-app-dev \
-  app.kubernetes.io/name=argocd-oidc-secret \
-  app.kubernetes.io/part-of=argocd
-
-echo "Keycloak issuer: ${KEYCLOAK_URL}/realms/etx-lab"</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The command creates the <code>argocd-oidc-secret</code> Secret in the <code>etx-app-dev</code> namespace and labels it so it can be used by the OpenShift GitOps Operator.</p>
+<p>The command deploys an Argo CD instance named <code>argocd</code> in the <code>etx-app-dev</code> project.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -315,7 +368,208 @@ echo "Keycloak issuer: ${KEYCLOAK_URL}/realms/etx-lab"</code></pre>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The <code>argocd</code> OIDC client is shared across the ETX platform. Do <strong>not</strong> create a new client in Keycloak. Use the existing client and the shared client secret provided for this lab.
+The <code>server.insecure: true</code> setting configures Argo CD to serve HTTP traffic internally while the OpenShift Route performs TLS termination. This prevents redirect loops (<code>ERR_TOO_MANY_REDIRECTS</code>) when using edge TLS termination.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The Argo CD custom resource references the <code>argocd-oidc-secret</code> created in the previous lab, enabling authentication through the shared Keycloak OIDC client.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_the_argo_cd_deployment"><a class="anchor" href="#_verify_the_argo_cd_deployment"></a>Verify the Argo CD Deployment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Wait for the Argo CD components to start.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Run the following command:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n etx-app-dev -w</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Wait until all <code>argocd-*</code> pods report a status of <code>1/1 Ready</code>, then press <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>C</kbd></span> to stop watching.</p>
+</div>
+<div class="paragraph">
+<p>Once all pods are running, your Argo CD instance is ready to manage GitOps applications in the following labs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_access_the_argo_cd_dashboard"><a class="anchor" href="#_access_the_argo_cd_dashboard"></a>Access the Argo CD Dashboard</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Retrieve the Argo CD dashboard URL and sign in to verify that your deployment is working correctly.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Get the Argo CD URL:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "https://$(oc get route argocd-server -n etx-app-dev -o jsonpath='{.spec.host}')"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open the displayed URL in your browser.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You can authenticate using either <strong>ETX Keycloak Single Sign-On</strong> or the built-in Argo CD administrator account.</p>
+</div>
+<div class="sect2">
+<h3 id="_sign_in_with_etx_keycloak_recommended"><a class="anchor" href="#_sign_in_with_etx_keycloak_recommended"></a>Sign in with ETX Keycloak (Recommended)</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the Argo CD login page, select <strong>ETX Keycloak</strong>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/argocd.png" alt="argocd" width="500">
+</div>
+</div>
+</li>
+<li>
+<p>Sign in using one of the lab credentials:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>platform-admin</code> / <code>openshift</code></p>
+</li>
+<li>
+<p><code>platform-developer</code> / <code>openshift</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>After successful authentication, you&#8217;ll be redirected to the Argo CD dashboard.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Keycloak Single Sign-On provides the same authentication experience used throughout the ETX platform, including GitLab, Quay, and Vault.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sign_in_with_the_admin_account_optional"><a class="anchor" href="#_sign_in_with_the_admin_account_optional"></a>Sign in with the Admin Account (Optional)</h3>
+<div class="paragraph">
+<p>If you prefer to use the built-in administrator account:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Retrieve the default admin password:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get secret argocd-cluster -n etx-app-dev \
+  -o jsonpath='{.data.admin\.password}' | base64 -d &amp;&amp; echo</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Sign in using:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Username:</strong> <code>admin</code></p>
+</li>
+<li>
+<p><strong>Password:</strong> Output from the previous command</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting_dashboard_access"><a class="anchor" href="#_troubleshooting_dashboard_access"></a>Troubleshooting Dashboard Access</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you receive an <code>ERR_TOO_MANY_REDIRECTS</code> error when opening the Argo CD dashboard, verify that the Argo CD server is configured to run in insecure mode behind the OpenShift TLS-terminating route.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Confirm the current setting:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get argocd argocd -n etx-app-dev \
+  -o jsonpath='{.spec.server.insecure}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command should return:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">true</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If the value is not <code>true</code>, update the Argo CD instance:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc patch argocd argocd -n etx-app-dev --type=merge \
+  -p '{"spec":{"server":{"insecure":true}}}'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Wait for the Argo CD server pod to restart:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n etx-app-dev \
+  -l app.kubernetes.io/name=argocd-server -w</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Press <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>C</kbd></span> once the new pod reports <code>1/1 Ready</code>.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If the redirect error persists after the pod restarts, clear your browser cache or open the dashboard in an incognito/private browsing window before trying again.
 </td>
 </tr>
 </table>
@@ -323,8 +577,8 @@ The <code>argocd</code> OIDC client is shared across the ETX platform. Do <stron
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="index.html">GitOps Continuous Deployment</a></span>
-  <span class="next"><a href="lab-7.html">Lab 7: Deploy Argo CD</a></span>
+  <span class="prev"><a href="lab-5.html">Lab 5: GitOps Authentication</a></span>
+  <span class="next"><a href="lab-7.html">Lab 7: GitOps Repository</a></span>
 </nav>
 </article>
   </div>

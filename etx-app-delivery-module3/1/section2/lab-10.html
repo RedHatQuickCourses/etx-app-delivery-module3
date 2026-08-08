@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab 10: Verify Application Observability :: Software Factory and CI/CD</title>
+    <title>Lab 10: Integrate CI with GitOps :: Software Factory and CI/CD</title>
     <link rel="prev" href="lab-9.html">
-    <link rel="next" href="lab-11.html">
+    <link rel="next" href="lab-summary.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/custom.css">
@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -75,9 +75,6 @@
     <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
@@ -91,22 +88,22 @@
     <a class="nav-link" href="index.html">GitOps Continuous Deployment</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-6.html">Lab 6: GitOps Authentication</a>
+    <a class="nav-link" href="lab-5.html">Lab 5: GitOps Authentication</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-7.html">Lab 7: Deploy Argo CD</a>
+    <a class="nav-link" href="lab-6.html">Lab 6: Deploy Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-8.html">Lab 8: GitOps Repository</a>
+    <a class="nav-link" href="lab-7.html">Lab 7: GitOps Repository</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-9.html">Lab 9: Deploy with Argo CD</a>
+    <a class="nav-link" href="lab-8.html">Lab 8: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-9.html">Lab 9: Verify Observability</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="lab-10.html">Lab 10: Verify Observability</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-11.html">Lab 11: CI to GitOps</a>
+    <a class="nav-link" href="lab-10.html">Lab 10: CI to GitOps</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-summary.html">Lab Summary</a>
@@ -125,13 +122,16 @@
     <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Promotion Pipeline</a>
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Image Promotion Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
@@ -146,15 +146,25 @@
     <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation</a>
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback</a>
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
   </li>
 </ul>
   </li>
@@ -188,7 +198,7 @@
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
     <li><a href="index.html">GitOps Continuous Deployment</a></li>
-    <li><a href="lab-10.html">Lab 10: Verify Observability</a></li>
+    <li><a href="lab-10.html">Lab 10: CI to GitOps</a></li>
   </ul>
 </nav>
 </div>
@@ -197,11 +207,11 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab 10: Verify Application Observability</h1>
+<h1 class="page">Lab 10: Integrate CI with GitOps</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this lab, you&#8217;ll verify that OpenTelemetry auto-instrumentation is working correctly for the deployed application. You&#8217;ll confirm that the OpenTelemetry Java agent has been injected into the application pod and that telemetry data is being collected by the OpenTelemetry Collector.</p>
+<p>In this lab, you&#8217;ll connect your Tekton CI pipeline to your GitOps repository so that every successful build automatically updates the application image referenced by Argo CD.</p>
 </div>
 <div class="paragraph">
 <p>By the end of this lab, you will have:</p>
@@ -209,23 +219,23 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Verified that OpenTelemetry auto-instrumentation is enabled for the application</p>
+<p>Created a Tekton Task that updates the GitOps repository with a new image tag</p>
 </li>
 <li>
-<p>Confirmed that the OpenTelemetry Java agent was injected into the application pod</p>
+<p>Extended the CI pipeline to invoke the GitOps update task after a successful image build</p>
 </li>
 <li>
-<p>Verified that trace data is being collected by the OpenTelemetry Collector</p>
+<p>Automated the flow from code commit to GitOps repository update</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_verify_opentelemetry_auto_instrumentation"><a class="anchor" href="#_verify_opentelemetry_auto_instrumentation"></a>Verify OpenTelemetry Auto-Instrumentation</h2>
+<h2 id="_create_the_gitops_update_task"><a class="anchor" href="#_create_the_gitops_update_task"></a>Create the GitOps Update Task</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this exercise, you&#8217;ll confirm that the OpenTelemetry Operator has automatically injected the Java agent into the application deployed through Argo CD.</p>
+<p>In this exercise, you&#8217;ll create a Tekton Task that clones the GitOps repository, updates the application image tag, commits the change, and pushes it back to GitLab.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -233,61 +243,275 @@
 <p>Open a terminal in your OpenShift Dev Spaces workspace or launch the <strong>Web Terminal</strong> from the OpenShift console.</p>
 </li>
 <li>
-<p>Verify that the application pod contains the OpenTelemetry auto-instrumentation init container:</p>
+<p>Create the Task:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pod -n etx-app-dev \
-  -l app=etx-app-base-app \
-  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;'EOF'
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: update-gitops-repo
+  namespace: etx-app-dev
+spec:
+  params:
+    - name: gitops-repo-url
+      type: string
+    - name: image-tag
+      type: string
+    - name: environment
+      type: string
+      default: dev
+  workspaces:
+    - name: source
+  steps:
+    - name: update-image
+      image: registry.access.redhat.com/ubi9/ubi:latest
+      script: |
+        #!/bin/bash
+        set -e
+
+        # Install git
+        dnf install -y git &amp;&amp; dnf clean all
+
+        REPO_URL="$(params.gitops-repo-url)"
+        GITLAB_HOST=$(echo "$REPO_URL" | sed -E 's|https?://([^/]+)/.*|\1|')
+
+        git config --global url."https://etx-platform-bot:openshift@${GITLAB_HOST}/".insteadOf "https://${GITLAB_HOST}/"
+
+        git clone "$REPO_URL" /tmp/gitops
+        cd /tmp/gitops/environments/$(params.environment)
+
+        # Update the image tag in the deployment manifest
+        sed -i "s|image:.*etx-app-base-app:.*|image: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:$(params.image-tag)|" deployment.yaml
+
+        git config user.email "pipeline@openshift.local"
+        git config user.name "Tekton Pipeline"
+        git add .
+        git commit -m "Update etx-app-base-app image to $(params.image-tag)"
+        git push
+EOF</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The Task updates the deployment manifest in the GitOps repository with the newly built image tag and pushes the change back to GitLab.</p>
 </div>
 </li>
 </ol>
-</div>
-<div class="paragraph">
-<p>The output should include:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">opentelemetry-auto-instrumentation</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The presence of this init container confirms that the OpenTelemetry Operator has automatically injected the Java agent into the application pod.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_verify_trace_collection"><a class="anchor" href="#_verify_trace_collection"></a>Verify Trace Collection</h2>
+<h2 id="_update_the_ci_pipeline"><a class="anchor" href="#_update_the_ci_pipeline"></a>Update the CI Pipeline</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Next, verify that the application is sending telemetry data to the OpenTelemetry Collector.</p>
+<p>Next, extend the existing CI pipeline so it automatically executes the GitOps update task after the container image has been built successfully.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>View the recent logs from the OpenTelemetry Collector:</p>
+<p>Retrieve the GitLab URL:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc logs -n etx-app-dev \
-  -l app.kubernetes.io/name=otel-collector-collector \
-  --tail=50</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">GITLAB_URL="https://$(oc get route \
+  -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+
+echo "${GITLAB_URL}"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Edit the existing pipeline:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc edit pipeline etx-app-base-app-ci -n etx-app-dev</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Under the <code>spec.tasks</code> section, add the following task definition:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">    - name: update-gitops
+      runAfter: [build-image]
+      taskRef:
+        name: update-gitops-repo
+      params:
+        - name: gitops-repo-url
+          value: SUBSTITUTE-GITLAB-URL-HERE/software-factory/etx-app-gitops.git
+        - name: image-tag
+          value: $(params.git-revision)
+        - name: environment
+          value: dev
+      workspaces:
+        - name: source
+          workspace: shared-workspace</code></pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Replace <code>SUBSTITUTE-GITLAB-URL-HERE</code> with the GitLab URL retrieved earlier. If you&#8217;re recreating the pipeline using a shell heredoc, you can use the <code>${GITLAB_URL}</code> variable instead.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_verify_the_integration"><a class="anchor" href="#_verify_the_integration"></a>Verify the Integration</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Review the output and confirm that trace data is being received and processed by the collector.</p>
+<p>You&#8217;ll trigger the CI pipeline by making a code change and verify that the GitOps repository is updated automatically. You&#8217;ll then confirm that Argo CD detects the change and deploys the new application version.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a terminal in your Dev Spaces workspace.</p>
+</li>
+<li>
+<p>Make a small change to the application and commit it:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">echo "====" &gt;&gt; README.md
+git add -A
+git commit -m "Verify CI to GitOps integration"
+git push -u origin feature/add-devfile</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Monitor the pipeline until it completes successfully:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pipelineruns -n etx-app-dev --watch</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Once traces appear in the collector logs, you have verified that OpenTelemetry auto-instrumentation is successfully collecting telemetry from the deployed application.</p>
+<p>Wait until the latest PipelineRun shows a status of <code>Succeeded</code>.</p>
+</div>
+</li>
+<li>
+<p>In Openshift console terminal, verify that the GitOps repository <strong>etx-app-gitops</strong> has been updated automatically:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">GITLAB_URL="https://$(oc get route -n gitlab \
+  -l app=webservice \
+  -o jsonpath='{.items[0].spec.host}')"
+git clone ${GITLAB_URL}/software-factory/etx-app-gitops.git
+git pull
+grep "image:" environments/dev/deployment.yaml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">image: image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:30615ccd54c01ac19f28a0a71df611ff22dde254</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The image tag should now match the Git commit SHA from the pipeline execution.</p>
+</div>
+</li>
+<li>
+<p>View the latest Git commit:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git log -1 --oneline</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see a commit similar to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">1df86ef (HEAD -&gt; main, origin/main, origin/HEAD) Update etx-app-base-app image to 30615ccd54c01ac19f28a0a71df611ff22dde254</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that Argo CD synchronized the change:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get applications -n openshift-gitops</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Confirm that the <code>etx-app-dev</code> application reports <code>Synced</code> and <code>Healthy</code>.</p>
+</div>
+</li>
+<li>
+<p>Verify that the application is running the updated image:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc describe deployment etx-app-base-app -n etx-app-dev | grep Image:</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sample Output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">Image:      image-registry.openshift-image-registry.svc:5000/etx-app-dev/etx-app-base-app:30615ccd54c01ac19f28a0a71df611ff22dde254</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The deployment should reference the same image tag that was committed to the GitOps repository.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The complete deployment flow is now fully automated:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A code commit triggers the Tekton CI pipeline.</p>
+</li>
+<li>
+<p>Tekton builds and pushes a new container image.</p>
+</li>
+<li>
+<p>The pipeline updates the GitOps repository with the new image tag.</p>
+</li>
+<li>
+<p>A new commit is pushed to GitLab automatically.</p>
+</li>
+<li>
+<p>Argo CD detects the Git change and synchronizes the application.</p>
+</li>
+<li>
+<p>OpenShift deploys the updated application without any manual intervention.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="lab-9.html">Lab 9: Deploy with Argo CD</a></span>
-  <span class="next"><a href="lab-11.html">Lab 11: CI to GitOps</a></span>
+  <span class="prev"><a href="lab-9.html">Lab 9: Verify Observability</a></span>
+  <span class="next"><a href="lab-summary.html">Lab Summary</a></span>
 </nav>
 </article>
   </div>

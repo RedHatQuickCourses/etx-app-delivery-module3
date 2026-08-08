@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -75,9 +75,6 @@
     <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
@@ -91,22 +88,22 @@
     <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-6.html">Lab 6: GitOps Authentication</a>
+    <a class="nav-link" href="../section2/lab-5.html">Lab 5: GitOps Authentication</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-7.html">Lab 7: Deploy Argo CD</a>
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: Deploy Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-8.html">Lab 8: GitOps Repository</a>
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: GitOps Repository</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Deploy with Argo CD</a>
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: Deploy with Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-10.html">Lab 10: Verify Observability</a>
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Verify Observability</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section2/lab-11.html">Lab 11: CI to GitOps</a>
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: CI to GitOps</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
@@ -125,13 +122,16 @@
     <a class="nav-link" href="lab-prereq.html">Lab Pre-requisites</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-12.html">Lab 12: Configure Quay</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-13.html">Lab 13: Stage Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-14.html">Lab 14: Promotion Pipeline</a>
+    <a class="nav-link" href="lab-14.html">Lab 14: Image Promotion Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-15.html">Lab 15: Promotion Pipeline</a>
@@ -146,15 +146,25 @@
     <a class="nav-link" href="lab-18.html">Lab 18: Verify Promotion</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation</a>
+    <a class="nav-link" href="lab-19.html">Lab 19: Promotion Automation (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-20.html">Lab 20: Rollback</a>
+    <a class="nav-link" href="lab-20.html">Lab 20: Rollback (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-summary.html">Lab Summary</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
   </li>
 </ul>
   </li>
@@ -276,10 +286,9 @@
 <div class="paragraph">
 <p>Confirm that the development environment is healthy and that the application is running correctly.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
+<div class="paragraph">
 <p>Verify the deployment status:</p>
+</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Check Argo CD application status
@@ -316,9 +325,6 @@ oc get pod -n etx-app-dev -l app=etx-app-base-app \
 <p>The <code>opentelemetry-auto-instrumentation</code> init container is present</p>
 </li>
 </ul>
-</div>
-</li>
-</ol>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -358,13 +364,12 @@ oc get pod -n etx-app-dev -l app=etx-app-base-app \
 <div class="paragraph">
 <p>Confirm that the promotion pipeline updated the GitOps repository and that Argo CD synchronized the staging environment.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Verify that the staging deployment manifest references the promoted image:</p>
+<div class="paragraph">
+<p>Verify that the staging deployment manifest references the promoted image. For this, navigate to the clone <strong>etx-app-gitops</strong> repository.</p>
+</div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd ~/workshop/etx-app-gitops
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">cd etx-app-gitops
 
 git pull origin main
 
@@ -374,9 +379,17 @@ grep image: environments/stage/deployment.yaml</code></pre>
 <div class="paragraph">
 <p>The deployment manifest should reference the Quay image using the <code>stable</code> tag.</p>
 </div>
-</li>
-<li>
+<div class="paragraph">
+<p><em>Sample Output:</em></p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">image: quay.apps.cluster-f86c6.dyn.redhatworkshops.io/etx-app/etx-app-base-app:stable</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Verify the staging application status:</p>
+</div>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get application etx-app-stage -n etx-app-dev \
@@ -384,19 +397,24 @@ grep image: environments/stage/deployment.yaml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The output should be:</p>
+<p><em>Sample Output:</em></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Synced</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Open the Argo CD dashboard.</p>
-</li>
-<li>
+<div class="paragraph">
+<p>Retreive the ArgoCD application URL and open the Argo CD dashboard.</p>
+</div>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route argocd-server -n etx-app-dev -o jsonpath='https://{.spec.host}{"\n"}'</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Select the <code>etx-app-stage</code> application and verify that:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -407,8 +425,11 @@ grep image: environments/stage/deployment.yaml</code></pre>
 </li>
 </ul>
 </div>
-</li>
-</ol>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="stage2.png"><img src="_images/stage2.png" alt="stage2" width="700"></a>
+</div>
+<div class="title">Figure 1. ArgoCD Application status</div>
 </div>
 <div class="paragraph">
 <p>At this point, you have validated the complete GitOps promotion workflow. A successful promotion updates the GitOps repository, and Argo CD automatically deploys the new application version to the staging cluster.</p>
@@ -417,7 +438,7 @@ grep image: environments/stage/deployment.yaml</code></pre>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="lab-17.html">Lab 17: Stage Deployment</a></span>
-  <span class="next"><a href="lab-19.html">Lab 19: Promotion Automation</a></span>
+  <span class="next"><a href="lab-19.html">Lab 19: Promotion Automation (Optional)</a></span>
 </nav>
 </article>
   </div>

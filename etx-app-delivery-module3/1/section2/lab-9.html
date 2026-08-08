@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab 9: Deploy the Application with Argo CD :: Software Factory and CI/CD</title>
+    <title>Lab 9: Verify Application Observability :: Software Factory and CI/CD</title>
     <link rel="prev" href="lab-8.html">
     <link rel="next" href="lab-10.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
@@ -52,7 +52,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
   </li>
 </ul>
   </li>
@@ -75,9 +75,6 @@
     <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section1/lab-5.html">Lab 5: Validate CI Pipeline</a>
-  </li>
-  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
@@ -91,22 +88,22 @@
     <a class="nav-link" href="index.html">GitOps Continuous Deployment</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-6.html">Lab 6: GitOps Authentication</a>
+    <a class="nav-link" href="lab-5.html">Lab 5: GitOps Authentication</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-7.html">Lab 7: Deploy Argo CD</a>
+    <a class="nav-link" href="lab-6.html">Lab 6: Deploy Argo CD</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-8.html">Lab 8: GitOps Repository</a>
+    <a class="nav-link" href="lab-7.html">Lab 7: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-8.html">Lab 8: Deploy with Argo CD</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="lab-9.html">Lab 9: Deploy with Argo CD</a>
+    <a class="nav-link" href="lab-9.html">Lab 9: Verify Observability</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-10.html">Lab 10: Verify Observability</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="lab-11.html">Lab 11: CI to GitOps</a>
+    <a class="nav-link" href="lab-10.html">Lab 10: CI to GitOps</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="lab-summary.html">Lab Summary</a>
@@ -125,13 +122,16 @@
     <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Promotion Pipeline</a>
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Image Promotion Pipeline</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
@@ -146,15 +146,25 @@
     <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation</a>
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback</a>
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback (Optional)</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
   </li>
 </ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
   </li>
 </ul>
   </li>
@@ -188,7 +198,7 @@
   <ul>
     <li><a href="../index.html">Software Factory and CI/CD</a></li>
     <li><a href="index.html">GitOps Continuous Deployment</a></li>
-    <li><a href="lab-9.html">Lab 9: Deploy with Argo CD</a></li>
+    <li><a href="lab-9.html">Lab 9: Verify Observability</a></li>
   </ul>
 </nav>
 </div>
@@ -197,11 +207,11 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab 9: Deploy the Application with Argo CD</h1>
+<h1 class="page">Lab 9: Verify Application Observability</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this lab, you&#8217;ll create an Argo CD Application that continuously synchronizes the GitOps repository with your OpenShift cluster. Once configured, Argo CD automatically deploys the application and keeps the cluster aligned with the desired state stored in Git.</p>
+<p>In this lab, you&#8217;ll verify that OpenTelemetry auto-instrumentation is working correctly for the deployed application. You&#8217;ll confirm that the OpenTelemetry Java agent has been injected into the application pod and that telemetry data is being collected by the OpenTelemetry Collector.</p>
 </div>
 <div class="paragraph">
 <p>By the end of this lab, you will have:</p>
@@ -209,208 +219,82 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Granted Argo CD permission to manage resources in the development project</p>
+<p>Verified that OpenTelemetry auto-instrumentation is enabled for the application</p>
 </li>
 <li>
-<p>Created an Argo CD Application for the development environment</p>
+<p>Confirmed that the OpenTelemetry Java agent was injected into the application pod</p>
 </li>
 <li>
-<p>Verified that the application was synchronized and deployed successfully</p>
+<p>Verified that trace data is being collected by the OpenTelemetry Collector</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_grant_argo_cd_permissions"><a class="anchor" href="#_grant_argo_cd_permissions"></a>Grant Argo CD Permissions</h2>
+<h2 id="_verify_opentelemetry_auto_instrumentation"><a class="anchor" href="#_verify_opentelemetry_auto_instrumentation"></a>Verify OpenTelemetry Auto-Instrumentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before Argo CD can deploy applications, its application controller requires permission to manage resources in the <code>etx-app-dev</code> project.</p>
+<p>In this exercise, you&#8217;ll confirm that the OpenTelemetry Operator has automatically injected the Java agent into the application deployed through Argo CD.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Open a terminal in your OpenShift Dev Spaces workspace or launch the <strong>Web Terminal</strong> from the OpenShift console.</p>
-</li>
-<li>
-<p>Grant the required permissions:</p>
+<p>Verify that the application pod contains the OpenTelemetry auto-instrumentation init container:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc adm policy add-role-to-user admin \
-  system:serviceaccount:etx-app-dev:argocd-application-controller \
-  -n etx-app-dev</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pod -n etx-app-dev \
+  -l app=etx-app-base-app \
+  -o jsonpath='{.items[0].spec.initContainers[*].name}{"\n"}'</code></pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>This grants the Argo CD Application Controller administrative access within the <code>etx-app-dev</code> project so it can create, update, and remove application resources during synchronization.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_create_the_argo_cd_application"><a class="anchor" href="#_create_the_argo_cd_application"></a>Create the Argo CD Application</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Next, create an Argo CD Application that monitors the GitOps repository and synchronizes the manifests for the development environment.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Retrieve the GitLab URL:</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Get GitLab URL dynamically
-GITLAB_URL="https://$(oc get route -n gitlab \
-  -l app=webservice \
-  -o jsonpath='{.items[0].spec.host}')"
-
-echo "Using GitLab URL: ${GITLAB_URL}"</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Create the Argo CD Application:</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f - &lt;&lt;EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: etx-app-dev
-  namespace: etx-app-dev
-spec:
-  project: default
-  source:
-    repoURL: ${GITLAB_URL}/software-factory/etx-app-gitops.git
-    targetRevision: main
-    path: environments/dev
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: etx-app-dev
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=false
-EOF</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The application continuously watches the <code>environments/dev</code> directory in the GitOps repository and automatically synchronizes any changes to the OpenShift cluster.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<code>CreateNamespace=false</code> is specified because the <code>etx-app-dev</code> namespace already exists.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_verify_the_application_synchronization"><a class="anchor" href="#_verify_the_application_synchronization"></a>Verify the Application Synchronization</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Confirm that Argo CD has successfully synchronized the application.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Check the synchronization status:</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get application etx-app-dev -n etx-app-dev \
-  -o jsonpath='{.status.sync.status}{"\n"}'</code></pre>
-</div>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The command should return:</p>
+<p>The output should include:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Synced</code></pre>
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">opentelemetry-auto-instrumentation</code></pre>
 </div>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Retrieve the Argo CD dashboard URL:</p>
-<div class="listingblock execute">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get route argocd-server -n etx-app-dev \
-  -o jsonpath='{.spec.host}{"\n"}'</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Open the Argo CD dashboard in your browser and verify that the application status is <strong>Synced</strong>.</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/sync.png" alt="sync" width="400">
-</div>
-</div>
-</li>
-</ol>
+<div class="paragraph">
+<p>The presence of this init container confirms that the OpenTelemetry Operator has automatically injected the Java agent into the application pod.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_verify_the_application_deployment"><a class="anchor" href="#_verify_the_application_deployment"></a>Verify the Application Deployment</h2>
+<h2 id="_verify_trace_collection"><a class="anchor" href="#_verify_trace_collection"></a>Verify Trace Collection</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Once synchronization is complete, verify that the application has been deployed successfully.</p>
+<p>Next, verify that the application is sending telemetry data to the OpenTelemetry Collector.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Check that the application pod is running and retrieve the application route:</p>
+<p>View the recent logs from the OpenTelemetry Collector:</p>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pods -n etx-app-dev \
-  -l app=etx-app-base-app
-
-oc get route etx-app-base-app -n etx-app-dev \
-  -o jsonpath='{.spec.host}{"\n"}'</code></pre>
-</div>
-</div>
-</li>
-<li>
-<p>Open the application URL in your browser to confirm it is accessible.</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/app.png" alt="app" width="500">
-</div>
-</div>
-</li>
-<li>
-<p>Return to the Argo CD dashboard and select the application to view its deployed resources and synchronization status.</p>
-<div class="imageblock">
-<div class="content">
-<img src="_images/app_deploy.png" alt="app deploy" width="500">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc logs -n etx-app-dev \
+  -l app.kubernetes.io/name=otel-collector-collector \
+  --tail=50</code></pre>
 </div>
 </div>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>Review the output and confirm that trace data is being received and processed by the collector.</p>
+</div>
+<div class="paragraph">
+<p>Once traces appear in the collector logs, you have verified that OpenTelemetry auto-instrumentation is successfully collecting telemetry from the deployed application.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="lab-8.html">Lab 8: GitOps Repository</a></span>
-  <span class="next"><a href="lab-10.html">Lab 10: Verify Observability</a></span>
+  <span class="prev"><a href="lab-8.html">Lab 8: Deploy with Argo CD</a></span>
+  <span class="next"><a href="lab-10.html">Lab 10: CI to GitOps</a></span>
 </nav>
 </article>
   </div>
