@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenShift Pipelines :: Software Delivery with OpenShift Pipelines and GitOps</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="builds.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Delivery with OpenShift Pipelines and GitOps</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="intro.html">OpenShift Pipelines Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="builds.html">Container Image Builds</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/cd.html">OpenShift GitOps Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-5.html">Lab 5: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section3/index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Image Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Delivery with OpenShift Pipelines and GitOps</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a></li>
+    <li><a href="index.html">CI with OpenShift Pipelines</a></li>
+    <li><a href="intro.html">OpenShift Pipelines Overview</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">OpenShift Pipelines</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the previous sections, you learned how a <strong>Software Factory</strong> provides standardized services, automation, and engineering practices that help teams deliver software consistently.</p>
+</div>
+<div class="paragraph">
+<p>A key capability of a Software Factory is <strong>Continuous Integration and Continuous Delivery (CI/CD)</strong>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Red Hat OpenShift Pipelines</strong> provides a cloud-native CI/CD framework for automating application build, test, validation, and delivery workflows directly on OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift Pipelines is based on <strong>Tekton</strong> and uses Kubernetes-native resources to define repeatable software delivery processes.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Think about the steps your team performs every time application code changes. How many of those steps could be automated and executed consistently by a pipeline?
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_challenge"><a class="anchor" href="#_the_challenge"></a>The Challenge</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Without automated pipelines, application delivery often depends on developers or operations teams performing a sequence of manual steps.</p>
+</div>
+<div class="paragraph">
+<p>A typical application delivery process may include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Building the application.</p>
+</li>
+<li>
+<p>Running unit and integration tests.</p>
+</li>
+<li>
+<p>Performing code quality and security checks.</p>
+</li>
+<li>
+<p>Building a container image.</p>
+</li>
+<li>
+<p>Pushing the image to a container registry.</p>
+</li>
+<li>
+<p>Deploying the application.</p>
+</li>
+<li>
+<p>Verifying the deployment.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When these activities are performed manually, teams can encounter inconsistent processes, human errors, and delays between development and deployment.</p>
+</div>
+<div class="paragraph">
+<p>Different teams may also implement the same process differently, making software delivery difficult to standardize and scale.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The more manual steps involved in software delivery, the greater the opportunity for inconsistency, errors, and delays.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>OpenShift Pipelines addresses this challenge by allowing the complete workflow to be defined as <strong>code</strong> and executed automatically.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_openshift_pipelines"><a class="anchor" href="#_what_is_openshift_pipelines"></a>What is OpenShift Pipelines?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines is a <strong>cloud-native CI/CD solution</strong> based on the open source Tekton project.</p>
+</div>
+<div class="paragraph">
+<p>It runs pipeline workloads as Kubernetes-native resources on OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>Instead of implementing a delivery process through manually executed commands, teams define the required activities as reusable pipeline components.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Tasks</div>
+<div class="paragraph">
+<p>Define individual units of work such as compiling source code, running tests, building an image, or publishing an artifact.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Pipelines</div>
+<div class="paragraph">
+<p>Connect multiple tasks together to define the complete application delivery workflow and the order in which tasks execute.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Triggers</div>
+<div class="paragraph">
+<p>Automatically start pipeline runs in response to events such as source-code changes, pull requests, or other configured events.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Each pipeline execution creates a <strong>PipelineRun</strong> that represents a specific execution of the pipeline.</p>
+</div>
+<div class="paragraph">
+<p>This allows software delivery to become repeatable, observable, and automated.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_openshift_pipelines_works"><a class="anchor" href="#_how_openshift_pipelines_works"></a>How OpenShift Pipelines Works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines uses a task-based approach to software delivery.</p>
+</div>
+<div class="paragraph">
+<p>Each task performs a specific operation, and tasks can be connected together to create an end-to-end workflow.</p>
+</div>
+<div class="paragraph">
+<p>For example, an application pipeline might look like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Developer commits application source code.</p>
+</li>
+<li>
+<p>A pipeline is triggered by the change.</p>
+</li>
+<li>
+<p>The source code is retrieved from Git.</p>
+</li>
+<li>
+<p>The application is compiled and packaged.</p>
+</li>
+<li>
+<p>Automated tests are executed.</p>
+</li>
+<li>
+<p>A container image is built.</p>
+</li>
+<li>
+<p>The image is pushed to a container registry.</p>
+</li>
+<li>
+<p>The application is prepared for deployment.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Each step is executed as part of the pipeline rather than requiring the developer to perform the operation manually.</p>
+</div>
+<div class="paragraph">
+<p>This provides a consistent process that can be executed repeatedly for every application change.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tasks_and_pipelines"><a class="anchor" href="#_tasks_and_pipelines"></a>Tasks and Pipelines</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A fundamental concept in OpenShift Pipelines is the separation of individual activities into <strong>tasks</strong>.</p>
+</div>
+<div class="paragraph">
+<p>A task represents a unit of work.</p>
+</div>
+<div class="paragraph">
+<p>For example, a task could:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Clone a Git repository.</p>
+</li>
+<li>
+<p>Run Maven or Gradle commands.</p>
+</li>
+<li>
+<p>Execute unit tests.</p>
+</li>
+<li>
+<p>Build a container image.</p>
+</li>
+<li>
+<p>Push an image to a registry.</p>
+</li>
+<li>
+<p>Run security checks.</p>
+</li>
+<li>
+<p>Update deployment configuration.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A <strong>Pipeline</strong> combines these tasks into a complete workflow.</p>
+</div>
+<div class="paragraph">
+<p>The pipeline can define dependencies between tasks so that activities execute in the required order.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">clone-source
+|
+v
+build-application
+|
+v
+run-tests
+|
+v
+build-image
+|
+v
+push-image</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This task-based model makes complex delivery processes easier to understand, reuse, and maintain.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cloud_native_execution"><a class="anchor" href="#_cloud_native_execution"></a>Cloud-Native Execution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unlike traditional CI/CD systems that may rely on long-running build servers, OpenShift Pipelines executes tasks using Kubernetes-native resources.</p>
+</div>
+<div class="paragraph">
+<p>Each task runs in its own container-based execution environment.</p>
+</div>
+<div class="paragraph">
+<p>This provides several advantages:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Capability</th>
+<th class="tableblock halign-left valign-top">Benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Containerized tasks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Each task runs in an isolated and reproducible environment.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kubernetes-native</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pipeline resources are managed using the same platform used to run applications.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scalability</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pipeline workloads can use OpenShift resources when required and scale with the platform.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Repeatability</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The same task definitions can be executed consistently across pipeline runs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reusability</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common tasks can be reused across multiple application pipelines.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Because the pipeline runs on OpenShift, developers do not need to manually prepare a separate build environment for every application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pipelines_as_code"><a class="anchor" href="#_pipelines_as_code"></a>Pipelines as Code</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One of the key principles of OpenShift Pipelines is <strong>everything-as-code</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Pipeline definitions, tasks, parameters, and configuration can be stored in Git alongside the application source code.</p>
+</div>
+<div class="paragraph">
+<p>This makes the software delivery process:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Version controlled.</p>
+</li>
+<li>
+<p>Reviewable.</p>
+</li>
+<li>
+<p>Reproducible.</p>
+</li>
+<li>
+<p>Auditable.</p>
+</li>
+<li>
+<p>Easy to modify.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, instead of documenting a manual build process in a separate document, the process itself can be represented through pipeline and task definitions.</p>
+</div>
+<div class="paragraph">
+<p>When the delivery process changes, the change can be reviewed and tracked just like an application code change.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Treating the delivery process as code allows teams to version, review, reuse, and continuously improve their CI/CD automation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_from_code_change_to_application_delivery"><a class="anchor" href="#_from_code_change_to_application_delivery"></a>From Code Change to Application Delivery</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines can automate the path from source code to a deployable application artifact.</p>
+</div>
+<div class="paragraph">
+<p>A typical workflow looks like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A developer pushes a code change to Git.</p>
+</li>
+<li>
+<p>The pipeline is triggered.</p>
+</li>
+<li>
+<p>OpenShift Pipelines retrieves the source code.</p>
+</li>
+<li>
+<p>The application is built.</p>
+</li>
+<li>
+<p>Automated tests validate the application.</p>
+</li>
+<li>
+<p>Additional quality or security checks are performed.</p>
+</li>
+<li>
+<p>A container image is created.</p>
+</li>
+<li>
+<p>The image is published to a container registry.</p>
+</li>
+<li>
+<p>The resulting artifact is made available for the next stage of the delivery process.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This creates a repeatable software delivery process where the same sequence of activities is executed for every application change.</p>
+</div>
+<div class="paragraph">
+<p>Developers can focus on writing application code while OpenShift Pipelines automates the surrounding build and validation activities.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_why_openshift_pipelines"><a class="anchor" href="#_why_openshift_pipelines"></a>Why OpenShift Pipelines?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines helps organizations move from manually executed delivery processes to standardized, automated workflows.</p>
+</div>
+<div class="paragraph">
+<p>For developers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Automate repetitive build and test activities.</p>
+</li>
+<li>
+<p>Get consistent results for every code change.</p>
+</li>
+<li>
+<p>Reduce manual steps in application delivery.</p>
+</li>
+<li>
+<p>Receive faster feedback from automated validation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For Platform Engineers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Standardize CI/CD workflows across development teams.</p>
+</li>
+<li>
+<p>Provide reusable pipeline tasks.</p>
+</li>
+<li>
+<p>Manage CI/CD using Kubernetes-native resources.</p>
+</li>
+<li>
+<p>Integrate pipelines with other OpenShift services.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For organizations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Improve software delivery consistency.</p>
+</li>
+<li>
+<p>Reduce human error.</p>
+</li>
+<li>
+<p>Increase delivery automation.</p>
+</li>
+<li>
+<p>Improve traceability of application changes.</p>
+</li>
+<li>
+<p>Create repeatable and scalable CI/CD processes.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_openshift_pipelines_in_the_software_factory"><a class="anchor" href="#_openshift_pipelines_in_the_software_factory"></a>OpenShift Pipelines in the Software Factory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Within a <strong>Software Factory</strong>, OpenShift Pipelines provides the automation engine that moves application changes through the software delivery process.</p>
+</div>
+<div class="paragraph">
+<p>A simplified Software Factory workflow looks like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Developers develop and test applications in a standardized development environment.</p>
+</li>
+<li>
+<p>Developers commit application changes to Git.</p>
+</li>
+<li>
+<p>OpenShift Pipelines is triggered by the change.</p>
+</li>
+<li>
+<p>The pipeline builds and validates the application.</p>
+</li>
+<li>
+<p>The pipeline creates and publishes the application artifact.</p>
+</li>
+<li>
+<p>The resulting artifact is passed to the next stage of the software delivery process.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This allows developers to focus on application development while the Software Factory automates the repetitive activities required to build and validate software.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+OpenShift Pipelines does not simply execute a sequence of commands. It provides a Kubernetes-native framework for defining, executing, and managing repeatable software delivery workflows.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_benefits"><a class="anchor" href="#_benefits"></a>Benefits</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines provides several benefits for modern application delivery:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Automation:</strong> Eliminates repetitive manual build and delivery activities.</p>
+</li>
+<li>
+<p><strong>Consistency:</strong> Executes the same workflow for every pipeline run.</p>
+</li>
+<li>
+<p><strong>Reusability:</strong> Allows common tasks and pipeline patterns to be reused.</p>
+</li>
+<li>
+<p><strong>Isolation:</strong> Executes individual tasks in containerized environments.</p>
+</li>
+<li>
+<p><strong>Scalability:</strong> Uses the OpenShift platform to execute pipeline workloads.</p>
+</li>
+<li>
+<p><strong>Traceability:</strong> Provides visibility into individual tasks and pipeline executions.</p>
+</li>
+<li>
+<p><strong>Everything-as-code:</strong> Allows CI/CD workflows to be stored and versioned alongside application code.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reflection"><a class="anchor" href="#_reflection"></a>Reflection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p></p>
+</div>
+<details class="reflection-box">
+<summary class="title"><strong>Think about your own organization (Click to expand)</strong></summary>
+<div class="content">
+<div class="imageblock text-left">
+<div class="content">
+<img src="../_images/mini-illustration-lightbulb-red-RH.Small_square_transparent.png" alt="mini illustration lightbulb red RH.Small square transparent" width="50">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Which application delivery steps are currently performed manually?</p>
+</li>
+<li>
+<p>Which steps could be converted into reusable pipeline tasks?</p>
+</li>
+<li>
+<p>How consistent is the build and test process across development teams?</p>
+</li>
+<li>
+<p>Which CI/CD configurations should be stored and versioned in Git?</p>
+</li>
+<li>
+<p>How could automated pipelines improve feedback to developers?</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+<div class="key-card">
+<div class="paragraph">
+<div class="title">Key Takeaway</div>
+<p><strong>OpenShift Pipelines</strong> provides a Kubernetes-native CI/CD framework based on Tekton that automates application build, test, validation, and delivery workflows. By defining delivery processes as reusable, version-controlled tasks and pipelines, organizations can create consistent, repeatable, and scalable software delivery processes within the Software Factory.</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">CI with OpenShift Pipelines</a></span>
+  <span class="next"><a href="builds.html">Container Image Builds</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

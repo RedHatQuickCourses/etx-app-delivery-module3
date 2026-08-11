@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenShift GitOps :: Software Delivery with OpenShift Pipelines and GitOps</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="lab-5.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Delivery with OpenShift Pipelines and GitOps</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section1/index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/intro.html">OpenShift Pipelines Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/builds.html">Container Image Builds</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section1/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="cd.html">OpenShift GitOps Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-5.html">Lab 5: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-6.html">Lab 6: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-7.html">Lab 7: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-8.html">Lab 8: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-9.html">Lab 9: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-10.html">Lab 10: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section3/index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Image Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Delivery with OpenShift Pipelines and GitOps</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a></li>
+    <li><a href="index.html">GitOps Continuous Deployment</a></li>
+    <li><a href="cd.html">OpenShift GitOps Overview</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">OpenShift GitOps</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the previous sections, you learned how <strong>OpenShift Pipelines</strong> automates application delivery workflows and how container images are built and published for deployment.</p>
+</div>
+<div class="paragraph">
+<p>The next step is getting the application into the target environment and ensuring that the environment remains consistent with the desired configuration.</p>
+</div>
+<div class="paragraph">
+<p><strong>Red Hat OpenShift GitOps</strong> provides a declarative approach to continuous delivery using <strong>Argo CD</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Instead of a CI/CD pipeline directly managing the cluster, GitOps uses Git as the <strong>source of truth</strong> for the desired application state and continuously reconciles the OpenShift cluster with that state.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Think about what should happen after an application is deployed if someone manually changes or deletes one of its resources. Should the platform simply leave the cluster in that state, or should it automatically restore the desired configuration?
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_challenge"><a class="anchor" href="#_the_challenge"></a>The Challenge</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A traditional deployment pipeline can apply application manifests to a cluster.</p>
+</div>
+<div class="paragraph">
+<p>For example, a pipeline might:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Build an application.</p>
+</li>
+<li>
+<p>Create a container image.</p>
+</li>
+<li>
+<p>Push the image to a registry.</p>
+</li>
+<li>
+<p>Apply Kubernetes manifests.</p>
+</li>
+<li>
+<p>Verify that the deployment completed successfully.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>However, the pipeline typically finishes after the deployment has been performed. If someone later modifies or deletes a resource, the pipeline does not automatically run again to restore the desired state.</p>
+</div>
+<div class="paragraph">
+<p>This can result in <strong>configuration drift</strong> between what the application is supposed to look like and what is actually running in the cluster.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+A deployment pipeline can change the cluster, but continuous delivery requires more than performing a deployment once. The platform must also continuously ensure that the running environment matches the desired state.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_openshift_gitops"><a class="anchor" href="#_what_is_openshift_gitops"></a>What is OpenShift GitOps?</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<a class="image" href="_images/cd.png"><img src="_images/cd.png" alt="cd" width="700"></a>
+</div>
+<div class="title">Figure 1. CICD (<em>Click the image to view it in full size in a new browser tab</em>)</div>
+</div>
+<div class="paragraph">
+<p>OpenShift GitOps provides a <strong>declarative continuous delivery</strong> model based on the open source <strong>Argo CD</strong> project. The desired configuration of an application is stored in Git. OpenShift GitOps continuously compares the configuration stored in Git with the actual state of resources running in the OpenShift cluster. When the two states differ, OpenShift GitOps can synchronize the cluster with the desired state. This process is called <strong>reconciliation</strong>.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Git as the Source of Truth</div>
+<div class="paragraph">
+<p>Application and deployment configuration is stored in Git, providing a version-controlled and auditable definition of the desired state.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Continuous Reconciliation</div>
+<div class="paragraph">
+<p>Argo CD continuously compares the desired state in Git with the live state of the OpenShift cluster and identifies differences.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Automated Synchronization</div>
+<div class="paragraph">
+<p>When configured for automated synchronization, Argo CD applies the desired configuration to the cluster so that the live environment matches Git.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_declarative_delivery"><a class="anchor" href="#_declarative_delivery"></a>Declarative Delivery</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A key principle of OpenShift GitOps is <strong>declarative configuration</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Instead of defining a sequence of commands that explains how to deploy an application, GitOps defines the state that the application should have.</p>
+</div>
+<div class="paragraph">
+<p>For example, a declarative configuration might specify:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">replicas: 3
+image: quay.io/example/app:v2
+service:
+  port: 8080</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This configuration describes the <strong>desired state</strong> of the application.</p>
+</div>
+<div class="paragraph">
+<p>Argo CD continuously works to ensure that the OpenShift cluster reflects that desired state.</p>
+</div>
+<div class="paragraph">
+<p>The focus changes from:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">"Run these deployment commands"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">"This is the state the application should have"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This makes application delivery more predictable and easier to audit.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_git_as_the_source_of_truth"><a class="anchor" href="#_git_as_the_source_of_truth"></a>Git as the Source of Truth</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a GitOps model, application deployment configuration is stored in a Git repository.</p>
+</div>
+<div class="paragraph">
+<p>The repository can contain resources such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Kubernetes manifests</p>
+</li>
+<li>
+<p>Kustomize configurations</p>
+</li>
+<li>
+<p>Helm charts</p>
+</li>
+<li>
+<p>Application deployment configuration</p>
+</li>
+<li>
+<p>Environment-specific configuration</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Git provides version control for the desired application state.</p>
+</div>
+<div class="paragraph">
+<p>Every change can be reviewed, approved, and tracked through the normal Git workflow.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Git Repository
+      |
+      | Desired State
+      v
+   Argo CD
+      |
+      | Synchronization
+      v
+OpenShift Cluster</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This creates a clear relationship between the configuration stored in Git and the resources running in OpenShift.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_argo_cd_works"><a class="anchor" href="#_how_argo_cd_works"></a>How Argo CD Works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Argo CD continuously monitors the applications it manages.</p>
+</div>
+<div class="paragraph">
+<p>It compares two states:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">State</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Desired state</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The application configuration defined in the Git repository.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Live state</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resources currently running in the OpenShift cluster.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>When these states match, the application is considered <strong>Synced</strong>.</p>
+</div>
+<div class="paragraph">
+<p>When they differ, the application is considered <strong>OutOfSync</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Argo CD can then synchronize the cluster so that the live state matches the desired state.</p>
+</div>
+<div class="paragraph">
+<p>This continuous comparison is what makes GitOps different from a deployment process that runs only once.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_gitops_workflow"><a class="anchor" href="#_the_gitops_workflow"></a>The GitOps Workflow</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A typical OpenShift GitOps workflow looks like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A developer makes a change to the application.</p>
+</li>
+<li>
+<p>The application is built and tested using OpenShift Pipelines.</p>
+</li>
+<li>
+<p>A new container image is created and pushed to an image registry.</p>
+</li>
+<li>
+<p>The desired deployment configuration is updated in Git.</p>
+</li>
+<li>
+<p>Argo CD detects the change in the Git repository.</p>
+</li>
+<li>
+<p>Argo CD compares the desired state with the live cluster state.</p>
+</li>
+<li>
+<p>Argo CD synchronizes the application.</p>
+</li>
+<li>
+<p>OpenShift runs the updated application.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The workflow does not end when the deployment occurs.</p>
+</div>
+<div class="paragraph">
+<p>Argo CD continues monitoring the application after synchronization.</p>
+</div>
+<div class="paragraph">
+<p>If the live state later differs from the desired state, Argo CD detects the difference.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_drift"><a class="anchor" href="#_configuration_drift"></a>Configuration Drift</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Configuration drift</strong> occurs when the actual state of the environment differs from the desired state.</p>
+</div>
+<div class="paragraph">
+<p>For example, suppose Git defines:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Application replicas = 3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An administrator or another process accidentally changes the deployment so that only two replicas are running.</p>
+</div>
+<div class="paragraph">
+<p>The cluster now differs from the configuration stored in Git.</p>
+</div>
+<div class="paragraph">
+<p>Argo CD detects this difference and reports the application as <strong>OutOfSync</strong>.</p>
+</div>
+<div class="paragraph">
+<p>If automated synchronization is enabled, Argo CD can restore the application to the desired configuration.</p>
+</div>
+<div class="paragraph">
+<p>This provides an important operational capability: the environment can continuously move back toward the state defined in Git.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_self_healing"><a class="anchor" href="#_self_healing"></a>Self-Healing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>GitOps can provide <strong>self-healing</strong> behavior for managed applications.</p>
+</div>
+<div class="paragraph">
+<p>Consider the following scenario:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Git defines an application with three replicas.</p>
+</li>
+<li>
+<p>Argo CD deploys the application with three replicas.</p>
+</li>
+<li>
+<p>Someone accidentally deletes one of the application pods.</p>
+</li>
+<li>
+<p>The Kubernetes controllers recreate the pod according to the deployment configuration.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Now consider a more significant change:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Git defines the application configuration.</p>
+</li>
+<li>
+<p>Someone manually modifies a managed resource in the cluster.</p>
+</li>
+<li>
+<p>The live state no longer matches Git.</p>
+</li>
+<li>
+<p>Argo CD detects the difference.</p>
+</li>
+<li>
+<p>Argo CD synchronizes the application according to the configured synchronization policy.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This allows GitOps to continuously protect the desired application configuration rather than relying on a deployment pipeline to run again.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+GitOps does not simply deploy an application. It continuously observes and reconciles the application against the desired state defined in Git.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_openshift_pipelines_and_openshift_gitops"><a class="anchor" href="#_openshift_pipelines_and_openshift_gitops"></a>OpenShift Pipelines and OpenShift GitOps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines and OpenShift GitOps have complementary responsibilities.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift Pipelines focuses on <strong>building and delivering application changes</strong>.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift GitOps focuses on <strong>maintaining the desired application state</strong>.</p>
+</div>
+<div class="paragraph">
+<p>A typical workflow looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Developer
+    |
+    v
+Application Source
+    |
+    v
+OpenShift Pipelines
+    |
+    +--&gt; Build
+    |
+    +--&gt; Test
+    |
+    +--&gt; Build Image
+    |
+    v
+Image Registry
+    |
+    v
+Update Desired State
+    |
+    v
+Git Repository
+    |
+    v
+OpenShift GitOps
+    |
+    v
+OpenShift Cluster</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The important distinction is that the pipeline does not need to continuously manage the cluster after updating the desired state.</p>
+</div>
+<div class="paragraph">
+<p>Instead, the pipeline can update the Git repository and allow OpenShift GitOps to take responsibility for synchronizing the environment.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+OpenShift Pipelines automates the <strong>delivery workflow</strong>, while OpenShift GitOps continuously manages the <strong>desired state</strong> of the application in the cluster.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_why_gitops"><a class="anchor" href="#_why_gitops"></a>Why GitOps?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift GitOps provides several benefits for application delivery and operations.</p>
+</div>
+<div class="paragraph">
+<p>For developers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use Git-based workflows for application deployment configuration.</p>
+</li>
+<li>
+<p>Track deployment changes through version control.</p>
+</li>
+<li>
+<p>Reduce manual deployment steps.</p>
+</li>
+<li>
+<p>Promote application changes through controlled configuration changes.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For Platform Engineers and Operations teams:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Manage applications declaratively.</p>
+</li>
+<li>
+<p>Continuously detect configuration drift.</p>
+</li>
+<li>
+<p>Automate application synchronization.</p>
+</li>
+<li>
+<p>Improve consistency across environments.</p>
+</li>
+<li>
+<p>Maintain an auditable history of configuration changes.</p>
+</li>
+<li>
+<p>Reduce manual cluster changes.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For organizations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Establish Git as a source of truth.</p>
+</li>
+<li>
+<p>Improve deployment consistency.</p>
+</li>
+<li>
+<p>Increase traceability and auditability.</p>
+</li>
+<li>
+<p>Reduce configuration drift.</p>
+</li>
+<li>
+<p>Enable scalable continuous delivery practices.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_openshift_gitops_in_the_software_factory"><a class="anchor" href="#_openshift_gitops_in_the_software_factory"></a>OpenShift GitOps in the Software Factory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Within a <strong>Software Factory</strong>, OpenShift GitOps provides the continuous delivery capability that connects application configuration in Git with running applications on OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>A complete Software Factory workflow can therefore look like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Developers develop applications in a standardized development environment.</p>
+</li>
+<li>
+<p>Developers commit source code to Git.</p>
+</li>
+<li>
+<p>OpenShift Pipelines builds and tests the application.</p>
+</li>
+<li>
+<p>A container image is created and published.</p>
+</li>
+<li>
+<p>The desired deployment configuration is updated in Git.</p>
+</li>
+<li>
+<p>OpenShift GitOps detects the desired-state change.</p>
+</li>
+<li>
+<p>Argo CD synchronizes the application to OpenShift.</p>
+</li>
+<li>
+<p>Argo CD continues monitoring the application.</p>
+</li>
+<li>
+<p>Any configuration drift can be detected and reconciled.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This creates an automated path from <strong>application source code to a continuously managed application environment</strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_everything_as_code"><a class="anchor" href="#_everything_as_code"></a>Everything as Code</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift GitOps supports the broader Software Factory principle of <strong>everything-as-code</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Application source code, deployment configuration, environment configuration, and delivery definitions can all be managed through version-controlled repositories.</p>
+</div>
+<div class="paragraph">
+<p>This provides:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Version control</strong> — Changes are tracked over time.</p>
+</li>
+<li>
+<p><strong>Auditability</strong> — Teams can identify who changed the desired state and when.</p>
+</li>
+<li>
+<p><strong>Repeatability</strong> — The same configuration can be applied consistently.</p>
+</li>
+<li>
+<p><strong>Reviewability</strong> — Changes can go through pull requests and approval workflows.</p>
+</li>
+<li>
+<p><strong>Recovery</strong> — The desired configuration remains available in Git.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+GitOps changes deployment from a one-time action into a continuous process where the desired state is stored in Git and the running environment is continuously reconciled with it.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_benefits"><a class="anchor" href="#_benefits"></a>Benefits</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For developers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deploy applications using familiar Git workflows.</p>
+</li>
+<li>
+<p>Reduce manual deployment activities.</p>
+</li>
+<li>
+<p>Track application configuration changes.</p>
+</li>
+<li>
+<p>Use consistent deployment processes.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For Platform Engineers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Manage application environments declaratively.</p>
+</li>
+<li>
+<p>Standardize deployment configuration.</p>
+</li>
+<li>
+<p>Detect and manage configuration drift.</p>
+</li>
+<li>
+<p>Provide automated synchronization.</p>
+</li>
+<li>
+<p>Improve operational consistency.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For organizations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Establish Git as the source of truth.</p>
+</li>
+<li>
+<p>Improve deployment reliability.</p>
+</li>
+<li>
+<p>Increase visibility and auditability.</p>
+</li>
+<li>
+<p>Reduce manual cluster changes.</p>
+</li>
+<li>
+<p>Support repeatable application delivery across environments.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reflection"><a class="anchor" href="#_reflection"></a>Reflection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p></p>
+</div>
+<details class="reflection-box">
+<summary class="title"><strong>Think about your own organization (Click to expand)</strong></summary>
+<div class="content">
+<div class="imageblock text-left unresolved">
+<div class="content">
+<img src="ROOT\:mini-illustration-lightbulb-red-RH.Small\_square\_transparent.png" alt="mini illustration lightbulb red RH.Small\ square\ transparent" width="50">
+</div>
+</div>
+<div class="imageblock text-left unresolved">
+<div class="content">
+<img src="ROOT\:mini-illustration-lightbulb-red-RH.Small\_square\_transparent.png" alt="mini illustration lightbulb red RH.Small\ square\ transparent" width="50">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>How are applications currently deployed to OpenShift?</p>
+</li>
+<li>
+<p>What happens when someone manually changes a deployed resource?</p>
+</li>
+<li>
+<p>Where is the desired configuration of your applications stored?</p>
+</li>
+<li>
+<p>How could Git become the source of truth for application deployments?</p>
+</li>
+<li>
+<p>How could continuous reconciliation reduce configuration drift?</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+<div class="key-card">
+<div class="paragraph">
+<div class="title"><strong>Key Takeaway</strong></div>
+<p><strong>OpenShift GitOps provides continuous delivery using *Argo CD</strong> and a declarative, Git-based approach. Git serves as the source of truth for the desired application state, while Argo CD continuously compares and reconciles that state with the OpenShift cluster. Together with OpenShift Pipelines, it creates a repeatable path from application source code to a continuously managed application environment.</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">GitOps Continuous Deployment</a></span>
+  <span class="next"><a href="lab-5.html">Lab 5: GitOps Authentication</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

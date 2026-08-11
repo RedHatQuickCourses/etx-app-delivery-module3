@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Building Container Images on OpenShift :: Software Delivery with OpenShift Pipelines and GitOps</title>
+    <link rel="prev" href="intro.html">
+    <link rel="next" href="lab-1.html">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/custom.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Software Delivery with OpenShift Pipelines and GitOps</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="etx-app-delivery-module3" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/lab-env-overview.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">CI with OpenShift Pipelines</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="intro.html">OpenShift Pipelines Overview</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="builds.html">Container Image Builds</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-1.html">Lab 1: CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-2.html">Lab 2: Create the CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-3.html">Lab 3: Test CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-4.html">Lab 4: Automate CI Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section2/index.html">GitOps Continuous Deployment</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/cd.html">OpenShift GitOps Overview</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-5.html">Lab 5: GitOps Authentication</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-6.html">Lab 6: Deploy Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-7.html">Lab 7: GitOps Repository</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-8.html">Lab 8: Deploy with Argo CD</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-9.html">Lab 9: Verify Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-10.html">Lab 10: CI to GitOps</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section2/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../section3/index.html">Application Promotion and GitOps Deployment Workflow</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-prereq.html">Lab Pre-requisites</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-11.html">Lab 11: Getting started</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-12.html">Lab 12: Configure Quay</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-13.html">Lab 13: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-14.html">Lab 14: Image Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-15.html">Lab 15: Promotion Pipeline</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-16.html">Lab 16: Test Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-17.html">Lab 17: Stage Deployment</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-18.html">Lab 18: Verify Promotion</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-19.html">Lab 19: Promotion Automation (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-20.html">Lab 20: Rollback (Optional)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../section3/lab-summary.html">Lab Summary</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/index.html">Knowledge Check</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../quiz/next.html">Summary and What&#8217;s next?</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Software Delivery with OpenShift Pipelines and GitOps</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Software Delivery with OpenShift Pipelines and GitOps</a></li>
+    <li><a href="index.html">CI with OpenShift Pipelines</a></li>
+    <li><a href="builds.html">Container Image Builds</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Building Container Images on OpenShift</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the previous section, you learned how <strong>OpenShift Pipelines</strong> provides a cloud-native framework for automating software delivery workflows.</p>
+</div>
+<div class="paragraph">
+<p>A pipeline can orchestrate activities such as building source code, running tests, creating container images, and publishing application artifacts.</p>
+</div>
+<div class="paragraph">
+<p>However, a pipeline itself does not define how a container image is constructed.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift provides several approaches for <strong>building container images</strong> from application source code.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Think about what happens after a developer commits application code. How is that source code transformed into a container image that can be deployed?
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_challenge"><a class="anchor" href="#_the_challenge"></a>The Challenge</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Developers need a reliable way to transform application source code into container images.</p>
+</div>
+<div class="paragraph">
+<p>A traditional container build process might require developers to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create and maintain a Dockerfile.</p>
+</li>
+<li>
+<p>Install and configure container build tools.</p>
+</li>
+<li>
+<p>Build the image.</p>
+</li>
+<li>
+<p>Tag the image.</p>
+</li>
+<li>
+<p>Push the image to a container registry.</p>
+</li>
+<li>
+<p>Manage build environments and dependencies.</p>
+</li>
+<li>
+<p>Keep the build process consistent across teams.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When each team manages its own image-building process, organizations can end up with different tools, build environments, and practices.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift provides native and Kubernetes-based approaches that allow image builds to be integrated into the application delivery platform.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+OpenShift can provide the build environment, build strategy, and automation required to transform application source code into a container image without requiring developers to manage the underlying build infrastructure themselves.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_building_images_in_the_software_factory"><a class="anchor" href="#_building_images_in_the_software_factory"></a>Building Images in the Software Factory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Within a <strong>Software Factory</strong>, container image builds are an important step between application development and application deployment.</p>
+</div>
+<div class="paragraph">
+<p>A simplified workflow looks like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Developers commit application source code to Git.</p>
+</li>
+<li>
+<p>A CI pipeline is triggered.</p>
+</li>
+<li>
+<p>The application is compiled and tested.</p>
+</li>
+<li>
+<p>The application source is provided to an image build process.</p>
+</li>
+<li>
+<p>A container image is created.</p>
+</li>
+<li>
+<p>The image is pushed to an image registry.</p>
+</li>
+<li>
+<p>The image becomes available for deployment.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>OpenShift provides different mechanisms for performing the image-building step.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_buildconfig"><a class="anchor" href="#_buildconfig"></a>BuildConfig</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One traditional approach to building container images on OpenShift is the <strong>BuildConfig</strong>.</p>
+</div>
+<div class="paragraph">
+<p>A BuildConfig is a declarative OpenShift resource that defines how an image build should be performed.</p>
+</div>
+<div class="paragraph">
+<p>It describes important aspects of the build, including:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Configuration</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Source</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines where the application source code or build input comes from.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Strategy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines how OpenShift should build the container image.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Output</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines where the resulting image should be published.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Triggers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines events that can automatically start a new build.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The BuildConfig provides a consistent, declarative definition of the image-building process.</p>
+</div>
+<div class="paragraph">
+<p>Instead of manually executing container build commands, developers and platform teams can define the build process as an OpenShift resource.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_build_strategies"><a class="anchor" href="#_build_strategies"></a>Build Strategies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift supports several build strategies for creating container images.</p>
+</div>
+<div class="paragraph">
+<p>The most common strategies are:</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Source-to-Image (S2I)</div>
+<div class="paragraph">
+<p>S2I combines application source code with a builder image that contains the required runtime and build tools. This allows developers to build application images without maintaining a Dockerfile for every application.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Docker Build</div>
+<div class="paragraph">
+<p>Uses a Dockerfile to define how the container image should be constructed. This provides developers with direct control over the image build instructions.</p>
+</div>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Custom Build</div>
+<div class="paragraph">
+<p>Allows advanced build logic by using a custom builder image. This approach can be used when standard build strategies do not meet the application&#8217;s requirements.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The appropriate strategy depends on the application, the level of customization required, and the organization&#8217;s container build standards.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_source_to_image"><a class="anchor" href="#_source_to_image"></a>Source-to-Image</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Source-to-Image (S2I)</strong> is designed to make application image creation simpler for developers.</p>
+</div>
+<div class="paragraph">
+<p>Instead of requiring developers to create a Dockerfile, S2I combines application source code with a preconfigured builder image.</p>
+</div>
+<div class="paragraph">
+<p>For example, a Java application can be provided to a Java S2I builder image.</p>
+</div>
+<div class="paragraph">
+<p>The builder image contains the tools and logic required to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Install application dependencies.</p>
+</li>
+<li>
+<p>Compile the application.</p>
+</li>
+<li>
+<p>Package the application.</p>
+</li>
+<li>
+<p>Configure the runtime environment.</p>
+</li>
+<li>
+<p>Produce a runnable container image.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This allows developers to focus on application source code while the platform provides the underlying build environment.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_docker_builds"><a class="anchor" href="#_docker_builds"></a>Docker Builds</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Docker builds provide a more explicit approach to image construction.</p>
+</div>
+<div class="paragraph">
+<p>The application repository contains a <strong>Dockerfile</strong> that defines the instructions used to construct the image.</p>
+</div>
+<div class="paragraph">
+<p>For example, a Dockerfile can define:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The base image.</p>
+</li>
+<li>
+<p>Required packages and dependencies.</p>
+</li>
+<li>
+<p>Application files.</p>
+</li>
+<li>
+<p>Environment variables.</p>
+</li>
+<li>
+<p>Startup commands.</p>
+</li>
+<li>
+<p>Exposed ports.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This approach provides greater control over the resulting image but requires developers to maintain the Dockerfile and understand container image construction.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_builds"><a class="anchor" href="#_custom_builds"></a>Custom Builds</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some applications require build processes that do not fit standard S2I or Docker-based approaches.</p>
+</div>
+<div class="paragraph">
+<p>Custom builds allow organizations to provide their own builder image and build logic.</p>
+</div>
+<div class="paragraph">
+<p>This can be useful when:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Specialized build tools are required.</p>
+</li>
+<li>
+<p>Existing build processes need to be preserved.</p>
+</li>
+<li>
+<p>Custom image construction logic is required.</p>
+</li>
+<li>
+<p>Standard build strategies do not provide sufficient flexibility.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Custom builds provide flexibility, but they also introduce additional complexity and maintenance requirements.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modern_image_builds_with_shipwright"><a class="anchor" href="#_modern_image_builds_with_shipwright"></a>Modern Image Builds with Shipwright</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As Kubernetes-native application development has evolved, newer approaches have emerged for building container images.</p>
+</div>
+<div class="paragraph">
+<p><strong>Shipwright</strong> provides a Kubernetes-native framework for defining and managing container image builds.</p>
+</div>
+<div class="paragraph">
+<p>Rather than relying exclusively on a single build mechanism, Shipwright provides a framework that can work with different build strategies and tools.</p>
+</div>
+<div class="paragraph">
+<p>For example, image builds can use technologies such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Buildah.</p>
+</li>
+<li>
+<p>Kaniko.</p>
+</li>
+<li>
+<p>Cloud Native Buildpacks.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This provides greater flexibility when standardizing image builds across different types of applications.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="_images/build.png"><img src="_images/build.png" alt="build" width="700"></a>
+</div>
+<div class="title">Figure 1. OpenShift image build workflow(<em>Click the image to view it in full size in a new browser tab</em>)</div>
+</div>
+<div class="paragraph">
+<p>The diagram illustrates how an application delivery workflow can move from source code through build and test activities to container image creation and publication.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift provides the platform where these build workloads execute, while the resulting images are stored in an image registry and can then be consumed by deployment processes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_buildconfig_and_shipwright"><a class="anchor" href="#_buildconfig_and_shipwright"></a>BuildConfig and Shipwright</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>BuildConfig and Shipwright address the same broader requirement—<strong>building container images</strong>—but use different approaches.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Capability</th>
+<th class="tableblock halign-left valign-top">BuildConfig</th>
+<th class="tableblock halign-left valign-top">Shipwright</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OpenShift-native build resource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Kubernetes-native build framework</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build definition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defined through BuildConfig</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defined through Kubernetes resources</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build strategies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S2I, Docker, and Custom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extensible strategy-based model</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build engines</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Integrated OpenShift build mechanisms</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Can integrate with different build technologies</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use case</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Traditional OpenShift image builds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Flexible and extensible Kubernetes-native image builds</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>BuildConfig remains an important OpenShift build mechanism, while Shipwright provides an extensible approach for organizations that need greater flexibility in how container images are constructed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_image_registry"><a class="anchor" href="#_image_registry"></a>Image Registry</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once an image has been built, it needs to be stored somewhere that downstream systems can access.</p>
+</div>
+<div class="paragraph">
+<p>An <strong>image registry</strong> stores container images and makes them available for deployment.</p>
+</div>
+<div class="paragraph">
+<p>A typical workflow is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">Application Source
+       |
+       v
+    Build
+       |
+       v
+Container Image
+       |
+       v
+Image Registry
+       |
+       v
+Application Deployment</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The registry acts as the handoff point between the image-building process and the deployment process.</p>
+</div>
+<div class="paragraph">
+<p>A Software Factory can integrate OpenShift image builds with an organization-approved container registry to provide a consistent path from source code to deployable artifacts.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_image_builds_and_openshift_pipelines"><a class="anchor" href="#_image_builds_and_openshift_pipelines"></a>Image Builds and OpenShift Pipelines</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift Pipelines and image-building technologies have complementary responsibilities.</p>
+</div>
+<div class="paragraph">
+<p>OpenShift Pipelines <strong>orchestrates the workflow</strong>, while the image build mechanism <strong>performs the image construction</strong>.</p>
+</div>
+<div class="paragraph">
+<p>For example, a pipeline might execute the following sequence:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Clone the application source code.</p>
+</li>
+<li>
+<p>Build the application.</p>
+</li>
+<li>
+<p>Run automated tests.</p>
+</li>
+<li>
+<p>Start the container image build.</p>
+</li>
+<li>
+<p>Push the resulting image to a registry.</p>
+</li>
+<li>
+<p>Continue with the next stage of the delivery process.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This separation allows the same pipeline model to work with different image-building technologies.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Think of OpenShift Pipelines as the <strong>orchestrator</strong> and the image build system as the <strong>engine that creates the container image</strong>. The pipeline determines when and in what order the build occurs, while the build mechanism determines how the image is constructed.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_why_container_image_builds_matter"><a class="anchor" href="#_why_container_image_builds_matter"></a>Why Container Image Builds Matter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Container image builds are a critical part of cloud-native application delivery.</p>
+</div>
+<div class="paragraph">
+<p>A reliable image build process provides:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Consistency:</strong> The same build process can be repeated for every application change.</p>
+</li>
+<li>
+<p><strong>Automation:</strong> Image creation can be triggered automatically by CI/CD workflows.</p>
+</li>
+<li>
+<p><strong>Reproducibility:</strong> Build definitions can be stored and versioned as code.</p>
+</li>
+<li>
+<p><strong>Security:</strong> Organizations can standardize approved base images and build processes.</p>
+</li>
+<li>
+<p><strong>Integration:</strong> Images can be automatically published to registries for downstream deployment.</p>
+</li>
+<li>
+<p><strong>Scalability:</strong> Build workloads can run on the OpenShift platform instead of individual developer workstations.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_container_image_builds_in_the_software_factory"><a class="anchor" href="#_container_image_builds_in_the_software_factory"></a>Container Image Builds in the Software Factory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Putting the pieces together, a Software Factory can provide an automated path from source code to a deployable container image.</p>
+</div>
+<div class="paragraph">
+<p>A typical workflow looks like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Developer commits application code.</p>
+</li>
+<li>
+<p>OpenShift Pipelines starts the CI workflow.</p>
+</li>
+<li>
+<p>The application is built.</p>
+</li>
+<li>
+<p>Automated tests are executed.</p>
+</li>
+<li>
+<p>OpenShift performs the container image build.</p>
+</li>
+<li>
+<p>The resulting image is pushed to an image registry.</p>
+</li>
+<li>
+<p>The image is made available for the deployment process.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This creates a repeatable path from <strong>application source code to a deployable container artifact</strong>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Container image builds are the bridge between application source code and the container artifacts used by cloud-native platforms. OpenShift provides multiple approaches so organizations can select the build mechanism that best fits their applications and delivery practices.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_benefits"><a class="anchor" href="#_benefits"></a>Benefits</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For developers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Reduce the need to manage local container build environments.</p>
+</li>
+<li>
+<p>Use standardized build processes.</p>
+</li>
+<li>
+<p>Focus on application source code rather than build infrastructure.</p>
+</li>
+<li>
+<p>Automatically create container images through CI/CD workflows.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For Platform Engineers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Standardize image-building practices.</p>
+</li>
+<li>
+<p>Provide reusable build strategies.</p>
+</li>
+<li>
+<p>Integrate image builds with CI/CD pipelines.</p>
+</li>
+<li>
+<p>Centralize build infrastructure on OpenShift.</p>
+</li>
+<li>
+<p>Support different application build requirements.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For organizations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create repeatable image-building processes.</p>
+</li>
+<li>
+<p>Improve software delivery consistency.</p>
+</li>
+<li>
+<p>Reduce manual image management.</p>
+</li>
+<li>
+<p>Establish standardized container build practices.</p>
+</li>
+<li>
+<p>Integrate image creation into the Software Factory.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reflection"><a class="anchor" href="#_reflection"></a>Reflection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p></p>
+</div>
+<details class="reflection-box">
+<summary class="title"><strong>Think about your own organization (Click to expand)</strong></summary>
+<div class="content">
+<div class="imageblock text-left unresolved">
+<div class="content">
+<img src="ROOT\:mini-illustration-lightbulb-red-RH.Small\_square\_transparent.png" alt="mini illustration lightbulb red RH.Small\ square\ transparent" width="50">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>How are container images built in your organization today?</p>
+</li>
+<li>
+<p>Do developers need to maintain Dockerfiles for every application?</p>
+</li>
+<li>
+<p>Which applications could benefit from S2I or Buildpacks?</p>
+</li>
+<li>
+<p>Where are your container images stored?</p>
+</li>
+<li>
+<p>How could standardized image builds improve your CI/CD process?</p>
+</li>
+</ul>
+</div>
+</div>
+</details>
+<div class="key-card">
+<div class="paragraph">
+<div class="title"><strong>Key Takeaway</strong></div>
+<p><strong>OpenShift</strong> provides multiple approaches for building container images, including traditional <strong>BuildConfig</strong> strategies such as S2I, Docker, and Custom builds, as well as newer Kubernetes-native approaches such as <strong>Shipwright</strong>. OpenShift Pipelines can orchestrate these build processes as part of an automated path from application source code to a deployable container image.</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="intro.html">OpenShift Pipelines Overview</a></span>
+  <span class="next"><a href="lab-1.html">Lab 1: CI Pipeline</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>
