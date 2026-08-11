@@ -1,11 +1,11 @@
 = Summary and What's Next?
 
-_Congratulations! You have successfully established the foundation of your Software Factory._
+_Congratulations! You have successfully built an automated, GitOps-driven application delivery workflow._
 
-In this module, you learned how organizations standardize software delivery using a Software Factory, explored Git's role in enabling collaborative development and GitOps workflows, prepared the required platform services, and configured a cloud-native development environment using OpenShift Dev Spaces and GitLab.
+In this module, you learned how **OpenShift Pipelines** automates Continuous Integration, how **OpenShift GitOps and Argo CD** provide continuous delivery through Git-based desired state, and how applications can be securely promoted across environments without rebuilding.
 
-You now have everything required to begin building, deploying, and managing applications on the platform. 
+You created and automated a CI pipeline, connected it to a GitOps deployment workflow, configured secure authentication and credential management, and implemented application promotion using **OpenShift Pipelines, Quay, Vault, and Argo CD**. You also explored how Git history and validated images support reliable rollback and recovery.
 
-In the next modules, you'll use this environment to implement automated software delivery pipelines, GitOps workflows, developer self-service capabilities, and trusted software supply chain practices.
+You now have a complete foundation for building, testing, deploying, promoting, and managing applications through a standardized Software Factory workflow.
 
-
+In the next modules, you'll build on this foundation to implement **developer self-service, application modernization, and trusted software supply chain practices**.
