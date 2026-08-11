@@ -1,0 +1,370 @@
+= OpenShift GitOps
+:navtitle: OpenShift GitOps Overview
+
+In the previous sections, you learned how *OpenShift Pipelines* automates application delivery workflows and how container images are built and published for deployment.
+
+The next step is getting the application into the target environment and ensuring that the environment remains consistent with the desired configuration.
+
+**Red Hat OpenShift GitOps** provides a declarative approach to continuous delivery using *Argo CD*.
+
+Instead of a CI/CD pipeline directly managing the cluster, GitOps uses Git as the *source of truth* for the desired application state and continuously reconciles the OpenShift cluster with that state.
+
+TIP: Think about what should happen after an application is deployed if someone manually changes or deletes one of its resources. Should the platform simply leave the cluster in that state, or should it automatically restore the desired configuration?
+
+== The Challenge
+
+A traditional deployment pipeline can apply application manifests to a cluster.
+
+For example, a pipeline might:
+
+* Build an application.
+* Create a container image.
+* Push the image to a registry.
+* Apply Kubernetes manifests.
+* Verify that the deployment completed successfully.
+
+However, the pipeline typically finishes after the deployment has been performed. If someone later modifies or deletes a resource, the pipeline does not automatically run again to restore the desired state.
+
+This can result in *configuration drift* between what the application is supposed to look like and what is actually running in the cluster.
+
+IMPORTANT: A deployment pipeline can change the cluster, but continuous delivery requires more than performing a deployment once. The platform must also continuously ensure that the running environment matches the desired state.
+
+== What is OpenShift GitOps?
+
+.CICD (_Click the image to view it in full size in a new browser tab_)
+image::cd.png[link={imagesdir}/cd.png,width=700]
+
+OpenShift GitOps provides a *declarative continuous delivery* model based on the open source *Argo CD* project. The desired configuration of an application is stored in Git. OpenShift GitOps continuously compares the configuration stored in Git with the actual state of resources running in the OpenShift cluster. When the two states differ, OpenShift GitOps can synchronize the cluster with the desired state. This process is called *reconciliation*.
+
+.Git as the Source of Truth
+****
+Application and deployment configuration is stored in Git, providing a version-controlled and auditable definition of the desired state.
+****
+
+.Continuous Reconciliation
+****
+Argo CD continuously compares the desired state in Git with the live state of the OpenShift cluster and identifies differences.
+****
+
+.Automated Synchronization
+****
+When configured for automated synchronization, Argo CD applies the desired configuration to the cluster so that the live environment matches Git.
+****
+
+
+== Declarative Delivery
+
+A key principle of OpenShift GitOps is *declarative configuration*.
+
+Instead of defining a sequence of commands that explains how to deploy an application, GitOps defines the state that the application should have.
+
+For example, a declarative configuration might specify:
+
+[source,yaml]
+----
+replicas: 3
+image: quay.io/example/app:v2
+service:
+  port: 8080
+----
+
+This configuration describes the *desired state* of the application.
+
+Argo CD continuously works to ensure that the OpenShift cluster reflects that desired state.
+
+The focus changes from:
+
+[source,text]
+----
+"Run these deployment commands"
+----
+
+to:
+
+[source,text]
+----
+"This is the state the application should have"
+----
+
+This makes application delivery more predictable and easier to audit.
+
+== Git as the Source of Truth
+
+In a GitOps model, application deployment configuration is stored in a Git repository.
+
+The repository can contain resources such as:
+
+* Kubernetes manifests
+* Kustomize configurations
+* Helm charts
+* Application deployment configuration
+* Environment-specific configuration
+
+Git provides version control for the desired application state.
+
+Every change can be reviewed, approved, and tracked through the normal Git workflow.
+
+For example:
+
+[source,text]
+----
+Git Repository
+      |
+      | Desired State
+      v
+   Argo CD
+      |
+      | Synchronization
+      v
+OpenShift Cluster
+----
+
+This creates a clear relationship between the configuration stored in Git and the resources running in OpenShift.
+
+== How Argo CD Works
+
+Argo CD continuously monitors the applications it manages.
+
+It compares two states:
+
+[cols="1,3",options="header"]
+|===
+|State |Description
+|Desired state
+|The application configuration defined in the Git repository.
+|Live state
+|The resources currently running in the OpenShift cluster.
+|===
+
+When these states match, the application is considered *Synced*.
+
+When they differ, the application is considered *OutOfSync*.
+
+Argo CD can then synchronize the cluster so that the live state matches the desired state.
+
+This continuous comparison is what makes GitOps different from a deployment process that runs only once.
+
+== The GitOps Workflow
+
+A typical OpenShift GitOps workflow looks like this:
+
+. A developer makes a change to the application.
+. The application is built and tested using OpenShift Pipelines.
+. A new container image is created and pushed to an image registry.
+. The desired deployment configuration is updated in Git.
+. Argo CD detects the change in the Git repository.
+. Argo CD compares the desired state with the live cluster state.
+. Argo CD synchronizes the application.
+. OpenShift runs the updated application.
+
+The workflow does not end when the deployment occurs.
+
+Argo CD continues monitoring the application after synchronization.
+
+If the live state later differs from the desired state, Argo CD detects the difference.
+
+== Configuration Drift
+
+*Configuration drift* occurs when the actual state of the environment differs from the desired state.
+
+For example, suppose Git defines:
+
+[source,text]
+----
+Application replicas = 3
+----
+
+An administrator or another process accidentally changes the deployment so that only two replicas are running.
+
+The cluster now differs from the configuration stored in Git.
+
+Argo CD detects this difference and reports the application as *OutOfSync*.
+
+If automated synchronization is enabled, Argo CD can restore the application to the desired configuration.
+
+This provides an important operational capability: the environment can continuously move back toward the state defined in Git.
+
+== Self-Healing
+
+GitOps can provide *self-healing* behavior for managed applications.
+
+Consider the following scenario:
+
+. Git defines an application with three replicas.
+. Argo CD deploys the application with three replicas.
+. Someone accidentally deletes one of the application pods.
+. The Kubernetes controllers recreate the pod according to the deployment configuration.
+
+Now consider a more significant change:
+
+. Git defines the application configuration.
+. Someone manually modifies a managed resource in the cluster.
+. The live state no longer matches Git.
+. Argo CD detects the difference.
+. Argo CD synchronizes the application according to the configured synchronization policy.
+
+This allows GitOps to continuously protect the desired application configuration rather than relying on a deployment pipeline to run again.
+
+NOTE: GitOps does not simply deploy an application. It continuously observes and reconciles the application against the desired state defined in Git.
+
+== OpenShift Pipelines and OpenShift GitOps
+
+OpenShift Pipelines and OpenShift GitOps have complementary responsibilities.
+
+OpenShift Pipelines focuses on *building and delivering application changes*.
+
+OpenShift GitOps focuses on *maintaining the desired application state*.
+
+A typical workflow looks like this:
+
+[source,text]
+----
+Developer
+    |
+    v
+Application Source
+    |
+    v
+OpenShift Pipelines
+    |
+    +--> Build
+    |
+    +--> Test
+    |
+    +--> Build Image
+    |
+    v
+Image Registry
+    |
+    v
+Update Desired State
+    |
+    v
+Git Repository
+    |
+    v
+OpenShift GitOps
+    |
+    v
+OpenShift Cluster
+----
+
+The important distinction is that the pipeline does not need to continuously manage the cluster after updating the desired state.
+
+Instead, the pipeline can update the Git repository and allow OpenShift GitOps to take responsibility for synchronizing the environment.
+
+IMPORTANT: OpenShift Pipelines automates the **delivery workflow**, while OpenShift GitOps continuously manages the **desired state** of the application in the cluster.
+
+== Why GitOps?
+
+OpenShift GitOps provides several benefits for application delivery and operations.
+
+For developers:
+
+* Use Git-based workflows for application deployment configuration.
+* Track deployment changes through version control.
+* Reduce manual deployment steps.
+* Promote application changes through controlled configuration changes.
+
+For Platform Engineers and Operations teams:
+
+* Manage applications declaratively.
+* Continuously detect configuration drift.
+* Automate application synchronization.
+* Improve consistency across environments.
+* Maintain an auditable history of configuration changes.
+* Reduce manual cluster changes.
+
+For organizations:
+
+* Establish Git as a source of truth.
+* Improve deployment consistency.
+* Increase traceability and auditability.
+* Reduce configuration drift.
+* Enable scalable continuous delivery practices.
+
+== OpenShift GitOps in the Software Factory
+
+Within a *Software Factory*, OpenShift GitOps provides the continuous delivery capability that connects application configuration in Git with running applications on OpenShift.
+
+A complete Software Factory workflow can therefore look like this:
+
+. Developers develop applications in a standardized development environment.
+. Developers commit source code to Git.
+. OpenShift Pipelines builds and tests the application.
+. A container image is created and published.
+. The desired deployment configuration is updated in Git.
+. OpenShift GitOps detects the desired-state change.
+. Argo CD synchronizes the application to OpenShift.
+. Argo CD continues monitoring the application.
+. Any configuration drift can be detected and reconciled.
+
+This creates an automated path from *application source code to a continuously managed application environment*.
+
+== Everything as Code
+
+OpenShift GitOps supports the broader Software Factory principle of *everything-as-code*.
+
+Application source code, deployment configuration, environment configuration, and delivery definitions can all be managed through version-controlled repositories.
+
+This provides:
+
+* **Version control** — Changes are tracked over time.
+* **Auditability** — Teams can identify who changed the desired state and when.
+* **Repeatability** — The same configuration can be applied consistently.
+* **Reviewability** — Changes can go through pull requests and approval workflows.
+* **Recovery** — The desired configuration remains available in Git.
+
+IMPORTANT: GitOps changes deployment from a one-time action into a continuous process where the desired state is stored in Git and the running environment is continuously reconciled with it.
+
+== Benefits
+
+For developers:
+
+* Deploy applications using familiar Git workflows.
+* Reduce manual deployment activities.
+* Track application configuration changes.
+* Use consistent deployment processes.
+
+For Platform Engineers:
+
+* Manage application environments declaratively.
+* Standardize deployment configuration.
+* Detect and manage configuration drift.
+* Provide automated synchronization.
+* Improve operational consistency.
+
+For organizations:
+
+* Establish Git as the source of truth.
+* Improve deployment reliability.
+* Increase visibility and auditability.
+* Reduce manual cluster changes.
+* Support repeatable application delivery across environments.
+
+== Reflection
+
+{empty}
+
+[.reflection-box%collapsible]
+.**Think about your own organization (Click to expand)**
+====
+image::ROOT\:mini-illustration-lightbulb-red-RH.Small\_square\_transparent.png[width=50, align=left]
+image::ROOT\:mini-illustration-lightbulb-red-RH.Small\_square\_transparent.png[width=50, align=left]
+* How are applications currently deployed to OpenShift?
+* What happens when someone manually changes a deployed resource?
+* Where is the desired configuration of your applications stored?
+* How could Git become the source of truth for application deployments?
+* How could continuous reconciliation reduce configuration drift?
+====
+
+++++
+<div class="key-card">
+++++
+
+.**Key Takeaway**
+*OpenShift GitOps provides continuous delivery using *Argo CD* and a declarative, Git-based approach. Git serves as the source of truth for the desired application state, while Argo CD continuously compares and reconciles that state with the OpenShift cluster. Together with OpenShift Pipelines, it creates a repeatable path from application source code to a continuously managed application environment.
+
+++++
+</div>
+++++

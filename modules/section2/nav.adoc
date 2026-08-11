@@ -1,4 +1,5 @@
 * xref:index.adoc[GitOps Continuous Deployment]
+** xref:cd.adoc[OpenShift GitOps Overview]
 ** xref:lab-5.adoc[Lab 5: GitOps Authentication]
 ** xref:lab-6.adoc[Lab 6: Deploy Argo CD]
 ** xref:lab-7.adoc[Lab 7: GitOps Repository]

@@ -26,11 +26,6 @@ Throughout this section, you'll build an application promotion workflow that pro
 * Multi-cluster application delivery
 * Reliable rollback capabilities using Git history and validated images
 
-[TIP]
-====
-If you're already familiar with CI/CD pipelines, container registries, and GitOps concepts, feel free to skim this section and continue to xref:lab-12.adoc[Lab 12: Configure Quay]. The concepts introduced here provide useful context for understanding how enterprise application platforms manage application releases across environments.
-====
-
 ++++
 </div>
 ++++

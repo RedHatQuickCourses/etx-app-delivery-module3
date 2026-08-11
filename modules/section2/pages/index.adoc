@@ -14,7 +14,7 @@ image::ROOT:mini-illustration-book-red-RH.Large_square_transparent.png[width=40,
 </div>
 ++++
 
-In this section, you'll configure Argo CD to authenticate using the shared Keycloak OpenID Connect (OIDC) integration, create a GitOps repository to store Kubernetes manifests, and deploy the application using automated synchronization. Finally, you'll connect the Tekton CI pipeline to the GitOps repository so that every successful build automatically updates the application deployment.
+In this section, you'll learn how Red Hat OpenShift GitOps and Argo CD provide continuous delivery using a declarative, Git-based approach. You'll configure Argo CD to authenticate using the shared Keycloak OpenID Connect (OIDC) integration, create a GitOps repository to store Kubernetes manifests, and deploy the application using automated synchronization. Finally, you'll connect the Tekton CI pipeline to the GitOps repository so that every successful build automatically updates the application deployment.
 
 IMPORTANT: You will deploy your **own** Argo CD instance in the `etx-app-dev` namespace. The pre-installed OpenShift GitOps instance in the `openshift-gitops` namespace is used for platform infrastructure and is independent of the application GitOps workflow you'll build in this section.
 

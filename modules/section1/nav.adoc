@@ -1,4 +1,6 @@
 * xref:index.adoc[CI with OpenShift Pipelines]
+** xref:intro.adoc[OpenShift Pipelines Overview]
+** xref:builds.adoc[Container Image Builds]
 ** xref:lab-1.adoc[Lab 1: CI Pipeline]
 ** xref:lab-2.adoc[Lab 2: Create the CI Pipeline]
 ** xref:lab-3.adoc[Lab 3: Test CI Pipeline]

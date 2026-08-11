@@ -210,103 +210,97 @@
       <b>Check your understanding.</b><br><br>Knowledge check content is recommended practice, not a graded exam.
 
 ---
-Q1: What is the primary purpose of a Software Factory?
+Q1: What is the primary purpose of the Tekton CI pipeline?
 
-A: Replace developers with automation
-Incorrect: A Software Factory does not replace developers. It automates repetitive tasks so developers can spend more time building application features.
+A: Deploy applications directly to production
+Incorrect: The CI pipeline focuses on building and validating application changes and producing container images. Deployment is handled by later delivery workflows.
 
-A: Standardize software delivery through reusable services and automation
-Correct: A Software Factory provides standardized workflows, reusable platform services, automation, and self-service capabilities that enable developers to build, test, secure, deploy, and operate applications consistently.
+A: Replace GitLab as the source code repository
+Incorrect: GitLab remains the source control system. Tekton retrieves the application source code from the GitLab repository as part of the CI process.
 
-A: Eliminate the need for source control
-Incorrect: Source control remains a fundamental part of a Software Factory. Git repositories serve as the source of truth for application code, infrastructure, and GitOps workflows.
+A: Manage application monitoring and observability
+Incorrect: Monitoring and observability are separate platform capabilities. The CI pipeline is responsible for automating application builds and image creation.
 
-A: Allow every team to build its own delivery process
-Incorrect: A Software Factory aims to reduce inconsistency by providing a common software delivery process, rather than having each team create and maintain its own tooling and workflows.
-
----
-Q2: According to Emma's journey, which sequence best represents how a Software Factory enables software delivery?
-
-A: Configure infrastructure → Create pipelines → Deploy manually → Monitor
-Correct: A Software Factory minimizes manual infrastructure setup and deployment. Developers consume standardized platform services instead of configuring infrastructure and deployment pipelines themselves.
-
-A: Launch Dev Spaces → Write code → Commit to Git → Automated build, security checks, GitOps deployment → Monitor
-Correct: This sequence matches Emma's journey. She starts with a ready-to-use development workspace, writes and commits code, while the Software Factory automatically performs builds, security validation, GitOps deployment, and continuous monitoring.
-
-A: Write code → Deploy directly to production → Build application → Monitor
-Incorrect: Applications are built, validated, and tested before deployment. A Software Factory automates these stages to ensure software quality and security prior to production deployment.
-
-A: Request infrastructure → Configure local environment → Deploy manually
-Incorrect: One of the key benefits of a Software Factory is eliminating these manual tasks by providing self-service development workspaces, standardized tooling, and automated deployment workflows.
+A: Automatically build application source code into container images
+Correct: The Tekton CI pipeline clones the application source, builds the application, retrieves registry credentials from Vault, and produces a container image in the OpenShift internal registry.
 
 ---
-Q3: What is the primary benefit of using OpenShift Dev Spaces in a Software Factory?
+Q2: How is the Tekton CI pipeline automatically triggered?
 
-A: It replaces Git repositories with browser-based workspaces.
-Incorrect: Dev Spaces provides development workspaces but still relies on Git repositories for source code management.
+A: By using GitLab webhooks and Tekton Triggers
+Correct: GitLab sends a push event to the Tekton EventListener. The TriggerBinding extracts values from the event, and the TriggerTemplate creates a new PipelineRun automatically.
 
-A. It provides standardized, cloud-based development environments that reduce onboarding time and improve consistency.
-Correct: This sequence matches Emma's journey. She starts with a ready-to-use development workspace, writes and commits code, while the Software Factory automatically performs builds, security validation, GitOps deployment, and continuous monitoring.
+A: By manually creating a PipelineRun for every code change
+Incorrect: A PipelineRun can be used for manual testing, but automated execution is configured through Tekton Triggers and GitLab webhooks.
 
-A: Write code → Deploy directly to production → Build application → Monitor
-Incorrect: Applications are built, validated, and tested before deployment. A Software Factory automates these stages to ensure software quality and security prior to production deployment.
+A: By restarting the Tekton controller
+Incorrect: Restarting Tekton components does not trigger application builds. Pipeline execution is initiated through PipelineRuns, which can be created automatically by Tekton Triggers.
 
-A: Request infrastructure → Configure local environment → Deploy manually
-Incorrect: One of the key benefits of a Software Factory is eliminating these manual tasks by providing self-service development workspaces, standardized tooling, and automated deployment workflows.
-
----
-Q3: What is the primary benefit of using OpenShift Dev Spaces in a Software Factory?
-
-A. It replaces Git repositories with browser-based workspaces.
-Incorrect: Dev Spaces provides development workspaces but still relies on Git repositories for source code management.
-
-A. It provides standardized, cloud-based development environments that reduce onboarding time and improve consistency.
-Correct: OpenShift Dev Spaces provides consistent, browser-based Cloud Development Environments that eliminate local setup, reduce onboarding time, and ensure developers work with the same tools and dependencies.
-
-A. It automatically deploys applications to production without validation.
-Incorrect: Application deployment is handled by the Software Factory using automated pipelines and GitOps, not by Dev Spaces itself.
-
-A. It requires every developer to maintain their own local development tools.
-Incorrect: Dev Spaces reduces the need for local installations by providing preconfigured development environments on OpenShift.
+A: By pushing images directly to the OpenShift registry
+Incorrect: Pushing an image is an outcome of the CI pipeline, not the mechanism that triggers the pipeline.
 
 ---
-Q4: Which challenge does OpenShift Dev Spaces primarily help organizations overcome?
+Q3: Why is HashiCorp Vault integrated into the CI pipeline?
 
-A. Managing production monitoring dashboards.
-Incorrect: Monitoring is a platform capability and is not the primary purpose of Dev Spaces.
+A: To store and retrieve container registry credentials securely
+Correct: Vault provides secure access to the registry credentials required by the pipeline to authenticate and push the built container image, avoiding hard-coded credentials in pipeline definitions.
 
-A. Eliminating inconsistent local development environments and lengthy workstation setup.
-Correct: Dev Spaces provides standardized Cloud Development Environments, eliminating workstation configuration differences and helping developers start coding quickly.
+A: To build the application source code
+Incorrect: Application compilation and image creation are performed by the Tekton pipeline tasks, not by Vault.
 
-A. Replacing CI/CD pipelines with manual deployments.
-Incorrect: Dev Spaces complements CI/CD pipelines by providing development environments; it does not replace them.
+A: To receive GitLab webhook events
+Incorrect: GitLab webhook events are received by the Tekton EventListener. Vault is used for secure credential retrieval.
 
-A. Storing container images for production deployments.
-Incorrect: Container images are typically stored in a container registry such as Quay, not in Dev Spaces.
-
----
-Q4: Who is most likely responsible for improving developer onboarding?
-
-A: Platform Engineer
-Correct: Improving developer onboarding is a common Platform Engineering responsibility.
-
-A: Operations Engineer
-Incorrect: Operations focuses on runtime availability and operational controls.
-
-A: Application Developer
-Incorrect: Developers benefit from onboarding improvements but typically do not own the platform onboarding experience.
+A: To replace the OpenShift internal registry
+Incorrect: Vault manages secrets and credentials; it does not provide container image storage. The built image is pushed to the OpenShift internal registry.
 
 ---
-Q5: Who is most likely responsible for enforcing organizational security standards?
+Q4: What is the primary role of OpenShift Pipelines in a container image build workflow?
 
-A: Operations Engineer
-Correct: Operations commonly enforces organizational security and compliance standards on the platform.
+A: Construct the container image itself
+Incorrect: The image build mechanism, such as BuildConfig or Shipwright, performs the actual container image construction.
 
-A: Platform Engineer
-Incorrect: Platform engineers may encode standards into the platform, but enforcement is typically an operations responsibility in this lesson.
+A: Store container images
+Incorrect: Container images are stored in an image registry after they are built.
 
-A: Application Developer
-Incorrect: Developers follow standards; enforcement is not primarily their role.
+A: Replace the application source code repository
+Incorrect: Source code remains in Git repositories. Pipelines retrieve the source code and orchestrate the subsequent delivery activities.
+
+A: Orchestrate the image build as part of the CI/CD workflow
+Correct: OpenShift Pipelines orchestrates the workflow by determining when and in what order activities such as source checkout, application builds, testing, image building, and image publishing occur.
+
+---
+Q5: What is the primary role of OpenShift GitOps?
+
+A: Continuously reconcile the OpenShift cluster with the desired state stored in Git
+Correct: OpenShift GitOps uses Argo CD to compare the desired state in Git with the live cluster state and synchronize them when they differ.
+
+A: Build and test application source code
+Incorrect: OpenShift Pipelines is responsible for building and testing applications. OpenShift GitOps focuses on maintaining the desired application state in the cluster.
+
+A: Store container images
+Incorrect: Container images are stored in an image registry. GitOps manages the desired deployment configuration, not image storage.
+
+A: Replace Git repositories with OpenShift resources
+Incorrect: Git is the source of truth in a GitOps model. Deployment configuration is stored and version-controlled in Git.
+
+---
+Q6: What happens when Argo CD detects configuration drift?
+
+A: It ignores the difference after the initial deployment
+Incorrect: Argo CD continuously monitors managed applications and detects differences between the desired and live states.
+
+A: It rebuilds the application container image
+Incorrect: Building application images is the responsibility of the CI pipeline and image-building process, not Argo CD.
+
+A: It detects the difference and can synchronize the cluster with the desired state
+Correct: Argo CD reports the application as OutOfSync when the live state differs from Git and, when automated synchronization is enabled, can restore the desired configuration.
+
+A: It deletes the Git repository
+Incorrect: Git remains the source of truth and is used to define the desired application state.
+
+---
+
 `;
 
       // --- PARSING LOGIC ---

@@ -14,10 +14,9 @@ image::ROOT:mini-illustration-book-red-RH.Large_square_transparent.png[width=40,
 </div>
 ++++
 
-In this section, you'll build a complete cloud-native Continuous Integration (CI) workflow using OpenShift Pipelines (Tekton).
+In this section, you'll learn how **Red Hat OpenShift Pipelines** enables automated Continuous Integration (CI) and container image builds. You'll explore how Tekton pipelines build and validate applications, create container images, and automate CI workflows triggered by changes to the application source code.
 
-You'll create a reusable CI pipeline, securely retrieve registry credentials from HashiCorp Vault, automate pipeline execution with GitLab webhooks and Tekton Triggers, and validate the end-to-end build process that produces container images for deployment on OpenShift.
-
+Through hands-on labs, you'll create, test, and automate a complete CI pipeline that builds the application and publishes the resulting container image to the OpenShift internal registry.
 
 ++++
 </div>

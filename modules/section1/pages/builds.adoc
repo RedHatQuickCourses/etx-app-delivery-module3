@@ -1,0 +1,336 @@
+= Building Container Images on OpenShift
+:navtitle: Container Image Builds
+
+In the previous section, you learned how *OpenShift Pipelines* provides a cloud-native framework for automating software delivery workflows.
+
+A pipeline can orchestrate activities such as building source code, running tests, creating container images, and publishing application artifacts.
+
+However, a pipeline itself does not define how a container image is constructed.
+
+OpenShift provides several approaches for *building container images* from application source code.
+
+TIP: Think about what happens after a developer commits application code. How is that source code transformed into a container image that can be deployed?
+
+== The Challenge
+
+Developers need a reliable way to transform application source code into container images.
+
+A traditional container build process might require developers to:
+
+* Create and maintain a Dockerfile.
+* Install and configure container build tools.
+* Build the image.
+* Tag the image.
+* Push the image to a container registry.
+* Manage build environments and dependencies.
+* Keep the build process consistent across teams.
+
+When each team manages its own image-building process, organizations can end up with different tools, build environments, and practices.
+
+OpenShift provides native and Kubernetes-based approaches that allow image builds to be integrated into the application delivery platform.
+
+IMPORTANT: OpenShift can provide the build environment, build strategy, and automation required to transform application source code into a container image without requiring developers to manage the underlying build infrastructure themselves.
+
+
+== Building Images in the Software Factory
+
+Within a *Software Factory*, container image builds are an important step between application development and application deployment.
+
+A simplified workflow looks like this:
+
+. Developers commit application source code to Git.
+. A CI pipeline is triggered.
+. The application is compiled and tested.
+. The application source is provided to an image build process.
+. A container image is created.
+. The image is pushed to an image registry.
+. The image becomes available for deployment.
+
+OpenShift provides different mechanisms for performing the image-building step.
+
+== BuildConfig
+
+One traditional approach to building container images on OpenShift is the *BuildConfig*.
+
+A BuildConfig is a declarative OpenShift resource that defines how an image build should be performed.
+
+It describes important aspects of the build, including:
+
+[cols="1,3",options="header"]
+
+|===
+|Configuration |Purpose
+|Source
+|Defines where the application source code or build input comes from.
+|Strategy
+|Defines how OpenShift should build the container image.
+|Output
+|Defines where the resulting image should be published.
+|Triggers
+|Defines events that can automatically start a new build.
+|===
+
+The BuildConfig provides a consistent, declarative definition of the image-building process.
+
+Instead of manually executing container build commands, developers and platform teams can define the build process as an OpenShift resource.
+
+== Build Strategies
+
+OpenShift supports several build strategies for creating container images.
+
+The most common strategies are:
+
+.Source-to-Image (S2I)
+****
+S2I combines application source code with a builder image that contains the required runtime and build tools. This allows developers to build application images without maintaining a Dockerfile for every application.
+****
+
+.Docker Build
+****
+Uses a Dockerfile to define how the container image should be constructed. This provides developers with direct control over the image build instructions.
+****
+
+.Custom Build
+****
+Allows advanced build logic by using a custom builder image. This approach can be used when standard build strategies do not meet the application's requirements.
+****
+
+The appropriate strategy depends on the application, the level of customization required, and the organization's container build standards.
+
+== Source-to-Image
+
+*Source-to-Image (S2I)* is designed to make application image creation simpler for developers.
+
+Instead of requiring developers to create a Dockerfile, S2I combines application source code with a preconfigured builder image.
+
+For example, a Java application can be provided to a Java S2I builder image.
+
+The builder image contains the tools and logic required to:
+
+* Install application dependencies.
+* Compile the application.
+* Package the application.
+* Configure the runtime environment.
+* Produce a runnable container image.
+
+This allows developers to focus on application source code while the platform provides the underlying build environment.
+
+== Docker Builds
+
+Docker builds provide a more explicit approach to image construction.
+
+The application repository contains a *Dockerfile* that defines the instructions used to construct the image.
+
+For example, a Dockerfile can define:
+
+* The base image.
+* Required packages and dependencies.
+* Application files.
+* Environment variables.
+* Startup commands.
+* Exposed ports.
+
+This approach provides greater control over the resulting image but requires developers to maintain the Dockerfile and understand container image construction.
+
+== Custom Builds
+
+Some applications require build processes that do not fit standard S2I or Docker-based approaches.
+
+Custom builds allow organizations to provide their own builder image and build logic.
+
+This can be useful when:
+
+* Specialized build tools are required.
+* Existing build processes need to be preserved.
+* Custom image construction logic is required.
+* Standard build strategies do not provide sufficient flexibility.
+
+Custom builds provide flexibility, but they also introduce additional complexity and maintenance requirements.
+
+== Modern Image Builds with Shipwright
+
+As Kubernetes-native application development has evolved, newer approaches have emerged for building container images.
+
+*Shipwright* provides a Kubernetes-native framework for defining and managing container image builds.
+
+Rather than relying exclusively on a single build mechanism, Shipwright provides a framework that can work with different build strategies and tools.
+
+For example, image builds can use technologies such as:
+
+* Buildah.
+* Kaniko.
+* Cloud Native Buildpacks.
+
+This provides greater flexibility when standardizing image builds across different types of applications.
+
+.OpenShift image build workflow(_Click the image to view it in full size in a new browser tab_)
+image::build.png[link={imagesdir}/build.png,width=700]
+
+The diagram illustrates how an application delivery workflow can move from source code through build and test activities to container image creation and publication.
+
+OpenShift provides the platform where these build workloads execute, while the resulting images are stored in an image registry and can then be consumed by deployment processes.
+
+== BuildConfig and Shipwright
+
+BuildConfig and Shipwright address the same broader requirement—**building container images**—but use different approaches.
+
+[cols="1,2,2",options="header"]
+
+|===
+|Capability |BuildConfig |Shipwright
+|Model
+|OpenShift-native build resource
+|Kubernetes-native build framework
+|Build definition
+|Defined through BuildConfig
+|Defined through Kubernetes resources
+|Build strategies
+|S2I, Docker, and Custom
+|Extensible strategy-based model
+|Build engines
+|Integrated OpenShift build mechanisms
+|Can integrate with different build technologies
+|Use case
+|Traditional OpenShift image builds
+|Flexible and extensible Kubernetes-native image builds
+|===
+
+BuildConfig remains an important OpenShift build mechanism, while Shipwright provides an extensible approach for organizations that need greater flexibility in how container images are constructed.
+
+== Image Registry
+
+Once an image has been built, it needs to be stored somewhere that downstream systems can access.
+
+An *image registry* stores container images and makes them available for deployment.
+
+A typical workflow is:
+
+[source,text]
+----
+Application Source
+       |
+       v
+    Build
+       |
+       v
+Container Image
+       |
+       v
+Image Registry
+       |
+       v
+Application Deployment
+----
+
+The registry acts as the handoff point between the image-building process and the deployment process.
+
+A Software Factory can integrate OpenShift image builds with an organization-approved container registry to provide a consistent path from source code to deployable artifacts.
+
+== Image Builds and OpenShift Pipelines
+
+OpenShift Pipelines and image-building technologies have complementary responsibilities.
+
+OpenShift Pipelines *orchestrates the workflow*, while the image build mechanism *performs the image construction*.
+
+For example, a pipeline might execute the following sequence:
+
+. Clone the application source code.
+. Build the application.
+. Run automated tests.
+. Start the container image build.
+. Push the resulting image to a registry.
+. Continue with the next stage of the delivery process.
+
+This separation allows the same pipeline model to work with different image-building technologies.
+
+NOTE: Think of OpenShift Pipelines as the **orchestrator** and the image build system as the **engine that creates the container image**. The pipeline determines when and in what order the build occurs, while the build mechanism determines how the image is constructed.
+
+
+== Why Container Image Builds Matter
+
+Container image builds are a critical part of cloud-native application delivery.
+
+A reliable image build process provides:
+
+* **Consistency:** The same build process can be repeated for every application change.
+* **Automation:** Image creation can be triggered automatically by CI/CD workflows.
+* **Reproducibility:** Build definitions can be stored and versioned as code.
+* **Security:** Organizations can standardize approved base images and build processes.
+* **Integration:** Images can be automatically published to registries for downstream deployment.
+* **Scalability:** Build workloads can run on the OpenShift platform instead of individual developer workstations.
+
+== Container Image Builds in the Software Factory
+
+Putting the pieces together, a Software Factory can provide an automated path from source code to a deployable container image.
+
+A typical workflow looks like this:
+
+. Developer commits application code.
+. OpenShift Pipelines starts the CI workflow.
+. The application is built.
+. Automated tests are executed.
+. OpenShift performs the container image build.
+. The resulting image is pushed to an image registry.
+. The image is made available for the deployment process.
+
+This creates a repeatable path from *application source code to a deployable container artifact*.
+
+IMPORTANT: Container image builds are the bridge between application source code and the container artifacts used by cloud-native platforms. OpenShift provides multiple approaches so organizations can select the build mechanism that best fits their applications and delivery practices.
+
+== Benefits
+
+For developers:
+
+* Reduce the need to manage local container build environments.
+* Use standardized build processes.
+* Focus on application source code rather than build infrastructure.
+* Automatically create container images through CI/CD workflows.
+
+For Platform Engineers:
+
+* Standardize image-building practices.
+* Provide reusable build strategies.
+* Integrate image builds with CI/CD pipelines.
+* Centralize build infrastructure on OpenShift.
+* Support different application build requirements.
+
+For organizations:
+
+* Create repeatable image-building processes.
+* Improve software delivery consistency.
+* Reduce manual image management.
+* Establish standardized container build practices.
+* Integrate image creation into the Software Factory.
+
+
+== Reflection
+
+{empty}
+
+[.reflection-box%collapsible]
+.**Think about your own organization (Click to expand)**
+====
+image::ROOT\:mini-illustration-lightbulb-red-RH.Small\_square\_transparent.png[width=50, align=left]
+* How are container images built in your organization today?
+* Do developers need to maintain Dockerfiles for every application?
+* Which applications could benefit from S2I or Buildpacks?
+* Where are your container images stored?
+* How could standardized image builds improve your CI/CD process?
+====
+
+++++
+
+<div class="key-card">
+
+++++
+
+.**Key Takeaway**
+
+*OpenShift* provides multiple approaches for building container images, including traditional *BuildConfig* strategies such as S2I, Docker, and Custom builds, as well as newer Kubernetes-native approaches such as *Shipwright*. OpenShift Pipelines can orchestrate these build processes as part of an automated path from application source code to a deployable container image.
+
+
+++++
+
+</div>
+
+++++

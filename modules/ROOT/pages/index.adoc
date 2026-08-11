@@ -1,48 +1,60 @@
-= Software Factory and DevSpaces
+= Software Delivery with OpenShift Pipelines and GitOps
 :navtitle: Home
 
 == Introduction
 
-Welcome to this quick course on the _**Software Factory and CI/CD**_.
+Welcome to this quick course on the _**Software Delivery with OpenShift Pipelines and GitOps**_.
 This course is the `third` in a series of `six` courses about **Application Platform Delivery**:
 
-* https://link[_Application Platform Delivery Foundations_, window=browser]
-* https://link[_Software Factory & Developer Experience_, window=browser]
-* _Software Factory and DevSpaces_(_This course_)
-* https://link[_Software Factory and CICD_, window=browser]
-* https://link[_Application Modernization_, window=browser]
-* https://link[_Trusted Software Supply Chain (TSSC)_, window=browser]
+* https://redhatquickcourses.github.io/etx-app-delivery-module1/etx-app-delivery-module1/1/index.html[_Application Platform Delivery Foundations_, window=browser]
+* https://redhatquickcourses.github.io/etx-app-delivery-module2/etx-app-delivery-module2/1/index.html[_Software Factory Foundations with OpenShift Dev Spaces_, window=browser]
+* https://redhatquickcourses.github.io/etx-app-delivery-module3/etx-app-delivery-module3/1/index.html[_Software Delivery with OpenShift Pipelines and GitOps_, window=browser](_This course_)
+* https://redhatquickcourses.github.io/etx-app-delivery-module4/etx-app-delivery-module4/1/index.html[_Software Factory and CI/CD_, window=browser]
+* https://redhatquickcourses.github.io/etx-app-delivery-module5/etx-app-delivery-module5/1/index.html[_Application Modernization with MTA_]
+* https://redhatquickcourses.github.io/etx-app-delivery-module6/etx-app-delivery-module6/1/index.html[_Trusted Software Supply Chain (TSSC)_, window=browser]
 
 == What's in this course?
 
-This training provides a comprehensive understanding of a modern Software Factory and its role in automating the software delivery lifecycle. Participants will learn how supporting services, Continuous Integration (CI), OpenShift Pipelines (Tekton), Continuous Delivery (CD), and promotion pipelines work together to build, validate, deploy, and promote applications across environments. By the end of the training, learners will understand how to implement standardized, automated, and GitOps-driven software delivery workflows on Red Hat OpenShift, enabling faster, more secure, and reliable application delivery.
+In this training, you'll explore the role of platform services, Continuous Integration (CI) with **Red Hat OpenShift Pipelines**, Continuous Delivery (CD) with **Red Hat OpenShift GitOps**, and application promotion workflows. Through hands-on exercises, you'll build, test, deploy, promote, and roll back applications across environments using automated, GitOps-driven workflows.
 
-Duration: 2.5 hours
+By the end of the training, you'll understand how these capabilities work together to create a repeatable software delivery process that improves developer productivity, deployment consistency, security, and application delivery reliability.
+
+Duration: 4.5 hours
 
 == Contributors
 
 The PTL team acknowledges the valuable contributions of the following Red Hat associates:
 
-* .. (SME)
-* .. (SME)
+The PTL team acknowledges the valuable contributions of the following Red Hat associates:
+
+* Andrew Block (SME)
+* Bill Wheatley (SME)
+* Bryan Saunders (SME)
+* Evan Shortiss (SME)
+* Julio Villarreal Pelegrino (SME)
+* Kristopher Godek (SME)
+* Roman Martin Gil (SME)
+* Senthil Kumar (SME)
+* Sergio Canales Espinoza (SME)
 * Yogita Soni (Content Architect)
+* Lisa Edgell (Learning Product Manager)
+* Caitlyn Rymarchyk (Learning Product Manager)
 * Anna Swicegood (Learning Product Manager)
 
 == Objectives
 
 On completing this course, you should be able to:
 
-Based on the section index, here are concise learning objectives:
-
-### Learning Objectives
-
-By the end of this module, you will be able to:
-
-* Integrate Dev Spaces with GitLab to enable source code management and developer workflows.
-* Create and use Dev Spaces workspaces for cloud-native application development.
-* Understand how Continuous Integration (CI) pipelines are triggered and executed from developer workspaces.
-* Deploy applications to OpenShift using automated delivery workflows.
-* Explain the role of promotion pipelines in advancing applications across development, testing, and production environments.
+* Create and automate CI pipelines using OpenShift Pipelines and Tekton.
+* Build and publish container images using automated workflows.
+* Configure OpenShift GitOps and Argo CD for continuous deployment.
+* Manage application deployment configuration using Git as the source of truth.
+* Connect CI pipelines with GitOps workflows to automate application delivery.
+* Promote application images across development and staging environments.
+* Implement GitOps-based deployment and promotion workflows.
+* Monitor application deployments and verify observability and deployment status.
+* Apply rollback strategies to restore applications to a previous version.
+* Build a repeatable, automated path from source code to deployed and continuously managed applications.
 
 == Prerequisites
 

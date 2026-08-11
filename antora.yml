@@ -1,5 +1,5 @@
 name: etx-app-delivery-module3
-title: Software Factory and CI/CD
+title: Software Delivery with OpenShift Pipelines and GitOps
 version: 1
 nav:
 - modules/ROOT/nav.adoc

@@ -1,5 +1,5 @@
 site:
-  title: Software Factory and CI/CD
+  title: Software Delivery with OpenShift Pipelines and GitOps
   start_page: etx-app-delivery-module3::index.adoc
 
 content:

@@ -1,0 +1,306 @@
+= OpenShift Pipelines
+:navtitle: OpenShift Pipelines Overview
+
+In the previous sections, you learned how a **Software Factory** provides standardized services, automation, and engineering practices that help teams deliver software consistently.
+
+A key capability of a Software Factory is **Continuous Integration and Continuous Delivery (CI/CD)**.
+
+**Red Hat OpenShift Pipelines** provides a cloud-native CI/CD framework for automating application build, test, validation, and delivery workflows directly on OpenShift.
+
+OpenShift Pipelines is based on **Tekton** and uses Kubernetes-native resources to define repeatable software delivery processes.
+
+TIP: Think about the steps your team performs every time application code changes. How many of those steps could be automated and executed consistently by a pipeline?
+
+== The Challenge
+
+Without automated pipelines, application delivery often depends on developers or operations teams performing a sequence of manual steps.
+
+A typical application delivery process may include:
+
+* Building the application.
+* Running unit and integration tests.
+* Performing code quality and security checks.
+* Building a container image.
+* Pushing the image to a container registry.
+* Deploying the application.
+* Verifying the deployment.
+
+When these activities are performed manually, teams can encounter inconsistent processes, human errors, and delays between development and deployment.
+
+Different teams may also implement the same process differently, making software delivery difficult to standardize and scale.
+
+IMPORTANT: The more manual steps involved in software delivery, the greater the opportunity for inconsistency, errors, and delays.
+
+OpenShift Pipelines addresses this challenge by allowing the complete workflow to be defined as **code** and executed automatically.
+
+== What is OpenShift Pipelines?
+
+OpenShift Pipelines is a **cloud-native CI/CD solution** based on the open source Tekton project.
+
+It runs pipeline workloads as Kubernetes-native resources on OpenShift.
+
+Instead of implementing a delivery process through manually executed commands, teams define the required activities as reusable pipeline components.
+
+For example:
+
+.Tasks
+****
+Define individual units of work such as compiling source code, running tests, building an image, or publishing an artifact.
+****
+
+.Pipelines
+****
+Connect multiple tasks together to define the complete application delivery workflow and the order in which tasks execute.
+****
+
+.Triggers
+****
+Automatically start pipeline runs in response to events such as source-code changes, pull requests, or other configured events.
+****
+
+Each pipeline execution creates a **PipelineRun** that represents a specific execution of the pipeline.
+
+This allows software delivery to become repeatable, observable, and automated.
+
+== How OpenShift Pipelines Works
+
+OpenShift Pipelines uses a task-based approach to software delivery.
+
+Each task performs a specific operation, and tasks can be connected together to create an end-to-end workflow.
+
+For example, an application pipeline might look like this:
+
+. Developer commits application source code.
+. A pipeline is triggered by the change.
+. The source code is retrieved from Git.
+. The application is compiled and packaged.
+. Automated tests are executed.
+. A container image is built.
+. The image is pushed to a container registry.
+. The application is prepared for deployment.
+
+Each step is executed as part of the pipeline rather than requiring the developer to perform the operation manually.
+
+This provides a consistent process that can be executed repeatedly for every application change.
+
+== Tasks and Pipelines
+
+A fundamental concept in OpenShift Pipelines is the separation of individual activities into **tasks**.
+
+A task represents a unit of work.
+
+For example, a task could:
+
+* Clone a Git repository.
+* Run Maven or Gradle commands.
+* Execute unit tests.
+* Build a container image.
+* Push an image to a registry.
+* Run security checks.
+* Update deployment configuration.
+
+A **Pipeline** combines these tasks into a complete workflow.
+
+The pipeline can define dependencies between tasks so that activities execute in the required order.
+
+For example:
+
+[source,text]
+----
+clone-source
+|
+v
+build-application
+|
+v
+run-tests
+|
+v
+build-image
+|
+v
+push-image
+----
+
+This task-based model makes complex delivery processes easier to understand, reuse, and maintain.
+
+== Cloud-Native Execution
+
+Unlike traditional CI/CD systems that may rely on long-running build servers, OpenShift Pipelines executes tasks using Kubernetes-native resources.
+
+Each task runs in its own container-based execution environment.
+
+This provides several advantages:
+
+[cols="1,3",options="header"]
+
+|===
+
+|Capability |Benefit
+
+|Containerized tasks
+
+|Each task runs in an isolated and reproducible environment.
+
+|Kubernetes-native
+
+|Pipeline resources are managed using the same platform used to run applications.
+
+|Scalability
+
+|Pipeline workloads can use OpenShift resources when required and scale with the platform.
+
+|Repeatability
+
+|The same task definitions can be executed consistently across pipeline runs.
+
+|Reusability
+
+|Common tasks can be reused across multiple application pipelines.
+
+|===
+
+Because the pipeline runs on OpenShift, developers do not need to manually prepare a separate build environment for every application.
+
+== Pipelines as Code
+
+One of the key principles of OpenShift Pipelines is **everything-as-code**.
+
+Pipeline definitions, tasks, parameters, and configuration can be stored in Git alongside the application source code.
+
+This makes the software delivery process:
+
+* Version controlled.
+* Reviewable.
+* Reproducible.
+* Auditable.
+* Easy to modify.
+
+For example, instead of documenting a manual build process in a separate document, the process itself can be represented through pipeline and task definitions.
+
+When the delivery process changes, the change can be reviewed and tracked just like an application code change.
+
+NOTE: Treating the delivery process as code allows teams to version, review, reuse, and continuously improve their CI/CD automation.
+
+== From Code Change to Application Delivery
+
+OpenShift Pipelines can automate the path from source code to a deployable application artifact.
+
+A typical workflow looks like this:
+
+. A developer pushes a code change to Git.
+. The pipeline is triggered.
+. OpenShift Pipelines retrieves the source code.
+. The application is built.
+. Automated tests validate the application.
+. Additional quality or security checks are performed.
+. A container image is created.
+. The image is published to a container registry.
+. The resulting artifact is made available for the next stage of the delivery process.
+
+This creates a repeatable software delivery process where the same sequence of activities is executed for every application change.
+
+Developers can focus on writing application code while OpenShift Pipelines automates the surrounding build and validation activities.
+
+== Why OpenShift Pipelines?
+
+OpenShift Pipelines helps organizations move from manually executed delivery processes to standardized, automated workflows.
+
+For developers:
+
+* Automate repetitive build and test activities.
+* Get consistent results for every code change.
+* Reduce manual steps in application delivery.
+* Receive faster feedback from automated validation.
+
+For Platform Engineers:
+
+* Standardize CI/CD workflows across development teams.
+* Provide reusable pipeline tasks.
+* Manage CI/CD using Kubernetes-native resources.
+* Integrate pipelines with other OpenShift services.
+
+For organizations:
+
+* Improve software delivery consistency.
+* Reduce human error.
+* Increase delivery automation.
+* Improve traceability of application changes.
+* Create repeatable and scalable CI/CD processes.
+
+== OpenShift Pipelines in the Software Factory
+
+Within a **Software Factory**, OpenShift Pipelines provides the automation engine that moves application changes through the software delivery process.
+
+A simplified Software Factory workflow looks like this:
+
+. Developers develop and test applications in a standardized development environment.
+
+. Developers commit application changes to Git.
+
+. OpenShift Pipelines is triggered by the change.
+
+. The pipeline builds and validates the application.
+
+. The pipeline creates and publishes the application artifact.
+
+. The resulting artifact is passed to the next stage of the software delivery process.
+
+This allows developers to focus on application development while the Software Factory automates the repetitive activities required to build and validate software.
+
+IMPORTANT: OpenShift Pipelines does not simply execute a sequence of commands. It provides a Kubernetes-native framework for defining, executing, and managing repeatable software delivery workflows.
+
+== Benefits
+
+OpenShift Pipelines provides several benefits for modern application delivery:
+
+* **Automation:** Eliminates repetitive manual build and delivery activities.
+
+* **Consistency:** Executes the same workflow for every pipeline run.
+
+* **Reusability:** Allows common tasks and pipeline patterns to be reused.
+
+* **Isolation:** Executes individual tasks in containerized environments.
+
+* **Scalability:** Uses the OpenShift platform to execute pipeline workloads.
+
+* **Traceability:** Provides visibility into individual tasks and pipeline executions.
+
+* **Everything-as-code:** Allows CI/CD workflows to be stored and versioned alongside application code.
+
+== Reflection
+
+{empty}
+
+[.reflection-box%collapsible]
+.**Think about your own organization (Click to expand)**
+====
+
+image::ROOT:mini-illustration-lightbulb-red-RH.Small_square_transparent.png[width=50, align=left]
+
+* Which application delivery steps are currently performed manually?
+
+* Which steps could be converted into reusable pipeline tasks?
+
+* How consistent is the build and test process across development teams?
+
+* Which CI/CD configurations should be stored and versioned in Git?
+
+* How could automated pipelines improve feedback to developers?
+====
+
+++++
+
+<div class="key-card">
+
+++++
+
+.Key Takeaway
+
+**OpenShift Pipelines** provides a Kubernetes-native CI/CD framework based on Tekton that automates application build, test, validation, and delivery workflows. By defining delivery processes as reusable, version-controlled tasks and pipelines, organizations can create consistent, repeatable, and scalable software delivery processes within the Software Factory.
+
+++++
+
+</div>
+
+++++
