@@ -1,7 +1,7 @@
 = OpenShift Pipelines
 :navtitle: OpenShift Pipelines Overview
 
-In the previous sections, you learned how a **Software Factory** provides standardized services, automation, and engineering practices that help teams deliver software consistently.
+In the previous module, you learned how a **Software Factory** provides standardized services, automation, and engineering practices that help teams deliver software consistently.
 
 A key capability of a Software Factory is **Continuous Integration and Continuous Delivery (CI/CD)**.
 
