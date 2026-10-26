@@ -198,13 +198,59 @@ echo "Root Username: root"
 echo "Root Password: ${GITLAB_ROOT_PASSWORD}"
 ----
 
-. Commit and push the manifests. When prompted for Git credentials, use the **GitLab root** username (`root`) and the password retrieved in the previous step:
+. Create a GitLab Personal Access Token for Git authentication:
++
+GitLab requires a Personal Access Token instead of password for Git operations.
++
+.. Open the GitLab URL in your browser and sign in with:
+   * Username: `root`
+   * Password: Use the password from the previous step
++
+.. Click your avatar (top-right) -> btn:[Edit profile] (or btn:[Preferences])
++
+.. In the left sidebar, click btn:[Access] -> btn:[Personal access tokens] -> btn:[Add new tokens]
++
+.. Fill in the token details:
+   * **Token name**: `git-push`
+   * **Expiration date**: Select a future date (e.g., one month from today)
+   * **Select scopes**: Check the following boxes:
+      - ☑️ **read_repository** - Grants read-only access to repositories
+      - ☑️ **write_repository** - Grants read-write access to repositories
++
+.GitLab Personal Access Token creation (_Click the image to view it in full size in a new browser tab_)
+image::gitlab-personal-access-token.png[GitLab Personal Access Token scopes,link={imagesdir}/gitlab-personal-access-token.png,width=700]
++
+.. Click btn:[Create personal access token]
++
+.. **IMPORTANT**: Copy the generated token immediately (it starts with `glpat-`). You will not be able to see it again.
++
+IMPORTANT: Save the token in a safe location. You will use it as your password when pushing to GitLab.
+
+. Update the Git remote URL to include your Personal Access Token:
++
+[source,bash,role=execute]
+----
+# Replace <YOUR-TOKEN> with the token you just created
+git remote set-url origin https://root:<YOUR-TOKEN>@$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')/software-factory/etx-app-gitops.git
+----
++
+Example:
++
+[source,bash]
+----
+# Example with token (yours will be different)
+git remote set-url origin https://root:glpat-Jw08Xm5NouHHEEgIVgvXS286MQp1OjEH@gitlab.apps.cluster-lhpfm.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git
+----
+
+. Commit and push the manifests:
 +
 [source,bash,role=execute]
 ----
 git add -A
 git commit -m "feat: add dev environment manifests"
-git push origin main
+git push -u origin main
 ----
++
+The push should now succeed without prompting for credentials since the token is embedded in the remote URL.
 
 Once the changes are pushed, the GitOps repository contains the Kubernetes manifests that Argo CD will use as the desired state for the development environment in the following labs.

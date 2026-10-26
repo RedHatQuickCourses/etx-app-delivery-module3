@@ -1,11 +1,11 @@
 {
-  "totalSeconds": 2625,
+  "totalSeconds": 2679,
   "pageCount": 34,
   "pages": [
     {
       "module": "ROOT",
       "page": "index.adoc",
-      "seconds": 110
+      "seconds": 108
     },
     {
       "module": "LABENV",
@@ -30,7 +30,7 @@
     {
       "module": "section1",
       "page": "lab-1.adoc",
-      "seconds": 54
+      "seconds": 70
     },
     {
       "module": "section1",
@@ -75,7 +75,7 @@
     {
       "module": "section2",
       "page": "lab-7.adoc",
-      "seconds": 86
+      "seconds": 124
     },
     {
       "module": "section2",
@@ -125,7 +125,7 @@
     {
       "module": "section3",
       "page": "lab-14.adoc",
-      "seconds": 97
+      "seconds": 99
     },
     {
       "module": "section3",

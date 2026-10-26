@@ -76,7 +76,9 @@ Confirm that the workspace and ServiceAccount were created successfully.
 
 [source,bash,role=execute]
 ----
-oc get pvc pipeline-workspace-pvc
+oc get pvc pipeline-workspace-pvc -n etx-app-dev
 
-oc get sa pipeline
+oc get sa pipeline -n etx-app-dev
 ----
+
+The PersistentVolumeClaim will show a `STATUS` of `Pending`. This is expected behavior because the storage class uses `WaitForFirstConsumer` volume binding mode, which delays provisioning until a Pod that uses the PVC is scheduled. The PVC will automatically transition to `Bound` when the pipeline runs in the next lab.
