@@ -313,7 +313,7 @@ spec:
 
         VAULT_TOKEN=$(curl -s --request POST \
           "${VAULT_ADDR}/v1/auth/kubernetes/login" \
-          --data "{\"role\":\"pipeline\",\"jwt\":\"${SA_TOKEN}\"}" \
+          --data '{"role":"pipeline","jwt":"'"${SA_TOKEN}"'"}' \
           | jq -r '.auth.client_token')
 
         # Fetch Quay credentials
@@ -390,14 +390,8 @@ spec:
         # pipeline ServiceAccount token (destination uses Quay robot creds)
         SRC_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 
-        # Copy image using skopeo
-        skopeo copy \
-          --src-tls-verify=false \
-          --dest-tls-verify=false \
-          --src-creds="pipeline:${SRC_TOKEN}" \
-          --dest-creds="$(params.dest-username):$(params.dest-password)" \
-          "docker://$(params.source-image)" \
-          "docker://$(params.dest-image)"
+        # Copy image using skopeo (single line to avoid YAML escaping issues)
+        skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds="pipeline:${SRC_TOKEN}" --dest-creds="$(params.dest-username):$(params.dest-password)" "docker://$(params.source-image)" "docker://$(params.dest-image)"
 
         echo "Image copied successfully!"
 EOF</code></pre>

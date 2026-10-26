@@ -495,13 +495,113 @@ echo "Root Password: ${GITLAB_ROOT_PASSWORD}"</code></pre>
 </div>
 </li>
 <li>
-<p>Commit and push the manifests. When prompted for Git credentials, use the <strong>GitLab root</strong> username (<code>root</code>) and the password retrieved in the previous step:</p>
+<p>Create a GitLab Personal Access Token for Git authentication:</p>
+<div class="paragraph">
+<p>GitLab requires a Personal Access Token instead of password for Git operations.</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Open the GitLab URL in your browser and sign in with:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Username: <code>root</code></p>
+</li>
+<li>
+<p>Password: Use the password from the previous step</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click your avatar (top-right) &#8594; <b class="button">Edit profile</b> (or <b class="button">Preferences</b>)</p>
+</li>
+<li>
+<p>In the left sidebar, click <b class="button">Access</b> &#8594; <b class="button">Personal access tokens</b> &#8594; <b class="button">Add new tokens</b></p>
+</li>
+<li>
+<p>Fill in the token details:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Token name</strong>: <code>git-push</code></p>
+</li>
+<li>
+<p><strong>Expiration date</strong>: Select a future date (e.g., one month from today)</p>
+</li>
+<li>
+<p><strong>Select scopes</strong>: Check the following boxes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>☑️ <strong>read_repository</strong> - Grants read-only access to repositories</p>
+</li>
+<li>
+<p>☑️ <strong>write_repository</strong> - Grants read-write access to repositories</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="_images/gitlab-personal-access-token.png"><img src="_images/gitlab-personal-access-token.png" alt="GitLab Personal Access Token scopes" width="700"></a>
+</div>
+<div class="title">Figure 4. GitLab Personal Access Token creation (<em>Click the image to view it in full size in a new browser tab</em>)</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <b class="button">Create personal access token</b></p>
+</li>
+<li>
+<p><strong>IMPORTANT</strong>: Copy the generated token immediately (it starts with <code>glpat-</code>). You will not be able to see it again.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Save the token in a safe location. You will use it as your password when pushing to GitLab.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Update the Git remote URL to include your Personal Access Token:</p>
+<div class="listingblock execute">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Replace &lt;YOUR-TOKEN&gt; with the token you just created
+git remote set-url origin https://root:&lt;YOUR-TOKEN&gt;@$(oc get route -n gitlab -l app=webservice -o jsonpath='{.items[0].spec.host}')/software-factory/etx-app-gitops.git</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash"># Example with token (yours will be different)
+git remote set-url origin https://root:glpat-Jw08Xm5NouHHEEgIVgvXS286MQp1OjEH@gitlab.apps.cluster-lhpfm.dyn.redhatworkshops.io/software-factory/etx-app-gitops.git</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Commit and push the manifests:</p>
 <div class="listingblock execute">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">git add -A
 git commit -m "feat: add dev environment manifests"
-git push origin main</code></pre>
+git push -u origin main</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The push should now succeed without prompting for credentials since the token is embedded in the remote URL.</p>
 </div>
 </li>
 </ol>

@@ -355,10 +355,13 @@ If the <code>pipeline</code> ServiceAccount already exists (for example, it was 
 </div>
 <div class="listingblock execute">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pvc pipeline-workspace-pvc
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc get pvc pipeline-workspace-pvc -n etx-app-dev
 
-oc get sa pipeline</code></pre>
+oc get sa pipeline -n etx-app-dev</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The PersistentVolumeClaim will show a <code>STATUS</code> of <code>Pending</code>. This is expected behavior because the storage class uses <code>WaitForFirstConsumer</code> volume binding mode, which delays provisioning until a Pod that uses the PVC is scheduled. The PVC will automatically transition to <code>Bound</code> when the pipeline runs in the next lab.</p>
 </div>
 </div>
 </div>
